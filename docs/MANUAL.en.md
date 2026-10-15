@@ -47,11 +47,17 @@ It has three parts:
 2. Open it. If Windows shows **“Windows protected your PC”**, click **More info → Run anyway**. It appears because the installer isn't signed with a paid certificate, not because it is dangerous; you can [check that it is authentic](#check-that-the-installer-is-authentic).
 3. An installation window opens. Pick the language and accept the license.
 4. Choose how to install:
-   - **Use my current server** (recommended). Howler finds it, backs it up to `howler-backup\` and prepares it.
-   - **Create a new folder.** Copies your server somewhere else and leaves the original untouched.
-   - **Howler only.** Doesn't touch any server; you set it up with the [manual installation](#manual-installation).
-5. Review the options: install folder, opening the web port in the firewall, shortcuts and starting with Windows. Below them you see **exactly what is going to happen**.
-6. Click **Install**. Howler opens when it finishes.
+   - **Use my current server** (recommended if Howler finds one). Howler finds it, backs it up to `howler-backup\` and prepares it.
+   - **Make a copy in another folder.** Copies your server somewhere else and leaves the original untouched.
+   - **Create a new server for me.** Only shown if you have Assetto Corsa and no server. Howler builds a ready-to-use one (AssettoServer, a stock track and car) and connects it to Howler. You change it later from the panel.
+   - **Only install Howler.** Doesn't touch any server; you add yours later from the panel or with the [manual installation](#manual-installation). If Howler finds no server, this is the option it suggests.
+5. Choose the **installation type**:
+   - **Complete** (recommended): opens the website port (8420) in the firewall so your drivers can see it. Asks for administrator permission.
+   - **No open ports:** doesn't touch the firewall or open any port; the website only works on this PC. You can open the port later with [this guide](#how-to-show-the-website-to-your-drivers).
+   - **Custom:** you choose each option (firewall, shortcuts, start with Windows). Below you see **exactly what is going to happen**.
+6. Click **Install**. Howler opens when it finishes and the last screen shows **your website address** with a copy button.
+
+AssettoServer (version 0.0.55-pre35) ships **inside the installer**: nothing to download.
 
 > **Important.** It installs for your user only (`%LOCALAPPDATA%\Programs\Howler`), without administrator rights. Only opening the firewall asks for permission, and it is optional.
 
@@ -86,9 +92,9 @@ Each guide says what it is for, how long it takes and what you need. If a step d
 
 **You need:** access to your router's settings.
 
-1. Find your PC's local IP: press **Windows + R**, type `cmd`, Enter, then `ipconfig`. Look at **IPv4 Address**.
+1. Find your PC's local IP: in the panel, **Settings → General → Your website address** already shows it (with a copy button). Otherwise press **Windows + R**, type `cmd`, Enter, then `ipconfig` and look at **IPv4 Address**.
 2. In your router, forward **TCP port 8420** to that IP.
-3. Open port **8420** in the Windows firewall (the installer does it if you ticked the box).
+3. Open port **8420** in the Windows firewall (the **Complete** installation type does it; with **No open ports** you have to do it yourself).
 4. Search “what is my IP” online to learn your public IP.
 5. From a phone **not on your wifi**, open `http://YOUR-PUBLIC-IP:8420`.
 

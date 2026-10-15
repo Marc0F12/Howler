@@ -45,11 +45,17 @@ Tiene tres piezas:
 2. Ábrelo. Si Windows muestra **«Windows protegió su PC»**, pulsa **Más información → Ejecutar de todas formas**. Sale porque el instalador no lleva firma de pago, no porque sea peligroso; puedes [comprobar que es auténtico](#comprobar-que-el-instalador-es-auténtico).
 3. Se abre una ventana de instalación. Elige el idioma y acepta la licencia.
 4. Elige cómo instalar:
-   - **Usar mi servidor actual** (recomendado). Howler lo detecta, hace una copia de seguridad en `howler-backup\` y lo prepara.
-   - **Crear una carpeta nueva.** Copia tu servidor a otro sitio y deja el original intacto.
-   - **Solo Howler.** No toca ningún servidor; lo configuras tú con la [instalación manual](#instalación-manual).
-5. Revisa las opciones: carpeta de instalación, abrir el puerto de la web en el cortafuegos, accesos directos y arrancar con Windows. Debajo ves **qué va a pasar** exactamente.
-6. Pulsa **Instalar**. Al terminar se abre Howler.
+   - **Usar mi servidor actual** (recomendado si Howler lo encuentra). Howler lo detecta, hace una copia de seguridad en `howler-backup\` y lo prepara.
+   - **Hacer una copia en otra carpeta.** Copia tu servidor a otro sitio y deja el original intacto.
+   - **Crear un servidor nuevo para mí.** Solo sale si tienes Assetto Corsa y ningún servidor. Howler monta uno listo para usar (AssettoServer, un circuito y un coche de serie) y lo conecta con Howler. Después lo cambias desde el panel.
+   - **Solo instalar Howler.** No toca ningún servidor; lo añades después desde el panel o con la [instalación manual](#instalación-manual). Si Howler no encuentra ningún servidor, esta es la opción que propone.
+5. Elige el **tipo de instalación**:
+   - **Completa** (recomendada): abre el puerto de la web (8420) en el cortafuegos para que tus pilotos la vean. Pide un permiso de administrador.
+   - **Sin abrir puertos:** no toca el cortafuegos ni abre ningún puerto; la web solo funciona en este PC. Puedes abrir el puerto después con [esta guía](#cómo-enseñar-la-web-a-tus-pilotos).
+   - **Personalizada:** eliges cada opción (cortafuegos, accesos directos, arrancar con Windows). Debajo ves **qué va a pasar** exactamente.
+6. Pulsa **Instalar**. Al terminar se abre Howler y la última pantalla te enseña la **dirección de tu web** con botón de copiar.
+
+AssettoServer (versión 0.0.55-pre35) va **dentro del instalador**: no hace falta descargar nada.
 
 > **Importante.** Instala solo para tu usuario (`%LOCALAPPDATA%\Programs\Howler`), sin administrador. Solo abrir el cortafuegos pide permiso, y es opcional.
 
@@ -84,9 +90,9 @@ Cada guía dice para qué sirve, cuánto tarda y qué necesitas. Si un paso no s
 
 **Necesitas:** acceso a la configuración de tu router.
 
-1. Averigua la IP local de tu PC: pulsa **Windows + R**, escribe `cmd`, Intro, y luego `ipconfig`. Mira **Dirección IPv4**.
+1. Averigua la IP local de tu PC: en el panel, **Ajustes → General → Dirección de tu web** ya la enseña (con botón de copiar). Si no, pulsa **Windows + R**, escribe `cmd`, Intro, y luego `ipconfig`: mira **Dirección IPv4**.
 2. En tu router, redirige el puerto **TCP 8420** a esa IP.
-3. Abre el puerto **8420** en el cortafuegos de Windows (el instalador lo hace si marcaste la casilla).
+3. Abre el puerto **8420** en el cortafuegos de Windows (el tipo de instalación **Completa** lo hace; con **Sin abrir puertos** tendrás que hacerlo tú).
 4. Busca «mi IP» en internet para saber tu IP pública.
 5. Desde un móvil **sin wifi**, abre `http://TU-IP-PÚBLICA:8420`.
 

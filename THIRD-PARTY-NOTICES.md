@@ -2842,6 +2842,12 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 ```
 
+## AssettoServer v0.0.55-pre35 — AGPL-3.0
+
+El instalador de Howler incluye, sin modificar, AssettoServer v0.0.55-pre35 (https://github.com/compujuckel/AssettoServer), licenciado bajo la GNU Affero General Public License v3. Su código fuente está en https://github.com/compujuckel/AssettoServer/tree/v0.0.55-pre35 y el texto de la licencia en https://www.gnu.org/licenses/agpl-3.0.txt.
+
+The Howler installer includes, unmodified, AssettoServer v0.0.55-pre35 (https://github.com/compujuckel/AssettoServer), licensed under the GNU Affero General Public License v3. Its source code is at https://github.com/compujuckel/AssettoServer/tree/v0.0.55-pre35 and the license text at https://www.gnu.org/licenses/agpl-3.0.txt.
+
 ## Emblemas de las insignias / Badge emblems — Game-icons.net — CC BY 3.0
 
 Los emblemas del creador de insignias de campeonato proceden de https://game-icons.net y se usan bajo la licencia Creative Commons Attribution 3.0 (https://creativecommons.org/licenses/by/3.0/). Han sido modificados: recoloreados, redimensionados y combinados con otros elementos para formar cada insignia.

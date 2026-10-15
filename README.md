@@ -10,6 +10,10 @@ Get `Howler-Setup.exe` from the [latest release](../../releases/latest) and chec
 
 Windows may warn about an unknown publisher: the installer is not signed with a paid certificate. See the manual for how to check it is authentic.
 
+## Cambios / Changes
+
+- [CHANGELOG.md](CHANGELOG.md)
+
 ## Manual
 
 - [Manual (español)](docs/MANUAL.md)
