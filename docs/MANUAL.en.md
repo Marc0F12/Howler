@@ -55,7 +55,7 @@ It has three parts:
    - **Complete** (recommended): opens the website port (8420) in the firewall so your drivers can see it. Asks for administrator permission.
    - **No open ports:** doesn't touch the firewall or open any port; the website only works on this PC. You can open the port later with [this guide](#how-to-show-the-website-to-your-drivers).
    - **Custom:** you choose each option (firewall, shortcuts, start with Windows). Below you see **exactly what is going to happen**.
-6. Click **Install**. Howler opens when it finishes and the last screen shows **your website address** with a copy button.
+6. Click **Install**. Howler opens when it finishes.
 
 AssettoServer (version 0.0.55-pre35) ships **inside the installer**: nothing to download.
 
@@ -92,11 +92,11 @@ Each guide says what it is for, how long it takes and what you need. If a step d
 
 **You need:** access to your router's settings.
 
-1. Find your PC's local IP: in the panel, **Settings → General → Your website address** already shows it (with a copy button). Otherwise press **Windows + R**, type `cmd`, Enter, then `ipconfig` and look at **IPv4 Address**.
+1. Find your PC's local IP: press **Windows + R**, type `cmd`, Enter, then `ipconfig`. Look at **IPv4 Address** (it starts with `192.168.`).
 2. In your router, forward **TCP port 8420** to that IP.
 3. Open port **8420** in the Windows firewall (the **Complete** installation type does it; with **No open ports** you have to do it yourself).
-4. Search “what is my IP” online to learn your public IP.
-5. From a phone **not on your wifi**, open `http://YOUR-PUBLIC-IP:8420`.
+4. Find your public IP: from your PC, search “what is my IP” online. Howler doesn't show any address, so you don't share it by accident.
+5. From a phone **not on your wifi**, open `http://YOUR-PUBLIC-IP:8420`. The `192.168…` address is only visible to people in your own home or wifi.
 
 *You should see:* the Howler website.
 
@@ -272,7 +272,7 @@ Players **install nothing**: the server hands out a script that their CSP downlo
 
 ## How to update and uninstall
 
-- **Update:** the panel tells you when there is a new version. Click **Update now**. Your data and configuration are kept. It installs by itself only if the release ships an installer and its checksum; otherwise the button opens the release page.
+- **Update:** the panel tells you when there is a new version. Click **Update** (or **Not now** if you prefer to wait). Your data and configuration are kept. It installs by itself only if the release ships an installer and its checksum; otherwise the button opens the release page.
 - **Uninstall:** **Windows Settings → Apps → Howler**. By default your data and configuration are **kept**; the wizard asks whether to delete them.
 
 ---
@@ -302,6 +302,7 @@ Check in this order:
 3. The firewall has port 8420 open.
 4. The router forward points to the **right local IP**.
 5. Your provider doesn't block home hosting or use CGNAT. If it does, use a tunnel.
+6. **If you have two routers** (a main one and a second one behind it, where your PC is connected): the main router's port forward must point to the address **the main router uses to see the second one**, not to your PC's own IP. That is the same address you already use for other servers that work from your PC. And the second router must send the traffic on to your PC (DMZ or its own forward). To check: open `http://THAT-ADDRESS:8420` from your PC; if it loads, the address is right.
 
 ## Nobody sees the server in the list
 

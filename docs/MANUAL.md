@@ -53,7 +53,7 @@ Tiene tres piezas:
    - **Completa** (recomendada): abre el puerto de la web (8420) en el cortafuegos para que tus pilotos la vean. Pide un permiso de administrador.
    - **Sin abrir puertos:** no toca el cortafuegos ni abre ningún puerto; la web solo funciona en este PC. Puedes abrir el puerto después con [esta guía](#cómo-enseñar-la-web-a-tus-pilotos).
    - **Personalizada:** eliges cada opción (cortafuegos, accesos directos, arrancar con Windows). Debajo ves **qué va a pasar** exactamente.
-6. Pulsa **Instalar**. Al terminar se abre Howler y la última pantalla te enseña la **dirección de tu web** con botón de copiar.
+6. Pulsa **Instalar**. Al terminar se abre Howler.
 
 AssettoServer (versión 0.0.55-pre35) va **dentro del instalador**: no hace falta descargar nada.
 
@@ -90,11 +90,11 @@ Cada guía dice para qué sirve, cuánto tarda y qué necesitas. Si un paso no s
 
 **Necesitas:** acceso a la configuración de tu router.
 
-1. Averigua la IP local de tu PC: en el panel, **Ajustes → General → Dirección de tu web** ya la enseña (con botón de copiar). Si no, pulsa **Windows + R**, escribe `cmd`, Intro, y luego `ipconfig`: mira **Dirección IPv4**.
+1. Averigua la IP local de tu PC: pulsa **Windows + R**, escribe `cmd`, Intro, y luego `ipconfig`. Mira **Dirección IPv4** (empieza por `192.168.`).
 2. En tu router, redirige el puerto **TCP 8420** a esa IP.
 3. Abre el puerto **8420** en el cortafuegos de Windows (el tipo de instalación **Completa** lo hace; con **Sin abrir puertos** tendrás que hacerlo tú).
-4. Busca «mi IP» en internet para saber tu IP pública.
-5. Desde un móvil **sin wifi**, abre `http://TU-IP-PÚBLICA:8420`.
+4. Averigua tu IP pública: desde tu PC, busca «mi IP» en internet. Howler no te enseña ninguna dirección, para que no la compartas sin querer.
+5. Desde un móvil **sin wifi**, abre `http://TU-IP-PÚBLICA:8420`. La dirección `192.168…` solo la ven quienes están en tu misma casa o wifi.
 
 *Debería verse:* la web de Howler.
 
@@ -270,7 +270,7 @@ Los jugadores **no instalan nada**: el servidor reparte un script que su CSP des
 
 ## Cómo actualizar y desinstalar
 
-- **Actualizar:** el panel avisa cuando hay una versión nueva. Pulsa **Actualizar ahora**. Tus datos y tu configuración se conservan. Solo se instala sola si la versión trae instalador y su suma de comprobación; si no, el botón lleva a la página de la versión.
+- **Actualizar:** el panel avisa cuando hay una versión nueva. Pulsa **Actualizar** (o **Ahora no** si prefieres esperar). Tus datos y tu configuración se conservan. Solo se instala sola si la versión trae instalador y su suma de comprobación; si no, el botón lleva a la página de la versión.
 - **Desinstalar:** **Configuración de Windows → Aplicaciones → Howler**. Por defecto **se conservan** tus datos y configuración; el asistente pregunta si quieres borrarlos.
 
 ---
@@ -300,6 +300,7 @@ Comprueba en este orden:
 3. El cortafuegos tiene abierto el puerto 8420.
 4. La redirección del router apunta a la **IP local correcta**.
 5. Tu operador no bloquea el alojamiento en casa ni usa CGNAT. Si lo hace, usa un túnel.
+6. **Si tienes dos routers** (uno principal y otro detrás, al que está conectado tu PC): el reenvío del puerto del principal tiene que apuntar a la dirección **con la que el principal ve al secundario**, no a la IP de tu PC. Esa dirección es la misma que ya uses para otros servidores que funcionen desde tu PC. Y el secundario tiene que mandar el tráfico a tu PC (DMZ o su propio reenvío). Para comprobarlo: abre `http://ESA-DIRECCIÓN:8420` desde tu PC; si carga, la dirección es la buena.
 
 ## Nadie ve el servidor en la lista
 

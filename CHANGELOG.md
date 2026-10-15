@@ -2,6 +2,34 @@
 
 Cada versión agrupa sus cambios en **Novedades**, **Mejoras**, **Arreglos** y **Diseño**, con una línea por cambio. El texto de cada versión es el que sale en el aviso de actualización del panel.
 
+## 0.1.2
+
+<!-- lang:es -->
+### Novedades
+- El aviso de versión nueva enseña lo que trae y tiene dos botones: Actualizar y Ahora no.
+- La opción «Crear un servidor nuevo» se ve siempre; sin Assetto Corsa sale apagada y explica por qué, con un botón para buscarlo.
+- Los neumáticos de los fantasmas avisan cuando no hay datos de ruedas.
+
+### Mejoras
+- El «Patinazo» pasa a llamarse Agarre: 100 % es que no derrapa.
+- Howler ya no enseña direcciones IP; el manual explica cómo averiguarlas.
+
+### Arreglos
+- Howler acepta un `howler.config.json` guardado con BOM (Notepad lo añade).
+
+<!-- lang:en -->
+### New
+- The new-version notice shows what it brings and has two buttons: Update and Not now.
+- “Create a new server” is always visible; without Assetto Corsa it is greyed out and explains why, with a button to find it.
+- The ghosts' tyre panel says so when there is no wheel data.
+
+### Improved
+- “Wheel slip” is now called Grip: 100 % means no sliding.
+- Howler no longer shows IP addresses; the manual explains how to find them.
+
+### Fixed
+- Howler accepts a `howler.config.json` saved with a BOM (Notepad adds one).
+
 ## 0.1.1
 
 <!-- lang:es -->
