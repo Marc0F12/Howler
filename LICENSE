@@ -1,0 +1,113 @@
+HOWLER — LICENCIA DE USO GRATUITO / FREEWARE LICENSE
+Versión 1.0 · Version 1.0
+Copyright © 2026 ElPatata (Steam: https://steamcommunity.com/id/LordPotatoe/). Todos los derechos reservados salvo lo que aquí se concede.
+All rights reserved except as granted below.
+
+Si la versión española y la inglesa difieren, prevalece la española.
+If the Spanish and English versions differ, the Spanish one prevails.
+
+=====================================================================
+ESPAÑOL
+=====================================================================
+
+1. QUÉ ES ESTO
+Howler es un programa gratuito, NO de código abierto. Esta licencia dice qué puedes
+hacer con él. Si no estás de acuerdo, no lo uses.
+
+2. LO QUE PUEDES HACER
+a) Instalar y usar Howler gratis, sin límite de tiempo, en tus propios equipos y servidores
+   de Assetto Corsa, para ti o para tu comunidad.
+b) Dejar que tus jugadores vean su web y sus estadísticas.
+c) Repartir el instalador oficial SIN modificar y de forma gratuita (por ejemplo, pasárselo
+   a un amigo o enlazarlo desde tu comunidad), conservando esta licencia.
+d) Crear y compartir MÓDULOS, TEMAS y DISPOSICIONES usando los formatos y la API oficiales
+   de Howler. Lo que crees es tuyo: puedes ponerle la licencia que quieras, incluso cobrarlo,
+   siempre que no contenga código de Howler, no se haga pasar por oficial y no sea dañino.
+e) Usar el programa en un servidor que reciba donaciones o suscripciones de sus jugadores,
+   siempre que no cobres por Howler en sí.
+
+3. LO QUE NO PUEDES HACER
+a) Modificar, adaptar, traducir (salvo mediante los mecanismos oficiales de idioma), ni crear
+   obras derivadas de Howler, salvo módulos, temas y disposiciones como en 2.d.
+b) Descompilar, desensamblar ni intentar obtener el código fuente, salvo en la medida en que la
+   ley lo permita expresamente a pesar de este contrato.
+c) Vender, alquilar, sublicenciar ni cobrar por Howler, ni incluirlo en un producto o servicio
+   de pago, ni cobrar por su instalación como si fuera un producto.
+d) Repartir versiones modificadas, o con otro nombre, otro logo o sin esta licencia.
+e) Quitar o cambiar los avisos de derechos de autor, el nombre «Howler» o su logo.
+f) Presentar un programa distinto, o una copia modificada, como si fuera Howler u oficial.
+
+4. NOMBRE Y LOGO
+El nombre «Howler» y su logo son de ElPatata y no se conceden con esta licencia. Su uso está
+regulado en docs/TRADEMARK.md.
+
+5. COMPONENTES DE TERCEROS
+Howler incluye componentes de terceros con sus propias licencias (ver THIRD-PARTY-NOTICES).
+El complemento para el servidor (HowlerPlugin) es software libre bajo la licencia AGPL-3.0
+y se rige por ella, no por esta licencia; su código fuente está disponible públicamente.
+AssettoServer es software de sus autores y se rige por su propia licencia (AGPL-3.0).
+
+6. SIN GARANTÍA
+Howler se ofrece «tal cual», sin garantía de ningún tipo. No respondo de pérdidas de datos,
+fallos del servidor, ni de ningún daño derivado de su uso, en la medida permitida por la ley.
+Haz copias de seguridad de tus datos.
+
+7. DURACIÓN
+La licencia sigue mientras la cumplas. Si incumples algo, termina automáticamente y debes
+dejar de usar y repartir Howler.
+
+8. LEY APLICABLE
+Esta licencia se rige por la ley española.
+
+=====================================================================
+ENGLISH
+=====================================================================
+
+1. WHAT THIS IS
+Howler is free software to use, but NOT open source. This license states what you may do with
+it. If you do not agree, do not use it.
+
+2. WHAT YOU MAY DO
+a) Install and use Howler for free, with no time limit, on your own machines and Assetto Corsa
+   servers, for yourself or your community.
+b) Let your players view its website and their statistics.
+c) Redistribute the UNMODIFIED official installer free of charge (for example, give it to a
+   friend or link it from your community), keeping this license with it.
+d) Create and share MODULES, THEMES and LAYOUTS using Howler's official formats and API. What
+   you create is yours: you may license it as you wish, even sell it, provided it contains no
+   Howler code, does not pass itself off as official and is not harmful.
+e) Use Howler on a server that receives donations or subscriptions from its players, as long as
+   you do not charge for Howler itself.
+
+3. WHAT YOU MAY NOT DO
+a) Modify, adapt, translate (other than through the official language mechanisms) or create
+   derivative works of Howler, except modules, themes and layouts as in 2.d.
+b) Decompile, disassemble or try to obtain the source code, except to the extent the law
+   expressly allows despite this agreement.
+c) Sell, rent, sublicense or charge for Howler, include it in a paid product or service, or
+   charge for installing it as if it were a product.
+d) Distribute modified versions, or versions with another name, another logo or without this
+   license.
+e) Remove or change copyright notices, the name "Howler" or its logo.
+f) Present a different program, or a modified copy, as Howler or as official.
+
+4. NAME AND LOGO
+The name "Howler" and its logo belong to ElPatata and are not granted by this license. Their use is
+governed by docs/TRADEMARK.md.
+
+5. THIRD-PARTY COMPONENTS
+Howler includes third-party components under their own licenses (see THIRD-PARTY-NOTICES). The
+server add-on (HowlerPlugin) is free software under AGPL-3.0 and is governed by that license, not
+this one; its source code is publicly available. AssettoServer is its authors' software and is
+governed by its own license (AGPL-3.0).
+
+6. NO WARRANTY
+Howler is provided "as is", without warranty of any kind. I am not liable for data loss, server
+failures or any damage arising from its use, to the extent permitted by law. Back up your data.
+
+7. TERM
+This license lasts as long as you comply with it. If you breach it, it ends automatically and you
+must stop using and distributing Howler.
+
+8. GOVERNING LAW
+This license is governed by Spanish law.

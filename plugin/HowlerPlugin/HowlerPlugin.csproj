@@ -1,0 +1,37 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+    <!--
+      Plugin de AssettoServer para Howler. Se compila contra el código fuente de la MISMA versión de AssettoServer
+      que va a ejecutarse (ver ../README.md). Salida: plugin/dist/HowlerPlugin/HowlerPlugin.dll
+    -->
+    <PropertyGroup>
+        <TargetFramework>net9.0</TargetFramework>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <Nullable>enable</Nullable>
+        <EnableDynamicLoading>true</EnableDynamicLoading>
+        <SelfContained>false</SelfContained>
+        <DebugType>embedded</DebugType>
+        <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
+        <AssettoServerSrc Condition="'$(AssettoServerSrc)' == ''">$(MSBuildThisFileDirectory)..\..\vendor\assettoserver-src-pre35\AssettoServer-0.0.55-pre35</AssettoServerSrc>
+        <OutputPath>$(MSBuildThisFileDirectory)..\dist\$(MSBuildProjectName)\</OutputPath>
+        <PathMap>$(MSBuildProjectDirectory)=$(MSBuildProjectName)</PathMap>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <ProjectReference Include="$(AssettoServerSrc)\AssettoServer.Shared\AssettoServer.Shared.csproj">
+            <Private>false</Private>
+            <ExcludeAssets>runtime</ExcludeAssets>
+        </ProjectReference>
+        <ProjectReference Include="$(AssettoServerSrc)\AssettoServer\AssettoServer.csproj">
+            <Private>false</Private>
+            <ExcludeAssets>runtime</ExcludeAssets>
+        </ProjectReference>
+    </ItemGroup>
+
+    <ItemGroup>
+        <None Update="lua\howler_telemetry.lua">
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        </None>
+    </ItemGroup>
+
+</Project>
