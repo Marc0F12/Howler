@@ -1,3 +1,6 @@
+<img width="1200" height="300" alt="cabecera-1200x300" src="https://github.com/user-attachments/assets/75b236c7-6630-4bfa-8021-c9f6c831eb25" />
+
+
 # Howler
 
 **ES** — Howler guarda los tiempos de tu servidor de Assetto Corsa y los enseña en una web: clasificaciones, récords, fichas de piloto, comparador de vueltas y campeonatos. También controla el servidor desde un panel.
