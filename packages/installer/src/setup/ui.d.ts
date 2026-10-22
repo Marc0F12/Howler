@@ -5,3 +5,4 @@ declare module '*.txt' { const text: string; export default text; }
 declare module '*.woff2' { const bytes: Uint8Array; export default bytes; }
 declare module '*.png' { const bytes: Uint8Array; export default bytes; }
 declare module '*/LICENSE' { const text: string; export default text; }
+declare module '*/LICENSE-NOTES.txt' { const text: string; export default text; }

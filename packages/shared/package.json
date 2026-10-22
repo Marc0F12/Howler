@@ -9,5 +9,5 @@
   "scripts": {
     "typecheck": "tsc -p ."
   },
-  "license": "SEE LICENSE IN LICENSE"
+  "license": "AGPL-3.0-only"
 }

@@ -49,7 +49,7 @@ El instalador de Windows y el paquete de Linux se construyen en GitHub Actions (
 
 ## Licencia / License
 
-[AGPL-3.0](LICENSE), con un permiso adicional para módulos, temas y disposiciones de terceros. El nombre y el logo de Howler están reservados ([política de marca](docs/TRADEMARK.md)). Los componentes de terceros y sus licencias están en [THIRD-PARTY-NOTICES.md](THIRD-PARTY-NOTICES.md).
+[AGPL-3.0](LICENSE), con un permiso adicional para módulos, temas y disposiciones de terceros y la reserva del nombre y el logo (resumen en [LICENSE-NOTES.txt](LICENSE-NOTES.txt)). El nombre y el logo de Howler están reservados ([política de marca](docs/TRADEMARK.md)). Los componentes de terceros y sus licencias están en [THIRD-PARTY-NOTICES.md](THIRD-PARTY-NOTICES.md).
 
 ## Política de firma de código / Code signing policy
 

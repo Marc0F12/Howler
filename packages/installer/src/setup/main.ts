@@ -12,7 +12,11 @@ import appCss from './ui/app.css';
 import appJs from './ui/wizard.client.txt';
 import font from './ui/archivo.woff2';
 import logo from './ui/logo.png';
-import license from '../../../../LICENSE';
+import licenseTerms from '../../../../LICENSE';
+import licenseNotes from '../../../../LICENSE-NOTES.txt';
+// Lo que ve la persona al instalar: primero el resumen y los permisos adicionales, después el texto completo de la AGPL.
+const license = `${licenseNotes}
+${licenseTerms}`;
 
 /**
  * Entrada del asistente. Dos formas de llegar aquí:
