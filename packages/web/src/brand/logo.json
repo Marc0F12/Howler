@@ -1,0 +1,138 @@
+{
+  "name": "Howler",
+  "version": 1,
+  "units": {
+    "time": "ms",
+    "rotate": "deg",
+    "translate": "px en el espacio de #figura",
+    "pivot": "px en el espacio de #figura (export/capas/howler-capas.svg)",
+    "keyframe": "[t, valor, curva hacia el siguiente]"
+  },
+  "artboard": { "width": 1000, "height": 1000, "tileRadius": 220, "figuraTransform": "scale(0.9765625) translate(512 520) scale(1.38) translate(-430 -400)" },
+  "colors": {
+    "fondo": "#c8923a", "negro": "#050505", "crema": "#edce98", "canela": "#c08c5c",
+    "gris": "#b0a69c", "grisOscuro": "#7a7068", "marron": "#6b4a2a", "brillo": "#ffffff",
+    "onda": "#eceae3", "sombraSaco": "#262523",
+    "estado": {
+      "oscuro": { "directo": "#2fe08f", "recordAbsoluto": "#b052ff", "recordPersonal": "#2fe08f" },
+      "claro": { "directo": "#35d07f", "directoTexto": "#0b6b3b", "recordAbsoluto": "#7a2ed0", "recordPersonal": "#0b6b3b" }
+    }
+  },
+  "easings": {
+    "out": [0.16, 1, 0.3, 1],
+    "snap": [0.3, 0, 0.2, 1],
+    "io": [0.45, 0, 0.55, 1],
+    "back": [0.34, 1.5, 0.64, 1],
+    "fall": [0.6, 0, 0.9, 0.4],
+    "wave": [0.2, 0.7, 0.3, 1],
+    "zoom": [0.7, 0, 0.15, 1],
+    "in": [0.7, 0, 0.84, 0],
+    "step": "steps(1,end)"
+  },
+  "layers": {
+    "cuerpo": { "pivot": [675.2, 1181.6] },
+    "saco": { "pivot": [324.8, 777.3] },
+    "cabeza": { "pivot": [553.9, 777.3] },
+    "cara": { "parent": "cabeza" },
+    "hocico": { "parent": "cabeza" },
+    "detalles": { "parent": "cabeza" },
+    "ondas": { "pivot": [311.3, 413.5], "children": ["onda-1", "onda-2", "onda-3"] }
+  },
+  "reducedMotion": "Sin animación: mostrar el logo en su pose final. En «latido» solo late el punto de la etiqueta.",
+  "animations": {
+    "aullido": {
+      "description": "Golpe de cabeza con tres ondas. Bloque base que reutilizan entrada y récord.",
+      "duration": 600,
+      "tracks": {
+        "cabeza.rotate": [[0, 0, "io"], [120, 2, "snap"], [300, -6, "io"], [600, 0]],
+        "cuerpo.rotate": { "follows": "cabeza.rotate", "factor": 0.4, "delay": 50 },
+        "onda-n": {
+          "start": 200, "stagger": 120, "duration": 650,
+          "keys": [[0, { "opacity": 0, "scale": 0.75 }, "wave"], [0.15, { "opacity": 1, "scale": 0.85 }, "wave"], [1, { "opacity": 0, "scale": 1.3 }]],
+          "keyTime": "fracción de duration"
+        }
+      }
+    },
+    "entrada-serigrafia": {
+      "description": "Animación 1 · variante 3. Pasadas de tinta, aullido y caída de las letras.",
+      "duration": 2700,
+      "loopGap": 900,
+      "tracks": {
+        "placa.opacity": [[0, 0, "out"], [150, 1]],
+        "fondo.opacity": [[0, 0], [150, 0, "step"], [200, 0.55, "step"], [260, 0.55, "out"], [350, 1]],
+        "cara.translate": [[0, [-26, -18]], [450, [-26, -18], "back"], [750, [0, 0]]],
+        "cara.opacity": [[0, 0], [450, 0, "step"], [490, 1]],
+        "hocico.translate": [[0, [22, 16]], [700, [22, 16], "back"], [1000, [0, 0]]],
+        "hocico.opacity": [[0, 0], [700, 0, "step"], [740, 1]],
+        "detalles.translate": [[0, [-10, 12]], [950, [-10, 12], "back"], [1250, [0, 0]]],
+        "detalles.opacity": [[0, 0], [950, 0, "step"], [990, 1]],
+        "aullido": { "at": 1250 },
+        "letras": { "at": 1550, "ref": "letras" }
+      }
+    },
+    "entrada-zoom": {
+      "description": "Animación 1 · variante 4. La cámara sale de la boca abierta.",
+      "duration": 2700,
+      "loopGap": 900,
+      "tracks": {
+        "placa.scale": [[0, 22, "zoom"], [1100, 1]],
+        "placa.transformOrigin": "centro de la boca",
+        "aullido": { "at": 1050 },
+        "letras": { "at": 1350, "ref": "letras" }
+      }
+    },
+    "letras": {
+      "description": "Sub-animación de la palabra «Howler». Tiempos relativos a su inicio.",
+      "duration": 470,
+      "tracks": {
+        "palabra.opacity": [[0, 0, "fall"], [115, 1]],
+        "palabra.scale": [[0, [3.2, 3.2], "fall"], [115, [2.1, 2.1], "fall"], [330, [1, 1], "out"], [386, [1.06, 0.92], "out"], [470, [1, 1]]],
+        "escenario.translateY": [[330, 0], [360, 3], [400, -2], [440, 1], [480, 0]]
+      }
+    },
+    "record": {
+      "description": "Animación 2. Aviso de nuevo récord. El absoluto aúlla dos veces; el segundo golpe es un 35 % más fuerte.",
+      "duration": 5440,
+      "loopGap": 700,
+      "variants": {
+        "absoluto": { "beats": [200, 900], "amplitude": [1, 1.35], "color": "recordAbsoluto" },
+        "personal": { "beats": [200], "amplitude": [1], "color": "recordPersonal" }
+      },
+      "tracks": {
+        "aviso.translateX": [[0, 28, "out"], [320, 0], [5200, 0, "in"], [5440, 28]],
+        "aviso.opacity": [[0, 0, "out"], [320, 1], [5200, 1, "in"], [5440, 0]],
+        "cabeza.rotate": { "perBeat": [[0, 0, "io"], [120, "2*amp", "snap"], [300, "-6*amp", "io"], [600, 0]] },
+        "cuerpo.rotate": { "follows": "cabeza.rotate", "factor": 0.4, "delay": 50 },
+        "onda": {
+          "description": "Un solo arco grueso fuera de la tesela, en el color del récord.",
+          "path": "M-134.6 350.4 A450 450 0 0 1 248.4 -32.6", "strokeWidth": 64, "viewBox": "-250 -250 1500 1500", "pivot": [311, 413],
+          "perBeat": [[200, { "opacity": 0, "scale": 0.7 }, "wave"], [280, { "opacity": 1, "scale": 0.8 }, "wave"], [850, { "opacity": 0, "scale": 1.3 }]]
+        },
+        "tiempo.translateY": [[0, 8], [300, 8, "out"], [620, 0]],
+        "tiempo.opacity": [[0, 0], [300, 0, "out"], [620, 1]]
+      }
+    },
+    "latido": {
+      "description": "Animación 3. Bucle mientras hay sesión en directo.",
+      "duration": 4000,
+      "durationOptions": [3000, 4000, 6000],
+      "iterations": "infinite",
+      "keyTime": "fracción de duration",
+      "tracks": {
+        "saco.scale": [[0, 1, "io"], [0.45, 1.06, "io"], [1, 1]],
+        "saco-sombra.opacity": [[0, 0, "io"], [0.45, 0.8, "io"], [1, 0]],
+        "cabeza.rotate": [[0, 0, "io"], [0.45, -1.5, "io"], [1, 0]],
+        "cuerpo.rotate": [[0, 0, "io"], [0.5, -0.6, "io"], [1, 0]],
+        "aro": {
+          "description": "Anillo de 1,5 px en el color «directo» desde el borde de la tesela (radio 7 px a 32 px).",
+          "keys": [[0, { "opacity": 0, "scale": 1 }], [0.4, { "opacity": 0, "scale": 1 }, "step"], [0.42, { "opacity": 0.75, "scale": 1 }, "out"], [0.85, { "opacity": 0, "scale": 1.28 }], [1, { "opacity": 0, "scale": 1 }]],
+          "optional": true
+        },
+        "punto": {
+          "description": "Punto de la etiqueta «En directo». Se mantiene con movimiento reducido.",
+          "keys": [[0, { "opacity": 0.7, "scale": 1 }, "out"], [0.4, { "opacity": 0, "scale": 2.6 }], [1, { "opacity": 0, "scale": 1 }]]
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,391 @@
+/* Asistente de instalación de Howler: una pantalla por paso, sin dependencias. Habla con el pequeño servidor local de setup/server.ts. */
+(() => {
+  'use strict';
+  const TOKEN = new URLSearchParams(location.search).get('t') || '';
+  const $ = (id) => document.getElementById(id);
+  const api = async (path, body) => {
+    const r = await fetch('/api/' + path, { method: body === undefined ? 'GET' : 'POST', headers: { 'X-Setup-Token': TOKEN, 'Content-Type': 'application/json' }, body: body === undefined ? undefined : JSON.stringify(body) });
+    if (!r.ok) throw new Error((await r.json().catch(() => ({}))).error || String(r.status));
+    return r.json();
+  };
+
+  const TXT = {
+    es: {
+      s_welcome: 'Bienvenida', s_server: 'Tu servidor', s_options: 'Opciones', s_install: 'Instalación', s_done: 'Listo',
+      back: 'Atrás', next: 'Continuar', start: 'Empezar', install: 'Instalar', update: 'Actualizar', close: 'Cerrar', retry: 'Reintentar', open: 'Abrir Howler', browse: 'Examinar…',
+      w_title: 'Instala Howler', w_title_up: 'Actualiza Howler', w_sub: 'Tiempos, estadísticas y control para tu servidor de Assetto Corsa. Lo preparamos todo en unos minutos.',
+      w_sub_up: 'Ya tienes Howler instalado. Se actualiza el programa y se conservan tus datos y tu configuración.',
+      w1: 'Tus tiempos, siempre guardados', w1d: 'Clasificaciones, récords, sectores exactos y comparador de vueltas.',
+      w2: 'Un panel para tu servidor', w2d: 'Arranca, para y configura el servidor, los coches, el clima y los campeonatos.',
+      w3: 'Sin tocar archivos a mano', w3d: 'Este asistente hace la copia de seguridad y los cambios por ti, y se pueden deshacer.',
+      lic1: 'Al continuar aceptas la', lic2: 'licencia de uso', lang: 'Idioma',
+      sv_title: 'Elige tu servidor', sv_sub: 'Howler se conecta a un servidor de Assetto Corsa. Elige qué quieres hacer con él.',
+      m_current: 'Usar mi servidor actual', m_current_d: 'Se prepara el que ya tienes. Antes se guarda una copia de seguridad y se puede deshacer.',
+      m_copy: 'Hacer una copia en otra carpeta', m_copy_d: 'Tu servidor actual no se toca; Howler se monta sobre una copia.',
+      m_manual: 'Solo instalar Howler', m_manual_d: 'Configuro el servidor yo (para personas avanzadas). Mira el manual.',
+      bye: 'Ya puedes cerrar esta ventana.',
+      new_need: 'Necesita Assetto Corsa instalado en este PC.', find_ac: 'Buscar Assetto Corsa…', ac_bad: 'No es una instalación de Assetto Corsa válida:',
+      m_new: 'Crear un servidor nuevo para mí', m_new_d: 'Howler prepara un servidor listo para usar con AssettoServer. Necesita Assetto Corsa instalado en este PC.',
+      ac_found: 'Assetto Corsa encontrado en', new_folder: 'Carpeta del servidor nuevo', none_server: 'No he encontrado ningún servidor en este equipo. Puedes instalar solo Howler y añadir tu servidor después desde el panel.',
+      it_title: 'Tipo de instalación', it_full: 'Completa', it_full_d: 'Instala todo y abre el puerto de la web (8420) en el cortafuegos para que tus pilotos la vean. Pide un permiso de administrador.',
+      it_noports: 'Sin abrir puertos', it_noports_d: 'No toca el cortafuegos ni abre ningún puerto: la web solo funciona en este PC. Puedes abrir el puerto después (mira el manual).',
+      it_custom: 'Personalizada', it_custom_d: 'Eliges tú cada opción.', p_newserver: 'Se creará un servidor nuevo en', t_new: 'Creando el servidor nuevo',
+      rec: 'Recomendado', srv_folder: 'Carpeta del servidor de Assetto Corsa', copy_folder: 'Carpeta de la copia (nueva)',
+      found: 'Encontrados en este equipo', none_found: 'No he encontrado ningún servidor automáticamente. Escribe o busca su carpeta.',
+      c_ok: 'Servidor válido', c_bad: 'No parece un servidor', c_up: 'Se actualizará a AssettoServer', c_asv: 'Ya usa AssettoServer', c_plug: 'Con plugin de Howler', c_preset: 'Preset', c_check: 'Comprobando…',
+      op_title: 'Últimos ajustes', op_sub: 'Puedes cambiar todo esto más tarde desde Howler.',
+      folder: 'Dónde instalar Howler',
+      fw: 'Permitir la web de Howler en el cortafuegos', fw_d: 'Para que tus pilotos vean los tiempos desde fuera. Windows pedirá permiso una vez.',
+      sc: 'Crear accesos directos', sc_d: 'En el escritorio y en el menú Inicio.',
+      au: 'Abrir Howler al iniciar Windows', au_d: 'La web queda siempre disponible y MultiHowler puede sincronizar.',
+      plan: 'Qué va a pasar', p_new: 'Howler se instalará en', p_up: 'Howler se actualizará en', p_keep: 'tus datos y configuración se conservan', p_backup: 'Copia de seguridad del servidor en', p_migrate: 'El servidor se actualizará a AssettoServer 0.0.55-pre35 (descarga de 48 MB, comprobada con su huella SHA-256)', p_plugin: 'Se instalará el plugin de Howler en el servidor (se guarda lo anterior)', p_copy: 'Se copiará el servidor a', p_manual: 'No se tocará ningún servidor', p_fw: 'Se abrirá el puerto 8420 (TCP) en el cortafuegos', p_orig: 'tu servidor original queda intacto',
+      ins_title: 'Instalando', ins_sub: 'No cierres esta ventana. Tarda un par de minutos.',
+      t_check: 'Comprobando el equipo', t_files: 'Copiando Howler', t_copy: 'Copiando el servidor', t_download: 'Descargando AssettoServer', t_unpack: 'Descomprimiendo', t_server: 'Preparando el servidor', t_plugin: 'Instalando el plugin', t_config: 'Guardando la configuración', t_shortcuts: 'Creando accesos directos', t_firewall: 'Abriendo el puerto en el cortafuegos', t_register: 'Registrando Howler en Windows',
+      done_title: 'Howler está listo', done_up: 'Howler está actualizado', done_sub: 'Ábrelo, arranca tu servidor desde el panel y da una vuelta: tu primer tiempo aparecerá en la web.',
+      d_backup: 'Copia de seguridad del servidor en', d_manual: 'Falta configurar el servidor a mano; sigue el manual.', d_fw: 'No se pudo abrir el cortafuegos (cancelaste el permiso de administrador). Puedes hacerlo luego desde el manual.',
+      d_kept: 'Se ha conservado tu configuración anterior.',
+      err_title: 'No se ha podido instalar', err_sub: 'No se ha dejado nada a medias en tu servidor.',
+      e_RUNNING_HOWLER: 'Howler está abierto. Ciérralo (ventana del panel o Administrador de tareas) y pulsa Reintentar.',
+      e_RUNNING_SERVER: 'El servidor de Assetto Corsa está en marcha. Páralo y pulsa Reintentar.',
+      e_generic: 'Algo ha fallado:', details: 'Detalles',
+      un_title: 'Desinstalar Howler', un_sub: 'Se quitará el programa, los accesos directos y la regla del cortafuegos. Tu servidor de Assetto Corsa no se toca.',
+      un_data: 'Borrar también mis datos y mi configuración', un_data_d: 'Tiempos, campeonatos, copias y ajustes. No se puede deshacer. Si lo dejas sin marcar, se conservan por si vuelves a instalar.',
+      un_btn: 'Desinstalar', un_done: 'Howler se ha desinstalado', un_kept: 'Se han conservado tus datos en', un_wait: 'Desinstalando…',
+      lic_missing: 'Licencia no disponible.', ok: 'OK',
+    },
+    en: {
+      s_welcome: 'Welcome', s_server: 'Your server', s_options: 'Options', s_install: 'Install', s_done: 'Done',
+      back: 'Back', next: 'Continue', start: 'Get started', install: 'Install', update: 'Update', close: 'Close', retry: 'Try again', open: 'Open Howler', browse: 'Browse…',
+      w_title: 'Install Howler', w_title_up: 'Update Howler', w_sub: 'Lap times, stats and control for your Assetto Corsa server. We set everything up in a few minutes.',
+      w_sub_up: 'Howler is already installed. The program is updated and your data and settings are kept.',
+      w1: 'Your times, always saved', w1d: 'Leaderboards, records, exact sectors and a lap comparer.',
+      w2: 'A panel for your server', w2d: 'Start, stop and configure the server, cars, weather and championships.',
+      w3: 'No editing files by hand', w3d: 'This wizard makes the backup and the changes for you, and they can be undone.',
+      lic1: 'By continuing you accept the', lic2: 'license', lang: 'Language',
+      sv_title: 'Choose your server', sv_sub: 'Howler connects to an Assetto Corsa server. Choose what to do with it.',
+      m_current: 'Use my current server', m_current_d: 'The one you already have is prepared. A backup is saved first and it can be undone.',
+      m_copy: 'Make a copy in another folder', m_copy_d: 'Your current server is not touched; Howler is set up on a copy.',
+      m_manual: 'Only install Howler', m_manual_d: 'I will configure the server myself (advanced). See the manual.',
+      bye: 'You can close this window now.',
+      new_need: 'Needs Assetto Corsa installed on this PC.', find_ac: 'Find Assetto Corsa…', ac_bad: 'That is not a valid Assetto Corsa install:',
+      m_new: 'Create a new server for me', m_new_d: 'Howler sets up a ready-to-use server with AssettoServer. Needs Assetto Corsa installed on this PC.',
+      ac_found: 'Assetto Corsa found in', new_folder: 'Folder for the new server', none_server: 'No server was found on this PC. You can install only Howler and add your server later from the panel.',
+      it_title: 'Installation type', it_full: 'Complete', it_full_d: 'Installs everything and opens the website port (8420) in the firewall so your drivers can see it. Asks for administrator permission.',
+      it_noports: 'No open ports', it_noports_d: 'Does not touch the firewall or open any port: the website only works on this PC. You can open the port later (see the manual).',
+      it_custom: 'Custom', it_custom_d: 'You choose every option.', p_newserver: 'A new server will be created in', t_new: 'Creating the new server',
+      rec: 'Recommended', srv_folder: 'Assetto Corsa server folder', copy_folder: 'Folder for the copy (new)',
+      found: 'Found on this PC', none_found: 'No server was found automatically. Type or browse for its folder.',
+      c_ok: 'Valid server', c_bad: 'Does not look like a server', c_up: 'Will be updated to AssettoServer', c_asv: 'Already uses AssettoServer', c_plug: 'Has the Howler plugin', c_preset: 'Preset', c_check: 'Checking…',
+      op_title: 'Final settings', op_sub: 'You can change all of this later from Howler.',
+      folder: 'Where to install Howler',
+      fw: 'Allow the Howler website through the firewall', fw_d: 'So your drivers can see the times from outside. Windows will ask once.',
+      sc: 'Create shortcuts', sc_d: 'On the desktop and in the Start menu.',
+      au: 'Open Howler when Windows starts', au_d: 'Keeps the website always available and lets MultiHowler sync.',
+      plan: 'What will happen', p_new: 'Howler will be installed in', p_up: 'Howler will be updated in', p_keep: 'your data and settings are kept', p_backup: 'Server backup in', p_migrate: 'The server will be updated to AssettoServer 0.0.55-pre35 (48 MB download, checked against its SHA-256)', p_plugin: 'The Howler plugin will be installed on the server (the previous one is saved)', p_copy: 'The server will be copied to', p_manual: 'No server will be touched', p_fw: 'Port 8420 (TCP) will be opened in the firewall', p_orig: 'your original server stays untouched',
+      ins_title: 'Installing', ins_sub: 'Do not close this window. It takes a couple of minutes.',
+      t_check: 'Checking your PC', t_files: 'Copying Howler', t_copy: 'Copying the server', t_download: 'Downloading AssettoServer', t_unpack: 'Unpacking', t_server: 'Preparing the server', t_plugin: 'Installing the plugin', t_config: 'Saving the settings', t_shortcuts: 'Creating shortcuts', t_firewall: 'Opening the port in the firewall', t_register: 'Registering Howler in Windows',
+      done_title: 'Howler is ready', done_up: 'Howler is up to date', done_sub: 'Open it, start your server from the panel and drive a lap: your first time will show up on the website.',
+      d_backup: 'Server backup in', d_manual: 'You still have to set the server up by hand; follow the manual.', d_fw: 'The firewall could not be opened (the administrator prompt was cancelled). You can do it later from the manual.',
+      d_kept: 'Your previous settings were kept.',
+      err_title: 'Installation failed', err_sub: 'Nothing was left half-done on your server.',
+      e_RUNNING_HOWLER: 'Howler is open. Close it (the panel window or Task Manager) and press Try again.',
+      e_RUNNING_SERVER: 'The Assetto Corsa server is running. Stop it and press Try again.',
+      e_generic: 'Something went wrong:', details: 'Details',
+      un_title: 'Uninstall Howler', un_sub: 'The program, the shortcuts and the firewall rule will be removed. Your Assetto Corsa server is not touched.',
+      un_data: 'Also delete my data and settings', un_data_d: 'Times, championships, backups and settings. This cannot be undone. If left unchecked they are kept in case you reinstall.',
+      un_btn: 'Uninstall', un_done: 'Howler has been uninstalled', un_kept: 'Your data was kept in', un_wait: 'Uninstalling…',
+      lic_missing: 'License not available.', ok: 'OK',
+    },
+  };
+
+  const ICONS = {
+    chart: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M4 20V9m6 11V4m6 16v-8m5 8H3"/></svg>',
+    panel: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="3" y="4" width="18" height="14" rx="1"/><path d="M8 21h8M12 18v3"/></svg>',
+    undo: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M9 14 4 9l5-5"/><path d="M4 9h10a6 6 0 0 1 0 12h-3"/></svg>',
+    check: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="m5 12.5 4.5 4.5L19 7"/></svg>',
+    cross: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M6 6l12 12M18 6 6 18"/></svg>',
+  };
+
+  const S = {
+    lang: 'es', init: null, step: 0, mode: 'current', acDir: '', newTo: '', itype: 'full', serverDir: '', copyTo: '', installDir: '', firewall: true, shortcuts: true, autostart: false,
+    check: null, checking: false, job: null, done: false, deleteData: false, timer: null,
+  };
+  const t = (k) => (TXT[S.lang] && TXT[S.lang][k]) || TXT.es[k] || k;
+  /** Cierra el asistente: avisa al programa (que termina) y cierra esta ventana; si el navegador no deja, lo dice. */
+  const quit = () => api('exit', {}).catch(() => undefined).then(() => {
+    window.close();
+    setTimeout(() => { document.body.innerHTML = '<p style="margin:48px;font:16px system-ui;color:#ccc">' + t('bye') + '</p>'; }, 400);
+  });
+  const esc = (s) => String(s).replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+  const el = (html) => { const d = document.createElement('div'); d.innerHTML = html.trim(); return d.firstChild; };
+
+  const STEPS = ['s_welcome', 's_server', 's_options', 's_install', 's_done'];
+
+  function rail() {
+    $('steps').innerHTML = STEPS.map((k, i) => `<li class="${i === S.step ? 'on' : i < S.step ? 'done' : ''}"><span class="dot">${i < S.step ? ICONS.check.replace('<svg', '<svg width="12" height="12"') : i + 1}</span>${esc(t(k))}</li>`).join('');
+    $('version').textContent = 'v' + S.init.version;
+  }
+
+  function nav(back, next, opts = {}) {
+    const b = $('back'), n = $('next');
+    b.textContent = back || ''; b.style.visibility = back ? 'visible' : 'hidden'; b.disabled = !!opts.noBack;
+    n.textContent = next || ''; n.style.visibility = next ? 'visible' : 'hidden'; n.disabled = !!opts.noNext;
+  }
+  const head = (title, sub) => { $('title').textContent = title; $('sub').textContent = sub || ''; };
+  const body = (html) => { $('body').innerHTML = html; $('body').scrollTop = 0; };
+
+  /* ---- Pantallas ---- */
+  function welcome() {
+    const up = S.init.existing.exists;
+    head(t(up ? 'w_title_up' : 'w_title'), t(up ? 'w_sub_up' : 'w_sub'));
+    body(`
+      <ul class="points">
+        <li>${ICONS.chart}<div><b>${t('w1')}</b><span>${t('w1d')}</span></div></li>
+        <li>${ICONS.panel}<div><b>${t('w2')}</b><span>${t('w2d')}</span></div></li>
+        <li>${ICONS.undo}<div><b>${t('w3')}</b><span>${t('w3d')}</span></div></li>
+      </ul>
+      <div class="row"><span class="note">${t('lang')}</span><span class="langs" role="group" aria-label="${t('lang')}">
+        <button type="button" data-l="es" aria-pressed="${S.lang === 'es'}">Español</button><button type="button" data-l="en" aria-pressed="${S.lang === 'en'}">English</button></span></div>
+      <p class="note" style="margin-top:18px">${t('lic1')} <button type="button" class="link" id="lic">${t('lic2')}</button>.</p>`);
+    document.querySelectorAll('[data-l]').forEach((b) => b.addEventListener('click', () => { S.lang = b.dataset.l; document.documentElement.lang = S.lang; render(); }));
+    $('lic').addEventListener('click', () => modal(S.init.license || t('lic_missing')));
+    nav('', t('start'));
+  }
+
+  function chips(c) {
+    if (S.checking) return `<span class="chip"><i></i>${t('c_check')}</span>`;
+    if (!c) return '';
+    if (!c.ok) return `<span class="chip bad"><i></i>${t('c_bad')}</span>` + c.problems.map((p) => `<span class="chip warn"><i></i>${esc(p)}</span>`).join('');
+    return `<span class="chip ok"><i></i>${t('c_ok')}</span>`
+      + `<span class="chip ${c.needsMigration ? 'warn' : 'ok'}"><i></i>${t(c.needsMigration ? 'c_up' : 'c_asv')}</span>`
+      + (c.hasPlugin ? `<span class="chip ok"><i></i>${t('c_plug')}</span>` : '')
+      + (c.presets[0] ? `<span class="chip"><i></i>${t('c_preset')}: ${esc(c.presets[0])}</span>` : '');
+  }
+
+  function server() {
+    head(t('sv_title'), t('sv_sub'));
+    const opt = (m, rec) => `<button type="button" class="opt" role="radio" aria-checked="${S.mode === m}" data-m="${m}"><span class="radio"></span><span><b>${t('m_' + m)}</b><span class="d">${t('m_' + m + '_d')}</span></span>${rec ? `<span class="tag">${t('rec')}</span>` : '<span></span>'}</button>`;
+    const needDir = S.mode !== 'manual' && S.mode !== 'new';
+    const found = S.init.servers.length
+      ? `<div class="note" style="margin-top:14px">${t('found')}</div><div class="found">${S.init.servers.map((s, i) => `<button type="button" data-f="${i}" aria-pressed="${S.serverDir === s.dir}">${esc(s.dir)}</button>`).join('')}</div>`
+      : `<p class="note" style="margin-top:14px">${t('none_found')}</p>`;
+    const optOff = (m) => `<div class="opt off" aria-disabled="true"><span class="radio"></span><span><b>${t('m_' + m)}</b><span class="d">${t('new_need')}</span><button type="button" class="btn small" id="bac" style="margin-top:8px">${t('find_ac')}</button><span class="d" id="acerr" role="alert" style="color:var(--bad,#ff6b5e)">${esc(S.acErr || '')}</span></span><span></span></div>`;
+    const hasServers = S.init.servers.length > 0;
+    const hasAC = S.init.acDirs.length > 0;
+    const newBox = S.mode === 'new' ? `<div class="note" style="margin-top:14px">${t('ac_found')}</div><div class="found">${S.init.acDirs.map((d, i) => `<button type="button" data-a="${i}" aria-pressed="${S.acDir === d}">${esc(d)}</button>`).join('')}</div>
+      <div class="field"><label for="nd">${t('new_folder')}</label><div class="input"><input id="nd" value="${esc(S.newTo)}" spellcheck="false"><button class="btn small" type="button" id="b4">${t('browse')}</button></div></div>` : '';
+    const noSrv = !hasServers && !hasAC && S.mode === 'manual' ? `<p class="note" style="margin-top:14px">${t('none_server')}</p>` : '';
+    body(`<div class="opts" role="radiogroup">${hasServers ? opt('current', true) : ''}${hasServers ? opt('copy') : ''}${hasAC ? opt('new', !hasServers) : optOff('new')}${opt('manual', !hasServers && !hasAC)}</div>
+      ${newBox}${noSrv}
+      ${needDir && S.mode !== 'new' && (hasServers || S.mode !== 'manual') ? `<div class="field"><label for="sd">${t('srv_folder')}</label><div class="input"><input id="sd" value="${esc(S.serverDir)}" spellcheck="false"><button class="btn small" type="button" id="b1">${t('browse')}</button></div></div>
+      <div id="chips">${chips(S.check)}</div>${S.serverDir ? '' : found}` : ''}
+      ${S.mode === 'copy' ? `<div class="field"><label for="cd">${t('copy_folder')}</label><div class="input"><input id="cd" value="${esc(S.copyTo)}" spellcheck="false"><button class="btn small" type="button" id="b2">${t('browse')}</button></div></div>` : ''}`);
+    document.querySelectorAll('[data-m]').forEach((b) => b.addEventListener('click', () => { S.mode = b.dataset.m; server(); }));
+    document.querySelectorAll('[data-f]').forEach((b) => b.addEventListener('click', () => { S.serverDir = S.init.servers[+b.dataset.f].dir; checkServer(); server(); }));
+    const bac = $('bac');
+    if (bac) bac.addEventListener('click', async () => {
+      const r = await api('browse', { initial: '' }).catch(() => null);
+      if (!r || !r.dir) return;
+      const v = await api('checkac', { dir: r.dir }).catch(() => ({ ok: false, problem: '' }));
+      if (v.ok) { S.acErr = ''; if (!S.init.acDirs.includes(r.dir)) S.init.acDirs.push(r.dir); S.acDir = r.dir; S.mode = 'new'; if (!S.newTo) S.newTo = S.installDir + '\\server'; }
+      else S.acErr = t('ac_bad') + ' ' + (v.problem || '');
+      server();
+    });
+    document.querySelectorAll('[data-a]').forEach((b) => b.addEventListener('click', () => { S.acDir = S.init.acDirs[+b.dataset.a]; server(); }));
+    const nd = $('nd');
+    if (nd) {
+      nd.addEventListener('input', () => { S.newTo = nd.value.trim(); gate(); });
+      $('b4').addEventListener('click', async () => { const r = await api('browse', { initial: S.newTo }).catch(() => null); if (r && r.dir) { S.newTo = r.dir; server(); } });
+    }
+    const sd = $('sd');
+    if (sd) {
+      let tm;
+      sd.addEventListener('input', () => { S.serverDir = sd.value.trim(); S.check = null; clearTimeout(tm); tm = setTimeout(checkServer, 450); gate(); });
+      $('b1').addEventListener('click', async () => { const r = await api('browse', { initial: S.serverDir }).catch(() => null); if (r && r.dir) { S.serverDir = r.dir; checkServer(); server(); } });
+    }
+    const cd = $('cd');
+    if (cd) {
+      cd.addEventListener('input', () => { S.copyTo = cd.value.trim(); gate(); });
+      $('b2').addEventListener('click', async () => { const r = await api('browse', { initial: S.copyTo }).catch(() => null); if (r && r.dir) { S.copyTo = r.dir; server(); } });
+    }
+    nav(t('back'), t('next'), { noNext: !serverReady() });
+  }
+  const serverReady = () => S.mode === 'manual' || (S.mode === 'new' && !!S.acDir && !!S.newTo) || (S.mode !== 'new' && !!S.check && S.check.ok && !S.checking && (S.mode !== 'copy' || !!S.copyTo));
+  const gate = () => { $('next').disabled = !serverReady(); };
+  async function checkServer() {
+    if (!S.serverDir) { S.check = null; return; }
+    S.checking = true; if ($('chips')) $('chips').innerHTML = chips(null);
+    try { S.check = await api('check', { dir: S.serverDir }); } catch { S.check = null; }
+    S.checking = false;
+    if ($('chips')) $('chips').innerHTML = chips(S.check);
+    gate();
+  }
+
+  function planList() {
+    const L = [];
+    const up = S.init.existing.exists;
+    L.push(`${t(up ? 'p_up' : 'p_new')} <code>${esc(S.installDir)}</code>${up ? ` — ${t('p_keep')}` : ''}`);
+    if (S.mode === 'manual') L.push(t('p_manual'));
+    else if (S.mode === 'new') L.push(`${t('p_newserver')} <code>${esc(S.newTo)}</code>`);
+    else {
+      const c = S.check || {};
+      const target = S.mode === 'copy' ? S.copyTo : S.serverDir;
+      if (S.mode === 'copy') L.push(`${t('p_copy')} <code>${esc(S.copyTo)}</code> — ${t('p_orig')}`);
+      if (c.needsMigration) { L.push(`${t('p_backup')} <code>${esc(target)}\\howler-backup</code>`); L.push(t('p_migrate')); }
+      else L.push(t('p_plugin'));
+    }
+    if (S.firewall) L.push(t('p_fw'));
+    return L;
+  }
+
+  function options() {
+    head(t('op_title'), t('op_sub'));
+    const chk = (id, on, k) => `<div class="check" role="checkbox" tabindex="0" aria-checked="${on}" data-c="${id}"><span class="box">${ICONS.check}</span><span><b>${t(k)}</b><span class="d">${t(k + '_d')}</span></span></div>`;
+    const itype = (k) => `<button type="button" class="opt" role="radio" aria-checked="${S.itype === k}" data-t="${k}"><span class="radio"></span><span><b>${t('it_' + k)}</b><span class="d">${t('it_' + k + '_d')}</span></span>${k === 'full' ? `<span class="tag">${t('rec')}</span>` : '<span></span>'}</button>`;
+    body(`<div class="opts" role="radiogroup" aria-label="${t('it_title')}">${itype('full')}${itype('noports')}${itype('custom')}</div>
+      <div class="field"><label for="id">${t('folder')}</label><div class="input"><input id="id" value="${esc(S.installDir)}" spellcheck="false"><button class="btn small" type="button" id="b3">${t('browse')}</button></div></div>
+      ${S.itype === 'custom' ? `<div class="checks" style="margin-top:18px">${chk('firewall', S.firewall, 'fw')}${chk('shortcuts', S.shortcuts, 'sc')}${chk('autostart', S.autostart, 'au')}</div>` : ''}
+      <div class="plan"><h2>${t('plan')}</h2><ul id="plan">${planList().map((x) => `<li>${x}</li>`).join('')}</ul></div>`);
+    $('id').addEventListener('input', () => { S.installDir = $('id').value.trim(); $('plan').innerHTML = planList().map((x) => `<li>${x}</li>`).join(''); $('next').disabled = !S.installDir; });
+    $('b3').addEventListener('click', async () => { const r = await api('browse', { initial: S.installDir }).catch(() => null); if (r && r.dir) { S.installDir = r.dir; options(); } });
+    document.querySelectorAll('[data-t]').forEach((b) => b.addEventListener('click', () => {
+      S.itype = b.dataset.t;
+      if (S.itype === 'full') { S.firewall = true; S.shortcuts = true; S.autostart = false; }
+      if (S.itype === 'noports') { S.firewall = false; S.shortcuts = true; S.autostart = false; }
+      options();
+    }));
+    document.querySelectorAll('[data-c]').forEach((b) => {
+      const flip = () => { S[b.dataset.c] = !S[b.dataset.c]; options(); };
+      b.addEventListener('click', flip);
+      b.addEventListener('keydown', (e) => { if (e.key === ' ' || e.key === 'Enter') { e.preventDefault(); flip(); } });
+    });
+    nav(t('back'), t(S.init.existing.exists ? 'update' : 'install'), { noNext: !S.installDir });
+  }
+
+  const TODO = ['check', 'files', 'copy', 'download', 'unpack', 'new', 'server', 'plugin', 'config', 'shortcuts', 'firewall', 'register'];
+  function installing() {
+    head(t('ins_title'), t('ins_sub'));
+    const mig = S.mode !== 'manual' && S.mode !== 'new' && S.check && S.check.needsMigration;
+    const used = (k) => ({ copy: S.mode === 'copy', download: (mig || S.mode === 'new') && !S.init.bundled, unpack: mig || S.mode === 'new', new: S.mode === 'new', server: mig, plugin: S.mode !== 'manual' && S.mode !== 'new' && S.check && !S.check.needsMigration, shortcuts: S.shortcuts || S.autostart, firewall: S.firewall })[k] ?? true;
+    const list = TODO.filter(used);
+    body(`<div class="bar"><i id="bar"></i></div><ul class="todo" id="todo">${list.map((k) => `<li data-k="${k}"><span class="ic"><span class="empty"></span></span><span>${t('t_' + k)}</span></li>`).join('')}</ul>`);
+    nav('', '', {});
+    S.shownTodo = list;
+    start();
+  }
+  function paint(job) {
+    const bar = $('bar'); if (bar) bar.style.width = Math.max(2, job.percent) + '%';
+    const idx = S.shownTodo.indexOf(job.step);
+    document.querySelectorAll('#todo li').forEach((li, i) => {
+      const done = idx > i || job.state === 'done';
+      li.className = done ? 'done' : i === idx ? 'on' : '';
+      li.querySelector('.ic').innerHTML = done ? ICONS.check : i === idx ? '<span class="spin"></span>' : '<span class="empty"></span>';
+    });
+  }
+  async function start() {
+    try {
+      await api('install', { mode: S.mode, serverDir: S.mode === 'manual' || S.mode === 'new' ? undefined : S.serverDir, copyTo: (S.mode === 'new' ? S.newTo : S.copyTo) || undefined, acDir: S.mode === 'new' ? S.acDir : undefined, installDir: S.installDir, firewall: S.firewall, shortcuts: S.shortcuts, autostart: S.autostart });
+    } catch (e) { S.job = { state: 'error', error: e.message }; return finish(); }
+    poll();
+  }
+  function poll() {
+    clearInterval(S.timer);
+    S.timer = setInterval(async () => {
+      let job; try { job = await api('progress'); } catch { return; }
+      S.job = job; paint(job);
+      if (job.state === 'done' || job.state === 'error') { clearInterval(S.timer); setTimeout(finish, 350); }
+    }, 300);
+  }
+  function finish() { S.step = 4; render(); }
+
+  function done() {
+    const j = S.job || {};
+    if (j.state === 'error') {
+      const known = ['RUNNING_HOWLER', 'RUNNING_SERVER'].includes(j.error);
+      head(t('err_title'), t('err_sub'));
+      body(`<div class="hero"><div class="big-ok bad">${ICONS.cross}</div></div>
+        <div class="callout bad">${known ? t('e_' + j.error) : `${t('e_generic')} ${esc(j.error || '')}`}</div>
+        ${known ? '' : `<details><summary class="note">${t('details')}</summary><pre>${esc(j.error || '')}</pre></details>`}`);
+      nav(t('close'), t('retry'));
+      $('back').onclick = () => quit();
+      $('next').onclick = () => { S.step = 2; S.job = null; render(); };
+      return;
+    }
+    const r = j.report || {};
+    const up = S.init.existing.exists;
+    head(t(up ? 'done_up' : 'done_title'), t('done_sub'));
+    const notes = [];
+    if (r.backupDir) notes.push(`<div class="callout ok">${t('d_backup')} <span class="mono">${esc(r.backupDir)}</span></div>`);
+    if (S.mode === 'manual') notes.push(`<div class="callout">${t('d_manual')}</div>`);
+    if ((r.warnings || []).includes('firewall-failed')) notes.push(`<div class="callout">${t('d_fw')}</div>`);
+    if ((r.notes || []).includes('config-kept')) notes.push(`<div class="callout ok">${t('d_kept')}</div>`);
+    body(`<div class="hero"><div class="big-ok">${ICONS.check}</div></div>${notes.join('')}`);
+    nav(t('close'), t('open'));
+    $('back').onclick = () => quit();
+    $('next').onclick = async () => { await api('launch', {}).catch(() => undefined); quit(); };
+  }
+
+  /* ---- Desinstalar ---- */
+  function uninstallPage() {
+    $('steps').innerHTML = ''; $('version').textContent = 'v' + S.init.version;
+    if (S.step === 4) {
+      head(t('un_done'), '');
+      body(S.deleteData ? '' : `<div class="callout ok">${t('un_kept')} <span class="mono">${esc(S.installDir)}</span></div>`);
+      nav('', t('close'));
+      $('next').onclick = () => quit();
+      return;
+    }
+    if (S.job && S.job.state === 'error') {
+      head(t('err_title'), '');
+      body(`<div class="callout bad">${S.job.error === 'RUNNING_HOWLER' ? t('e_RUNNING_HOWLER') : esc(S.job.error)}</div>`);
+      nav(t('close'), t('retry'));
+      $('back').onclick = () => quit();
+      $('next').onclick = () => { S.job = null; uninstallPage(); };
+      return;
+    }
+    head(t('un_title'), t('un_sub'));
+    body(`<div class="checks"><div class="check" role="checkbox" tabindex="0" aria-checked="${S.deleteData}" id="dd"><span class="box">${ICONS.check}</span><span><b>${t('un_data')}</b><span class="d">${t('un_data_d')}</span></span></div></div>`);
+    const flip = () => { S.deleteData = !S.deleteData; uninstallPage(); };
+    $('dd').addEventListener('click', flip);
+    $('dd').addEventListener('keydown', (e) => { if (e.key === ' ' || e.key === 'Enter') { e.preventDefault(); flip(); } });
+    nav(t('close'), t('un_btn'));
+    $('back').onclick = () => quit();
+    $('next').onclick = async () => {
+      $('next').disabled = true; $('next').textContent = t('un_wait');
+      try { await api('uninstall', { deleteData: S.deleteData }); } catch (e) { S.job = { state: 'error', error: e.message }; return uninstallPage(); }
+      S.step = 4; uninstallPage();
+    };
+  }
+
+  function modal(text) { $('modal-body').textContent = text; $('modal').hidden = false; $('modal-close').focus(); }
+  $('modal-close').addEventListener('click', () => { $('modal').hidden = true; });
+  document.addEventListener('keydown', (e) => { if (e.key === 'Escape') $('modal').hidden = true; });
+
+  function render() {
+    document.documentElement.lang = S.lang;
+    if (S.init.mode === 'uninstall') return uninstallPage();
+    rail();
+    $('back').onclick = () => { if (S.step > 0 && S.step < 3) { S.step--; render(); } };
+    $('next').onclick = () => {
+      if (S.step === 1 && S.mode !== 'manual' && !serverReady()) return;
+      if (S.step === 2) { S.step = 3; return render(); }
+      if (S.step < 2) { S.step++; render(); }
+    };
+    [welcome, server, options, installing, done][S.step]();
+  }
+
+  // Latido: si se cierra la ventana, el servidor local se apaga solo.
+  setInterval(() => api('ping', {}).catch(() => undefined), 2500);
+
+  api('init').then((init) => {
+    S.init = init; S.lang = init.lang === 'en' ? 'en' : 'es'; S.installDir = init.defaultDir;
+    S.deleteData = false;
+    if (init.servers.length) { S.serverDir = init.servers[0].dir; S.check = init.servers[0].info; }
+    // Sin servidor detectado: se propone crear uno nuevo si hay Assetto Corsa, y si no, instalar solo Howler.
+    else S.mode = init.acDirs.length ? 'new' : 'manual';
+    if (init.acDirs.length) S.acDir = init.acDirs[0];
+    S.newTo = init.defaultDir + '\\server';
+    if (init.existing.exists && init.existing.serverDir) { S.serverDir = init.existing.serverDir; S.check = null; checkServer(); }
+    render();
+  }).catch((e) => { document.body.textContent = 'Error: ' + e.message; });
+})();

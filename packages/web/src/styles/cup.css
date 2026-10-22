@@ -1,0 +1,170 @@
+/* ===== Campeonatos: lista, cabecera, participantes, carrusel de carreras, horarios, coches y resultados ===== */
+.cup { display: grid; gap: 28px; align-content: start; }
+.cup-sec { display: grid; gap: 14px; border-top: 1px solid var(--line); padding-top: 12px; min-width: 0; }
+.cup-sec-head { display: flex; justify-content: space-between; align-items: center; gap: 12px; }
+.cup-sec-head h2 { margin: 0; font-size: var(--fs-label); font-weight: 600; letter-spacing: 0.09em; text-transform: uppercase; color: var(--muted); }
+.cup-h3 { margin: 0 0 10px; font-size: var(--fs-label); font-weight: 600; letter-spacing: 0.09em; text-transform: uppercase; color: var(--muted); }
+
+/* Imagen en marco cuadrado: la foto llena, la insignia o copa se ve entera */
+.cup-cover { flex: none; display: grid; place-items: center; width: 100%; aspect-ratio: 1; background: var(--surface-2); border-radius: var(--r3); overflow: hidden; color: var(--muted); }
+.cup-cover img { display: block; }
+.cup-cover.fit-cover img { width: 100%; height: 100%; object-fit: cover; }
+.cup-cover.fit-contain { background: none; }
+.cup-cover.fit-contain img { width: 100%; height: 100%; object-fit: contain; }
+
+/* Lista de campeonatos: solo la imagen, como una insignia; al pasar el ratón (o enfocar) la información aparece debajo */
+.cup-list { list-style: none; margin: 0; padding: 0 0 70px; display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 190px)); gap: 30px 26px; justify-content: start; }
+.cup-badge { position: relative; display: block; color: inherit; text-decoration: none; border-radius: var(--r3); outline: none; }
+.cup-badge .cup-cover { transition: transform calc(240ms * var(--motion)) cubic-bezier(0.2, 0.8, 0.2, 1), filter calc(240ms * var(--motion)) var(--ease); }
+.cup-badge[data-status='finished'] .cup-cover { filter: saturate(0.5); }
+.cup-badge:hover .cup-cover, .cup-badge:focus-visible .cup-cover { transform: translateY(-5px) scale(1.04); filter: none; }
+.cup-badge:focus-visible .cup-cover { outline: 2px solid var(--accent); outline-offset: 4px; }
+.cup-badge-info { position: absolute; z-index: 20; left: 50%; top: calc(100% + 12px); width: max(100%, 230px); display: grid; gap: 3px; padding: 12px 14px; background: var(--surface); border: 1px solid var(--line); border-radius: var(--r3); opacity: 0; transform: translate(-50%, -8px); pointer-events: none; transition: opacity calc(180ms * var(--motion)) var(--ease), transform calc(240ms * var(--motion)) cubic-bezier(0.2, 0.8, 0.2, 1); }
+.cup-badge:hover .cup-badge-info, .cup-badge:focus-visible .cup-badge-info { opacity: 1; transform: translate(-50%, 0); }
+.cup-badge-info strong { font-size: var(--fs-lg); line-height: 1.2; overflow-wrap: anywhere; }
+.cup-item-next { color: var(--accent-text); font-size: var(--fs-sm); }
+/* Sin ratón (táctil) no hay «pasar por encima»: la información queda siempre visible bajo la imagen */
+@media (hover: none) {
+  .cup-list { grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); padding-bottom: 20px; }
+  .cup-badge-info { position: static; width: auto; padding: 10px 0 0; background: none; border: 0; opacity: 1; transform: none; text-align: center; justify-items: center; }
+}
+@media (prefers-reduced-motion: reduce) { .cup-badge .cup-cover, .cup-badge-info { transition: none; } }
+
+/* Cabecera */
+.cup-head { display: grid; gap: 12px; }
+.cup-head-row { display: grid; grid-template-columns: auto minmax(0, 1fr) auto; gap: 20px; align-items: start; }
+.cup-head-text { display: grid; gap: 6px; min-width: 0; }
+.cup-head-text h1 { margin: 0; font-size: var(--fs-2xl); line-height: 1.1; }
+.cup-head-text p { margin: 0; }
+.cup-desc { max-width: 70ch; }
+
+/* Participantes por equipo */
+.cup-roster { display: grid; gap: 22px 28px; }
+.cup-roster.teams { grid-template-columns: repeat(auto-fit, minmax(min(100%, 240px), 1fr)); }
+.cup-roster.flat { grid-template-columns: repeat(auto-fill, minmax(min(100%, 210px), 1fr)); }
+.cup-team { border-top: 3px solid var(--team, var(--line)); padding-top: 8px; min-width: 0; }
+.cup-roster.flat .cup-team { border-top: 0; padding-top: 0; display: contents; }
+.cup-team-name { margin: 0 0 6px; font-size: var(--fs-lg); }
+.cup-team ul { list-style: none; margin: 0; padding: 0; display: grid; gap: 4px; }
+.cup-roster.flat .cup-team ul { display: contents; }
+.cup-pilot { display: flex; align-items: center; gap: 10px; padding: 4px 0; min-width: 0; }
+.cup-pilot-who { font-weight: 600; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+
+/* Rueda de carreras: sin fin, con carreras a los dos lados */
+.cup-car { position: relative; --cw: 310px; --gap: 262px; }
+.cup-wheel { position: relative; height: 196px; perspective: 1100px; overflow: hidden; touch-action: pan-y; user-select: none; cursor: grab; outline: none; }
+.cup-wheel:active { cursor: grabbing; }
+.cup-wheel:focus-visible { box-shadow: inset 0 0 0 2px var(--accent); border-radius: var(--r2); }
+.cup-wheel-slot { position: absolute; left: 50%; top: 22px; width: var(--cw); height: 150px; margin-left: calc(var(--cw) / -2); transform: translateX(calc(var(--o) * var(--gap))) translateZ(calc(var(--a) * -110px)) rotateY(calc(var(--o) * -20deg)); opacity: calc(1 - var(--a) * 0.27); transition: transform calc(420ms * var(--motion)) cubic-bezier(0.2, 0.8, 0.2, 1), opacity calc(420ms * var(--motion)) var(--ease); will-change: transform; }
+.cup-slide { position: relative; width: 100%; height: 100%; transition: transform calc(300ms * var(--motion)) var(--ease); }
+.cup-slide.on { transform: scale(1.04); }
+.cup-slide-main { position: relative; display: grid; place-content: center; gap: 4px; justify-items: center; width: 100%; height: 100%; padding: 12px 16px; text-align: center; color: var(--text); background: var(--surface); border: 1px solid var(--line); border-radius: var(--r4); overflow: hidden; cursor: pointer; font: inherit; }
+.cup-slide.on .cup-slide-main { border-color: var(--muted); }
+.cup-slide-main:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.cup-slide-main::after { content: ''; position: absolute; left: 0; right: 0; bottom: 0; height: 3px; background: var(--line); }
+.cup-slide.next .cup-slide-main::after { background: var(--accent-text); }
+.cup-slide.played .cup-slide-main::after { background: var(--muted); }
+.cup-slide-img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; opacity: 0.26; pointer-events: none; }
+.cup-slide-no { position: absolute; right: 12px; bottom: 6px; font: 700 64px/0.85 var(--font-num); font-variation-settings: var(--font-num-var); color: color-mix(in srgb, var(--text) 16%, transparent); pointer-events: none; }
+.cup-slide-cc { position: relative; font: 600 var(--fs-xl) var(--font-ui); letter-spacing: 0.08em; }
+.cup-slide-name { position: relative; font-size: var(--fs-lg); letter-spacing: 0.04em; text-transform: uppercase; line-height: 1.15; max-width: 100%; overflow-wrap: anywhere; }
+.cup-slide-state { position: absolute; left: 12px; bottom: 10px; font-size: var(--fs-sm); color: var(--muted); }
+.cup-slide-dl { position: absolute; top: 8px; right: 8px; z-index: 2; display: grid; place-items: center; width: 32px; height: 32px; border-radius: var(--r2); background: var(--scrim); color: var(--paper); }
+.cup-slide-dl:hover, .cup-slide-dl:focus-visible { background: var(--accent); color: var(--on-accent); outline: none; }
+.cup-car-arrow { position: absolute; top: 80px; z-index: 3; width: 36px; height: 36px; border-radius: 50%; border: 1px solid var(--line); background: var(--surface); color: var(--text); font-size: 22px; line-height: 1; cursor: pointer; }
+.cup-car-arrow.prev { left: 4px; } .cup-car-arrow.next { right: 4px; }
+.cup-car-arrow:disabled { opacity: 0.35; cursor: default; }
+.cup-car-arrow:not(:disabled):hover { border-color: var(--muted); }
+.cup-car-dots { display: flex; justify-content: center; gap: 6px; margin-top: 4px; }
+.cup-car-dots button { width: 8px; height: 8px; padding: 0; border-radius: 99px; border: 0; background: var(--line); cursor: pointer; transition: width calc(150ms * var(--motion)) var(--ease), background calc(150ms * var(--motion)) var(--ease); }
+.cup-car-dots button.on { width: 20px; background: var(--text); }
+@media (pointer: coarse) { .cup-car-arrow { display: none; } }
+
+/* Detalle de la carrera */
+.cup-round-head { display: grid; gap: 6px; }
+.cup-round-head h2 { margin: 0; font-size: var(--fs-xl); }
+.cup-facts { list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; gap: 4px 18px; font-size: var(--fs-sm); }
+.cup-round-grid { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.4fr); gap: 36px; align-items: start; }
+
+/* Horarios: línea de tiempo */
+.cup-tl { list-style: none; margin: 0; padding: 0 0 0 26px; border-left: 2px solid var(--line); }
+.cup-tl li { position: relative; display: grid; gap: 2px; padding-bottom: 22px; --k: var(--muted); }
+.cup-tl li:last-child { padding-bottom: 0; }
+.cup-tl li::before { content: ''; position: absolute; left: -35px; top: 3px; width: 14px; height: 14px; border-radius: 50%; border: 3px solid var(--k); background: var(--bg); }
+.cup-tl .k-practice { --k: var(--chart-1); } .cup-tl .k-quali { --k: var(--chart-4); } .cup-tl .k-race { --k: var(--chart-8); } .cup-tl .k-post { --k: var(--chart-7); }
+.cup-tl-kind { font-size: var(--fs-sm); font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: color-mix(in srgb, var(--k) 62%, var(--text)); }
+.cup-tl-main { font-size: var(--fs-xl); line-height: 1.2; }
+.cup-tl-dur { font-size: var(--fs-sm); color: var(--muted); }
+.cup-tl-text { margin: 2px 0 0; font-size: var(--fs-sm); color: var(--muted); max-width: 52ch; }
+
+/* Coches: imagen grande, nombre, cifras clave en una línea, parrilla con sus skins y descarga */
+.cup-cars { display: grid; gap: 28px; }
+.cup-car-card { display: grid; grid-template-columns: minmax(0, 1.15fr) minmax(0, 1fr); gap: 22px; align-items: center; }
+.cup-car-pic { aspect-ratio: 16 / 10; border-radius: var(--r3); overflow: hidden; background: var(--surface-2); }
+.cup-car-pic img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.cup-car-body { display: grid; gap: 10px; min-width: 0; align-content: center; }
+.cup-car-brand { margin: 0; font-size: var(--fs-label); font-weight: 600; letter-spacing: 0.09em; text-transform: uppercase; color: var(--muted); }
+.cup-car-body h4 { margin: 0; font-size: var(--fs-2xl); line-height: 1.1; }
+.cup-stats { display: flex; flex-wrap: wrap; margin: 0; padding: 0; border-block: 1px solid var(--line); }
+.cup-stats > div { display: grid; grid-template-columns: auto auto; grid-template-rows: auto auto; column-gap: 9px; align-items: center; justify-items: start; padding: 10px 18px 10px 0; margin-right: 18px; }
+.cup-stat-ic { grid-row: 1 / span 2; display: grid; color: var(--muted); }
+.cup-stats > div + div { padding-left: 18px; border-left: 1px solid var(--line); }
+.cup-stats dd { margin: 0; font: 700 var(--fs-xl) / 1.1 var(--font-num); font-variation-settings: var(--font-num-var); font-variant-numeric: tabular-nums; }
+.cup-stats dt { order: 2; font-size: var(--fs-label); color: var(--muted); text-transform: uppercase; letter-spacing: 0.07em; }
+.cup-grid-skins h5 { margin: 0 0 6px; font-size: var(--fs-label); font-weight: 600; letter-spacing: 0.09em; text-transform: uppercase; color: var(--muted); }
+.cup-grid-skins ul { list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; gap: 8px; }
+.cup-grid-skins li { display: grid; gap: 3px; width: 72px; font-size: var(--fs-label); color: var(--muted); }
+.cup-grid-skins li img { width: 72px; height: 45px; object-fit: cover; border-radius: var(--r2); background: var(--surface-2); display: block; }
+.cup-grid-skins li span { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.cup-grid-skins li.more { align-content: center; justify-items: center; width: 40px; font-size: var(--fs-sm); }
+.cup-dl { justify-self: start; display: inline-flex; align-items: center; gap: 8px; margin-top: 2px; padding: 8px 16px; border-radius: var(--r2); border: 1px solid var(--text); color: var(--text); text-decoration: none; font-weight: 700; font-size: var(--fs-sm); transition: background calc(100ms * var(--motion)) var(--ease), color calc(100ms * var(--motion)) var(--ease); }
+.cup-dl:hover, .cup-dl:focus-visible { background: var(--text); color: var(--bg); }
+
+/* Menú de mods */
+.cup-mods { position: relative; }
+.cup-mods-pop { position: absolute; right: 0; top: calc(100% + 8px); z-index: 30; width: min(380px, 88vw); display: grid; gap: 10px; padding: 14px; background: var(--surface); border: 1px solid var(--line); border-radius: var(--r3); }
+.cup-mods-pop ul { list-style: none; margin: 0; padding: 0; display: grid; gap: 6px; max-height: 260px; overflow-y: auto; }
+.cup-mods-pop li { display: grid; grid-template-columns: 74px minmax(0, 1fr); gap: 8px; align-items: baseline; }
+.cup-mods-kind { font-size: var(--fs-label); color: var(--muted); text-transform: uppercase; letter-spacing: 0.06em; }
+.cup-mods-ask { display: grid; gap: 8px; padding: 10px; border: 1px solid var(--line); border-radius: var(--r2); }
+.cup-mods-ask p { margin: 0; }
+.cup-mods-pop > p { margin: 0; font-size: var(--fs-sm); }
+
+/* Resultados: slider de carreras */
+.cup-rchips { display: flex; gap: 8px; overflow-x: auto; padding-bottom: 6px; scrollbar-width: thin; }
+.cup-rchip { flex: none; display: inline-flex; align-items: baseline; gap: 8px; max-width: 260px; padding: 6px 12px; border: 1px solid var(--line); border-radius: var(--r2); background: none; color: var(--text); cursor: pointer; font: inherit; }
+.cup-rchip.later { color: var(--muted); }
+.cup-rchip:hover { border-color: var(--muted); }
+.cup-rchip.on { background: var(--text); border-color: var(--text); color: var(--bg); }
+.cup-rchip-no { font: 700 var(--fs-sm) var(--font-num); opacity: 0.7; }
+.cup-rchip-name { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: var(--fs-sm); }
+.cup-results-body { display: grid; gap: 18px; min-width: 0; }
+
+@media (max-width: 760px) {
+  .cup-head-row { grid-template-columns: auto minmax(0, 1fr); }
+  .cup-head-row .cup-mods { grid-column: 1 / -1; }
+  .cup-item { grid-template-columns: 96px minmax(0, 1fr); }
+  .cup-round-grid { grid-template-columns: minmax(0, 1fr); gap: 28px; }
+  .cup-car-card { grid-template-columns: minmax(0, 1fr); gap: 14px; }
+  .cup-slide-no { font-size: 52px; }
+  .cup-car { --cw: 250px; --gap: 176px; }
+}
+
+@media (prefers-reduced-motion: reduce) { .cup-wheel-slot, .cup-slide { transition: none; } }
+
+/* Clima de la carrera (esquina contraria al número) y diapositiva «General» */
+.cup-slide-wx { position: absolute; left: 12px; top: 10px; z-index: 1; display: grid; color: color-mix(in srgb, var(--text) 82%, transparent); }
+.cup-slide.general .cup-slide-main { background: color-mix(in srgb, var(--accent-text) 9%, var(--surface)); border-color: color-mix(in srgb, var(--accent-text) 40%, var(--line)); }
+.cup-slide.general .cup-slide-main::after { background: var(--accent-text); }
+.cup-slide-trophy { position: absolute; right: 8px; bottom: 6px; width: 86px; height: 86px; color: color-mix(in srgb, var(--text) 16%, transparent); pointer-events: none; }
+.sr-only { position: absolute; width: 1px; height: 1px; margin: -1px; padding: 0; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0; }
+
+/* Skin de cada participante */
+.cup-skin { position: relative; margin-left: auto; flex: none; }
+.cup-skin-btn { display: inline-flex; align-items: center; gap: 4px; height: 30px; padding: 0 10px; border: 1px solid var(--line); border-radius: var(--r2); background: none; color: var(--muted); cursor: pointer; font: inherit; font-size: var(--fs-sm); font-weight: 600; }
+.cup-skin-caret { font-size: 10px; }
+.cup-skin-btn.has { color: var(--text); }
+.cup-skin-btn:hover, .cup-skin-btn:focus-visible, .cup-skin-btn[aria-expanded='true'] { border-color: var(--muted); color: var(--text); }
+.cup-skin-pop { position: absolute; right: 0; top: calc(100% + 6px); z-index: 25; width: 220px; display: grid; gap: 6px; padding: 8px; background: var(--surface); border: 1px solid var(--line); border-radius: var(--r3); }
+.cup-skin-pop img { width: 100%; aspect-ratio: 16 / 10; object-fit: cover; border-radius: var(--r2); background: var(--surface-2); display: block; }
+.cup-skin-pop span, .cup-skin-pop p { margin: 0; font-size: var(--fs-sm); color: var(--muted); }

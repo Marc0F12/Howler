@@ -47,7 +47,7 @@ public class HowlerTelPacket : OnlineEvent<HowlerTelPacket>
 }
 
 /// <summary>
-/// EXPERIMENTAL, apagado por defecto (ClientTelemetry: false en plugin_howler_cfg.yml). Reparte a los clientes con CSP el
+/// Activo por defecto (ClientTelemetry: false en plugin_howler_cfg.yml lo apaga). Reparte a los clientes con CSP el
 /// script lua/howler_telemetry.lua (se descarga solo al conectarse: nadie instala nada), recibe sus mensajes, los apunta en
 /// howler-client-telemetry.csv (junto al plugin) y los reenvía a Howler como {"t":"ctel"}. Los datos vienen del PC de cada
 /// jugador: valen para estadísticas, no para sancionar.

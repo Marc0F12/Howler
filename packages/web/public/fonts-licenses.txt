@@ -1,0 +1,5 @@
+Fuentes incluidas con Howler (todas con licencia SIL Open Font License 1.1, https://openfontlicense.org):
+- Outfit — © The Outfit Project Authors (https://github.com/Outfitio/Outfit-Fonts). Paquete npm @fontsource/outfit.
+- Barlow Condensed — © The Barlow Project Authors (https://github.com/jpt/barlow). Paquete npm @fontsource/barlow-condensed.
+- Michroma — © Vernon Adams (vern@newtypography.co.uk). Paquete npm @fontsource/michroma.
+- Archivo — © The Archivo Project Authors (https://github.com/Omnibus-Type/Archivo). Paquete npm @fontsource-variable/archivo.

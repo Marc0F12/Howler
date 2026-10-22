@@ -1,0 +1,26 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Howler</title>
+  <link rel="icon" type="image/png" href="/logo.png">
+  <link rel="stylesheet" href="/app.css">
+</head>
+<body>
+  <div class="win">
+    <aside class="rail" aria-label="Pasos">
+      <div class="brand"><img src="/logo.png" alt="" width="40" height="40"><span>Howler</span></div>
+      <ol id="steps" class="steps"></ol>
+      <div class="rail-foot"><span id="version"></span></div>
+    </aside>
+    <main class="main">
+      <header class="head"><h1 id="title"></h1><p id="sub" class="sub"></p></header>
+      <section id="body" class="body" aria-live="polite"></section>
+      <footer class="foot"><button id="back" class="btn ghost"></button><span class="grow"></span><button id="next" class="btn primary"></button></footer>
+    </main>
+  </div>
+  <div id="modal" class="modal" hidden><div class="modal-card" role="dialog" aria-modal="true"><div id="modal-body"></div><button id="modal-close" class="btn">OK</button></div></div>
+  <script src="/app.js"></script>
+</body>
+</html>

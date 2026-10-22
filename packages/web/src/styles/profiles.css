@@ -1,0 +1,83 @@
+/* Enlaces a fichas: se leen como texto normal y se subrayan al pasar el ratón */
+.entity-link { color: inherit; text-decoration: none; border-bottom: 1px solid transparent; transition: color calc(100ms * var(--motion)) var(--ease), border-color calc(100ms * var(--motion)) var(--ease); }
+.entity-link:hover, .entity-link:focus-visible { color: var(--accent-text); border-bottom-color: currentColor; outline: none; }
+.session-title .entity-link:hover { color: var(--accent-text); }
+.mono { font-family: var(--font-num); font-variant-numeric: tabular-nums; }
+.who { display: inline-flex; align-items: center; gap: 10px; min-width: 0; }
+.thumb { width: 56px; height: 34px; border-radius: 6px; object-fit: cover; flex: none; background: var(--surface-2); }
+.thumb.preview-fallback { font-size: var(--fs-label); }
+
+/* Avatar de Steam */
+.avatar { display: inline-grid; place-items: center; flex: none; border-radius: 50%; overflow: hidden; background: var(--surface-2); border: 1px solid var(--line); }
+.avatar .avatar-img { width: 100%; height: 100%; object-fit: cover; border-radius: 50%; }
+.avatar .preview-fallback { width: 100%; height: 100%; font-size: inherit; background: var(--surface-2); }
+
+/* Cabecera de una ficha */
+.profile-head { display: flex; align-items: center; gap: 20px; padding: 4px 2px; flex-wrap: wrap; }
+.profile-img { width: 220px; height: 134px; border-radius: var(--r4); object-fit: cover; border: 1px solid var(--line); background: var(--surface-2); flex: none; }
+.profile-img.preview-fallback { font-size: var(--fs-2xl); }
+.profile-title { min-width: 0; }
+.profile-title h2 { margin: 2px 0 6px; font-size: var(--fs-2xl); line-height: 1.15; }
+.profile-title p { margin: 0; font-size: var(--fs-base); }
+.profile-kicker { font-size: var(--fs-sm); font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; color: var(--muted); }
+
+/* Cifras clave */
+.stat-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(190px, 1fr)); margin: 0; border-top: 1px solid var(--line); }
+.stat { display: grid; align-content: start; gap: 2px; padding: 14px 16px; border-right: 1px solid var(--line); border-bottom: 1px solid var(--line); }
+.stat dt { order: 2; font-size: var(--fs-label); font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; color: var(--muted); }
+.stat dd { order: 1; margin: 0; font-size: var(--fs-xl); font-weight: 700; line-height: 1.2; overflow: hidden; text-overflow: ellipsis; }
+.stat dd:not(.num), .stat dd .entity-link { font-size: var(--fs-lg); }
+.stat-sub { order: 3; font-size: var(--fs-sm); color: var(--muted); }
+
+/* Puestos: oro, plata y bronce */
+.rank.rank-1 { color: var(--medal-gold); font-weight: 800; }
+.rank.rank-2 { color: var(--medal-silver); font-weight: 700; }
+.rank.rank-3 { color: var(--medal-bronze); font-weight: 700; }
+.timing .of { color: var(--muted); font-size: var(--fs-sm); }
+
+/* Listas de pilotos más activos */
+.busy-list { list-style: none; margin: 0; padding: 8px 16px 14px; display: grid; gap: 8px; }
+.busy-list li { display: grid; grid-template-columns: 22px 28px minmax(0, 1fr) auto; align-items: center; gap: 10px; }
+.busy-list .pos { width: auto; }
+
+/* Buscador de los listados */
+.dir-search { background: var(--surface-2); color: var(--text); border: 1px solid var(--line); border-radius: var(--r2); padding: 8px 12px; font: inherit; font-size: var(--fs-base); min-width: 220px; }
+.dir-search:focus-visible { outline: 2px solid var(--accent); outline-offset: 1px; }
+
+/* Gráfica de actividad */
+.activity { position: relative; padding: 8px 16px 14px; }
+.activity svg { display: block; width: 100%; height: auto; }
+.activity-bar { fill: var(--accent); opacity: 0.85; transition: opacity calc(100ms * var(--motion)) var(--ease); }
+.activity-bar.on { opacity: 1; }
+
+/* El chevron de la clasificación ahora es el botón accesible de cada fila */
+.stable-row { cursor: pointer; }
+.stable-row:hover { background: var(--surface-2); }
+button.stable-chevron { width: 28px; height: 28px; justify-self: center; display: grid; place-items: center; background: none; border: 0; border-radius: 6px; color: var(--muted); font: inherit; font-size: var(--fs-label); cursor: pointer; transition: transform calc(200ms * var(--motion)) var(--ease), background calc(100ms * var(--motion)) var(--ease), color calc(100ms * var(--motion)) var(--ease); }
+button.stable-chevron:hover { background: var(--surface); color: var(--text); }
+button.stable-chevron:focus-visible { outline: 2px solid var(--accent); }
+@media (max-width: 640px) { .profile-img { width: 100%; height: 160px; } .profile-title h2 { font-size: var(--fs-xl); } .stat-grid { grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); } }
+
+/* Panel: reglas de vuelta válida */
+.profile-list, .track-rules { list-style: none; margin: 0; padding: 0; display: grid; gap: 14px; }
+.profile-list > li { padding-bottom: 14px; border-bottom: 1px solid var(--line); }
+.profile-list > li:last-child { border-bottom: 0; padding-bottom: 0; }
+.profile-editor { display: grid; gap: 12px; }
+.track-rules li { display: grid; grid-template-columns: minmax(0, 1fr) minmax(160px, 240px) auto; gap: 10px; align-items: center; }
+.inline { display: inline-flex; align-items: center; gap: 6px; font-size: var(--fs-base); }
+.inline input[type='number'] { width: 90px; }
+.field-inline { display: flex; align-items: center; gap: 10px; font-size: var(--fs-base); font-weight: 600; margin: 4px 0 8px; }
+.field-inline input { flex: 1; min-width: 160px; font-weight: 400; }
+.badge { display: inline-block; font-size: var(--fs-label); font-weight: 700; letter-spacing: 0.04em; padding: 2px 8px; border-radius: 999px; border: 1px solid var(--line); color: var(--muted); }
+.badge.ok { color: var(--live); border-color: color-mix(in srgb, var(--live) 45%, transparent); }
+.badge.pending { color: var(--wait); border-color: color-mix(in srgb, var(--wait) 50%, transparent); }
+.stable-last.pending { color: var(--wait); font-style: italic; }
+.lap-table tr.pending .lap-time { color: var(--wait); font-style: italic; }
+.tab-count { margin-left: 6px; padding: 0 7px; border-radius: 999px; background: var(--wait); color: var(--on-accent); font-size: var(--fs-label); font-weight: 800; }
+.badge.bad { color: color-mix(in srgb, var(--down) 70%, var(--text)); border-color: color-mix(in srgb, var(--down) 50%, transparent); }
+.revalidation { margin-top: 14px; padding: 12px 14px; background: var(--surface-2); border: 1px solid var(--line); border-radius: var(--r3); }
+.revalidation p { margin: 0 0 8px; }
+.row-actions { text-align: right; white-space: nowrap; }
+td.void { text-decoration: line-through; color: var(--down); }
+@media (max-width: 640px) { .track-rules li { grid-template-columns: 1fr; } }
+

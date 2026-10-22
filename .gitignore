@@ -1,0 +1,14 @@
+node_modules/
+vendor/
+dist/
+dist-*/
+data/
+howler.config.json
+*.log
+.vite/
+plugin/dist/
+plugin/**/bin/
+plugin/**/obj/
+window/dist/
+window/**/bin/
+window/**/obj/

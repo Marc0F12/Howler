@@ -1,0 +1,21 @@
+name: Ventana de Windows
+
+# Comprueba que la ventana propia del panel (window/HowlerWindow, WinForms + WebView2 sobre .NET Framework 4.8) compila en Windows.
+on:
+  push:
+  workflow_dispatch:
+
+jobs:
+  ventana:
+    runs-on: windows-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 9.0.x
+      - name: Compilar HowlerWindow
+        run: dotnet build window/HowlerWindow -c Release -o window/dist
+      - name: Resultado
+        run: Get-ChildItem window/dist -Recurse | Select-Object FullName, Length
+        shell: pwsh

@@ -1,0 +1,13 @@
+{
+  "name": "@howler/shared",
+  "version": "0.1.4",
+  "private": true,
+  "type": "module",
+  "exports": {
+    ".": "./src/index.ts"
+  },
+  "scripts": {
+    "typecheck": "tsc -p ."
+  },
+  "license": "SEE LICENSE IN LICENSE"
+}

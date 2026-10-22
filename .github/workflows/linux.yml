@@ -1,0 +1,90 @@
+name: Linux
+
+# Comprueba Howler en Linux de verdad (en las máquinas de GitHub): tests, tipos, compilación de la web, prueba de humo de punta a punta
+# con el simulador y compilación del plugin de AssettoServer. Sirve para saber si algo se rompe en Linux sin tener Linux a mano.
+on:
+  push:
+  workflow_dispatch:
+
+jobs:
+  howler:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+      - run: npm ci
+      - run: npm run typecheck
+      - run: npm test
+      - run: npm run build
+      - name: Prueba de humo (Howler + simulador + servidor de AC falso)
+        run: node scripts/linux-smoke.mjs
+
+  plugin:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 9.0.x
+      - name: Código fuente de AssettoServer v0.0.55-pre35 (el plugin se compila contra él)
+        run: |
+          mkdir -p vendor/assettoserver-src-pre35
+          curl -sSL https://github.com/compujuckel/AssettoServer/archive/refs/tags/v0.0.55-pre35.zip -o "$RUNNER_TEMP/as.zip"
+          unzip -q "$RUNNER_TEMP/as.zip" -d vendor/assettoserver-src-pre35
+          ls vendor/assettoserver-src-pre35
+      - name: Compilar HowlerPlugin
+        working-directory: plugin/HowlerPlugin
+        run: dotnet build -c Release
+      - name: Resultado
+        run: ls -la plugin/dist/HowlerPlugin
+
+  package:
+    # Construye el paquete de Linux (el mismo que se publica) y lo prueba: instalar sobre un servidor de pruebas y arrancar.
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 9.0.x
+      - run: npm ci
+      - name: Código fuente de AssettoServer v0.0.55-pre35 (el plugin se compila contra él)
+        run: |
+          mkdir -p vendor/assettoserver-src-pre35
+          curl -sSL https://github.com/compujuckel/AssettoServer/archive/refs/tags/v0.0.55-pre35.zip -o "$RUNNER_TEMP/as.zip"
+          unzip -q "$RUNNER_TEMP/as.zip" -d vendor/assettoserver-src-pre35
+      - name: Compilar HowlerPlugin
+        working-directory: plugin/HowlerPlugin
+        run: dotnet build -c Release
+      - run: npm run package:linux
+      - name: Instalar el paquete sobre un servidor de pruebas y arrancarlo
+        run: |
+          P="$RUNNER_TEMP/p"; SRV="$RUNNER_TEMP/srv"
+          mkdir -p "$P" "$SRV/presets/SERVER_00" "$SRV/cfg"
+          tar -xzf dist-linux/Howler-*-linux.tar.gz -C "$P"
+          touch "$SRV/AssettoServer"
+          printf '[SERVER]\nNAME=Prueba\n' > "$SRV/presets/SERVER_00/server_cfg.ini"
+          cd "$P/howler"
+          bash install.sh --server "$SRV"
+          grep -q 'HowlerPlugin' "$SRV/presets/SERVER_00/extra_cfg.yml"
+          grep -q 'UDP_PLUGIN_ADDRESS=127.0.0.1:12000' "$SRV/presets/SERVER_00/server_cfg.ini"
+          test -f "$SRV/plugins/HowlerPlugin/HowlerPlugin.dll"
+          nohup bash start.sh > "$RUNNER_TEMP/howler.log" 2>&1 &
+          sleep 8
+          cat "$RUNNER_TEMP/howler.log"
+          curl -fsS http://127.0.0.1:8420/api/status
+          curl -fsS -H 'X-Howler-Admin: 1' http://127.0.0.1:8421/admin/api/ping
+          curl -fsS http://127.0.0.1:8421/admin/api/state | node -e "let s='';process.stdin.on('data',d=>s+=d).on('end',()=>{const c=JSON.parse(s).check;console.log(c);if(!c.ok||!c.hasPlugin)process.exit(1)})"
+      - uses: actions/upload-artifact@v4
+        with:
+          name: howler-linux
+          path: dist-linux/*.tar.gz

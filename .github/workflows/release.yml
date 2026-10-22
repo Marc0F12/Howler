@@ -1,0 +1,190 @@
+name: Release
+
+# Construye las versiones a partir de una etiqueta vX.Y.Z: instalador de Windows (firmado con SignPath cuando está activado),
+# paquete de Linux y la release de GitHub con su SHA256SUMS. Todo en máquinas de GitHub, a partir del código de este repositorio.
+#
+# Firma (SignPath Foundation): se activa al crear la variable de repositorio SIGNPATH_ORGANIZATION_ID (Settings → Variables) y el
+# secreto SIGNPATH_API_TOKEN. Sin ellas se construye igual, pero sin firmar. Slugs usados: proyecto «howler», política de firma
+# «release-signing», configuraciones de artefacto «apps» (Howler.exe y HowlerWindow.exe) e «installer» (Howler-Setup.exe).
+on:
+  push:
+    tags: ['v*']
+  workflow_dispatch:
+
+env:
+  ASSETTO_VERSION: v0.0.55-pre35
+  ASSETTO_SHA256: 59fe87d2a03cf5c03413a78b6ebf4448890b2577ddcb40e202acb6aeb7cf9821
+
+jobs:
+  windows:
+    runs-on: windows-latest
+    timeout-minutes: 45
+    permissions:
+      contents: read
+      actions: read
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 9.0.x
+      - run: npm ci
+      - run: npm run typecheck
+      - run: npm test
+
+      - name: AssettoServer (versión validada, con su suma de comprobación) para llevarlo dentro del instalador
+        shell: pwsh
+        run: |
+          Invoke-WebRequest "https://github.com/compujuckel/AssettoServer/releases/download/$env:ASSETTO_VERSION/assetto-server-win-x64.zip" -OutFile "$env:RUNNER_TEMP/as.zip"
+          if ((Get-FileHash "$env:RUNNER_TEMP/as.zip" -Algorithm SHA256).Hash.ToLower() -ne $env:ASSETTO_SHA256) { throw 'La suma de AssettoServer no coincide' }
+          Expand-Archive "$env:RUNNER_TEMP/as.zip" vendor/assettoserver-release-pre35
+      - name: Código fuente de AssettoServer (el plugin se compila contra él)
+        shell: pwsh
+        run: |
+          Invoke-WebRequest "https://github.com/compujuckel/AssettoServer/archive/refs/tags/$env:ASSETTO_VERSION.zip" -OutFile "$env:RUNNER_TEMP/src.zip"
+          Expand-Archive "$env:RUNNER_TEMP/src.zip" vendor/assettoserver-src-pre35
+      - name: Compilar HowlerPlugin
+        working-directory: plugin/HowlerPlugin
+        run: dotnet build -c Release
+
+      - name: Programa y ventana (Howler.exe, HowlerWindow.exe)
+        run: npm run package:beta
+
+      # --- Firma 1/2: los programas que se instalan ---
+      - name: Preparar los programas para firmar
+        if: ${{ vars.SIGNPATH_ORGANIZATION_ID != '' }}
+        shell: pwsh
+        run: |
+          New-Item -ItemType Directory sign-apps | Out-Null
+          Copy-Item dist-beta/Howler/Howler.exe sign-apps/
+          Copy-Item dist-beta/Howler/window/HowlerWindow.exe sign-apps/
+      - name: Subir los programas sin firmar
+        if: ${{ vars.SIGNPATH_ORGANIZATION_ID != '' }}
+        id: unsigned-apps
+        uses: actions/upload-artifact@v4
+        with:
+          name: unsigned-apps
+          path: sign-apps/*
+      - name: Firmar los programas (SignPath)
+        if: ${{ vars.SIGNPATH_ORGANIZATION_ID != '' }}
+        uses: signpath/github-action-submit-signing-request@v3
+        with:
+          api-token: ${{ secrets.SIGNPATH_API_TOKEN }}
+          organization-id: ${{ vars.SIGNPATH_ORGANIZATION_ID }}
+          project-slug: howler
+          signing-policy-slug: release-signing
+          artifact-configuration-slug: apps
+          github-artifact-id: ${{ steps.unsigned-apps.outputs.artifact-id }}
+          wait-for-completion: true
+          output-artifact-directory: signed-apps
+      - name: Poner los programas firmados en el paquete
+        if: ${{ vars.SIGNPATH_ORGANIZATION_ID != '' }}
+        shell: pwsh
+        run: |
+          Copy-Item signed-apps/Howler.exe dist-beta/Howler/Howler.exe -Force
+          Copy-Item signed-apps/HowlerWindow.exe dist-beta/Howler/window/HowlerWindow.exe -Force
+
+      - name: Instalador (Howler-Setup.exe)
+        run: npm run package:setup
+
+      # --- Firma 2/2: el instalador ---
+      - name: Subir el instalador sin firmar
+        if: ${{ vars.SIGNPATH_ORGANIZATION_ID != '' }}
+        id: unsigned-installer
+        uses: actions/upload-artifact@v4
+        with:
+          name: unsigned-installer
+          path: dist-setup/Howler-Setup.exe
+      - name: Firmar el instalador (SignPath)
+        if: ${{ vars.SIGNPATH_ORGANIZATION_ID != '' }}
+        uses: signpath/github-action-submit-signing-request@v3
+        with:
+          api-token: ${{ secrets.SIGNPATH_API_TOKEN }}
+          organization-id: ${{ vars.SIGNPATH_ORGANIZATION_ID }}
+          project-slug: howler
+          signing-policy-slug: release-signing
+          artifact-configuration-slug: installer
+          github-artifact-id: ${{ steps.unsigned-installer.outputs.artifact-id }}
+          wait-for-completion: true
+          output-artifact-directory: signed-installer
+      - name: Poner el instalador firmado
+        if: ${{ vars.SIGNPATH_ORGANIZATION_ID != '' }}
+        shell: pwsh
+        run: Copy-Item signed-installer/Howler-Setup.exe dist-setup/Howler-Setup.exe -Force
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: windows-release
+          path: dist-setup/Howler-Setup.exe
+
+  linux:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 9.0.x
+      - run: npm ci
+      - name: Código fuente de AssettoServer (el plugin se compila contra él)
+        run: |
+          mkdir -p vendor/assettoserver-src-pre35
+          curl -sSL "https://github.com/compujuckel/AssettoServer/archive/refs/tags/$ASSETTO_VERSION.zip" -o "$RUNNER_TEMP/as.zip"
+          unzip -q "$RUNNER_TEMP/as.zip" -d vendor/assettoserver-src-pre35
+      - name: Compilar HowlerPlugin
+        working-directory: plugin/HowlerPlugin
+        run: dotnet build -c Release
+      - run: npm run package:linux
+      - name: Probar el paquete (instalar sobre un servidor de pruebas y arrancar)
+        run: |
+          P="$RUNNER_TEMP/p"; SRV="$RUNNER_TEMP/srv"
+          mkdir -p "$P" "$SRV/presets/SERVER_00" "$SRV/cfg"
+          tar -xzf dist-linux/Howler-*-linux.tar.gz -C "$P"
+          touch "$SRV/AssettoServer"
+          printf '[SERVER]\nNAME=Prueba\n' > "$SRV/presets/SERVER_00/server_cfg.ini"
+          cd "$P/howler"
+          bash install.sh --server "$SRV"
+          nohup bash start.sh > "$RUNNER_TEMP/howler.log" 2>&1 &
+          sleep 8
+          curl -fsS http://127.0.0.1:8420/api/status
+          curl -fsS -H 'X-Howler-Admin: 1' http://127.0.0.1:8421/admin/api/ping
+      - uses: actions/upload-artifact@v4
+        with:
+          name: linux-release
+          path: dist-linux/*.tar.gz
+
+  publish:
+    needs: [windows, linux]
+    if: startsWith(github.ref, 'refs/tags/v')
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/download-artifact@v4
+        with:
+          path: out
+          merge-multiple: true
+      - name: Notas de la versión (sección del CHANGELOG)
+        run: |
+          VER="${GITHUB_REF_NAME#v}"
+          node -e "
+            const c = require('fs').readFileSync('CHANGELOG.md', 'utf8').replace(/\r\n/g, '\n');
+            const i = c.indexOf('## ' + process.argv[1] + '\n');
+            if (i < 0) { console.error('El CHANGELOG no tiene la versión ' + process.argv[1]); process.exit(1); }
+            const j = c.indexOf('\n## ', i + 3);
+            require('fs').writeFileSync('notes.md', c.slice(i, j < 0 ? undefined : j).replace(/^## .*\n+/, '').trim() + '\n');
+          " "$VER"
+      - name: Sumas de comprobación y release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          cd out && sha256sum Howler-Setup.exe Howler-*-linux.tar.gz > SHA256SUMS && cat SHA256SUMS && cd ..
+          gh release create "$GITHUB_REF_NAME" out/Howler-Setup.exe out/Howler-*-linux.tar.gz out/SHA256SUMS --title "Howler ${GITHUB_REF_NAME#v}" --notes-file notes.md

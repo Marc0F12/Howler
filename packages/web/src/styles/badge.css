@@ -1,0 +1,37 @@
+/* Editor de insignias */
+
+/* Creador de insignias */
+.bge { width: min(1180px, 100%); max-height: 94vh; display: flex; flex-direction: column; background: var(--surface); border: 1px solid var(--line); border-radius: var(--r4); overflow: hidden; }
+.bge-head { display: flex; justify-content: space-between; align-items: center; gap: 12px; padding: 10px 16px; border-bottom: 1px solid var(--line); }
+.bge-head h3 { margin: 0; font-size: var(--fs-lg); }
+.bge-body { display: grid; grid-template-columns: minmax(280px, 380px) minmax(0, 1fr); gap: 24px; padding: 16px; overflow: hidden; min-height: 0; }
+.bge-stage { display: grid; gap: 12px; align-content: start; }
+.bge-board { aspect-ratio: 1; border: 1px solid var(--line); border-radius: var(--r3); display: grid; place-items: center; background: repeating-conic-gradient(var(--surface-2) 0% 25%, var(--surface) 0% 50%) 50% / 24px 24px; }
+.bge-board img { width: 94%; height: 94%; object-fit: contain; }
+.bge-controls { overflow-y: auto; min-height: 0; padding-right: 8px; display: grid; gap: 4px; align-content: start; max-height: calc(94vh - 120px); }
+.bge-set { border: 0; border-top: 1px solid var(--line); margin: 0 0 8px; padding: 10px 0 0; display: grid; gap: 8px; }
+.bge-set legend { padding: 0 8px 0 0; font-size: var(--fs-label); color: var(--muted); }
+.bge-chips { display: flex; flex-wrap: wrap; gap: 6px; }
+.bge-chip { padding: 5px 11px; border: 1px solid var(--line); border-radius: 99px; background: var(--surface-2); color: var(--text); font: inherit; font-size: var(--fs-sm); cursor: pointer; }
+.bge-chip[aria-pressed='true'] { background: var(--text); color: var(--bg); border-color: var(--text); }
+.bge-chip:disabled { opacity: .45; cursor: not-allowed; }
+.bge-chip:focus-visible, .bge-icon:focus-visible, .bge-presets button:focus-visible, .bge-gallery button:focus-visible, .bge-pal button:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.bge-presets, .bge-gallery { display: grid; grid-template-columns: repeat(auto-fill, minmax(84px, 1fr)); gap: 8px; }
+.bge-presets button, .bge-gallery button { display: grid; justify-items: center; gap: 4px; padding: 6px; border: 1px solid var(--line); border-radius: var(--r2); background: var(--surface-2); color: var(--muted); font: inherit; font-size: var(--fs-label); cursor: pointer; }
+.bge-presets button:hover, .bge-gallery button:hover { border-color: var(--muted); }
+.bge-gallery img { width: 100%; height: auto; display: block; }
+.bge-emblems { display: grid; gap: 8px; }
+.bge-search { width: 100%; max-width: 320px; }
+.bge-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(48px, 1fr)); gap: 6px; max-height: 260px; overflow: auto; padding: 8px; border: 1px solid var(--line); border-radius: var(--r3); }
+.bge-icon { aspect-ratio: 1; display: grid; place-items: center; padding: 6px; border: 1px solid var(--line); border-radius: var(--r2); background: var(--surface-2); color: var(--text); cursor: pointer; }
+.bge-icon svg { width: 100%; height: 100%; }
+.bge-icon[aria-selected='true'] { background: var(--text); color: var(--bg); border-color: var(--text); }
+.bge-sliders { display: grid; grid-template-columns: repeat(auto-fit, minmax(170px, 1fr)); gap: 8px 18px; }
+.bge-sliders label { display: grid; gap: 2px; font-size: var(--fs-sm); color: var(--muted); }
+.bge-pal { display: flex; flex-wrap: wrap; gap: 6px; }
+.bge-pal button { display: flex; padding: 4px; border: 1px solid var(--line); border-radius: var(--r2); background: var(--surface-2); cursor: pointer; }
+.bge-pal i { display: block; width: 16px; height: 22px; }
+.bge-colors { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 8px 14px; }
+.bge-colors label { display: flex; align-items: center; gap: 8px; font-size: var(--fs-sm); color: var(--muted); }
+.bge-colors input[type='color'] { width: 34px; height: 28px; padding: 0; border: 1px solid var(--line); border-radius: var(--r2); background: none; }
+@media (max-width: 900px) { .bge-body { grid-template-columns: 1fr; overflow-y: auto; } .bge-controls { max-height: none; overflow: visible; } }

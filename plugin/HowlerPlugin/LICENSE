@@ -9,7 +9,8 @@ ofrecer su código fuente completo con los mismos términos.
 Texto completo de la licencia: https://www.gnu.org/licenses/agpl-3.0.txt
 
 El texto completo de la AGPL-3.0 está en el archivo COPYING de esta carpeta. El resto de
-Howler (servidor, web, panel, instalador) NO es AGPL: se rige por el archivo LICENSE de la raíz.
+Howler (servidor, web, panel, instalador) también es AGPL-3.0, con un permiso adicional para
+módulos y temas: ver el archivo LICENSE de la raíz.
 
 This add-on is built on AssettoServer and is distributed under the GNU Affero General Public
 License v3 (AGPL-3.0). Full text: https://www.gnu.org/licenses/agpl-3.0.txt

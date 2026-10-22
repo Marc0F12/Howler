@@ -1,0 +1,35 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+    <!--
+      Ventana propia del panel de Howler: un programa pequeño con su nombre e icono que muestra el panel con WebView2
+      (el motor de Edge, que ya trae Windows 11 y los Windows 10 actualizados). Sustituye a la ventana de Edge en modo
+      aplicación, que en la barra de tareas se llamaba «Microsoft Edge». Va sobre .NET Framework 4.8 (incluido en Windows)
+      para no obligar a instalar nada. Salida: window/dist/ (se copia a <Howler>/window/).
+    -->
+    <PropertyGroup>
+        <OutputType>WinExe</OutputType>
+        <TargetFramework>net48</TargetFramework>
+        <UseWindowsForms>true</UseWindowsForms>
+        <LangVersion>latest</LangVersion>
+        <PlatformTarget>AnyCPU</PlatformTarget>
+        <Prefer32Bit>false</Prefer32Bit>
+        <AssemblyName>HowlerWindow</AssemblyName>
+        <RootNamespace>HowlerWindow</RootNamespace>
+        <ApplicationIcon>..\..\assets\icon.ico</ApplicationIcon>
+        <ApplicationManifest>app.manifest</ApplicationManifest>
+        <Product>Howler</Product>
+        <AssemblyTitle>Howler</AssemblyTitle>
+        <Description>Howler</Description>
+        <Company>Howler</Company>
+        <Copyright></Copyright>
+        <Version>0.1.5</Version>
+        <SatelliteResourceLanguages>en</SatelliteResourceLanguages>
+        <DebugType>none</DebugType>
+        <GenerateDocumentationFile>false</GenerateDocumentationFile>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <PackageReference Include="Microsoft.Web.WebView2" Version="1.0.2903.40" />
+    </ItemGroup>
+
+</Project>

@@ -127,6 +127,73 @@ If you have championships you can also give each slot a team and a reserved driv
 
 > **Important.** Howler keeps a copy of every file it touches (`.howler-prev`). If you later save from Content Manager, Content Manager wins.
 
+## How to let Howler adjust WeatherFX, track data and data.acd for you
+
+Some mod tracks and cars stop the server from starting unless you change three options. Under **Server → Session and weather → Quick server settings** each one has three positions:
+
+- **On** or **Off**: you decide.
+- **Auto**: Howler decides every time it starts the server, based on what is installed, and tells you what it chose and why.
+
+The options are **CSP weather (WeatherFX)** (Auto = Pure or Sol is installed), **Track data** (Auto = the track has no time zone in `data_track_params.ini`) and **Cars without data.acd** (Auto = a car in the list lacks it). If you never choose, Howler touches nothing. They apply on restart: use **Restart the server to apply it**.
+
+## How to customize your server's card in Content Manager
+
+*This is what players see when they pick your server in the list: title, description, images and links. 10 minutes.*
+
+1. Open **Server → Server sheet**.
+2. Type the **title** (if you want a prefix like `[EU]`, use parentheses: Content Manager reads square brackets in the header).
+3. On the left is the **description** editor: select text and use the bar (bold, italic, size, colour, link, image). On the right you see the **final result**, with your server's real track and cars.
+4. For an image, paste its **public link** (Howler does not host images: upload it to Discord, imgur or GitHub and copy the direct link). A GitHub `/blob/` link is converted automatically.
+5. To start from something ready-made, pick a **preset** and click **Load**. **Save as preset…** keeps yours and **Use as default** chooses which one loads when the description is empty.
+6. Click **Save** (or **Save and restart**). Changes show after the server restarts.
+
+> **Important.** By default Howler leaves a "Times and stats with Howler" line at the foot of the description. You can remove or change it.
+
+## How to set up the session (fuel, damage, tyres, assists…)
+
+**Server → Session and weather** holds almost every session setting, ordered by how often you touch them: track and cars first, then what the session is like (practice, qualifying, race), weather and the server.
+
+- The most used ones (fuel, damage, wear, assists, tyres, race rules) are in view; the rest is folded under **Advanced**. There is a search box.
+- At the top there are **presets**: some built in and your own (**Save as preset…**). A preset stores the settings and the session plan, not the car list.
+- To lock a car's setup (**fixed setup**), pick it in the car list: Howler lists the server's setups and the ones in your Documents.
+- Nothing is applied until you press **Save** (or **Save and restart**). Howler keeps a copy of the previous file (`.howler-prev`).
+
+## How to schedule the server (events)
+
+In **Server → Scheduling** you create events: at the set time Howler applies a session preset and starts the server (or restarts it, warning the players first, if it was already running).
+
+1. Press **New event** and name it.
+2. Pick the **session preset** (or "Don't change settings").
+3. Choose **One time** (date and time) or **Every week** (days and time). The time is that of the PC where Howler runs.
+4. Optional: **announce in chat** a few minutes before and **stop automatically** after a while.
+5. Optional: change the **track** and the **cars** (with slots per car) set before starting, and tick **Also announce on Discord**.
+6. **Save event**. **Run now** launches it without waiting.
+
+Two shortcuts on the same screen:
+
+- **Race weekend:** creates practice, qualifying and race at once as three consecutive events, each with its own preset, offset and stop time. Each event that starts takes over from the previous one.
+- **From a championship:** pick a race of a championship and it creates the events with its track, allowed cars and the practice, qualifying and race dates it already has (dates that have passed are skipped).
+
+The Discord notices ("coming up" and "starting") can be edited or turned off in Settings → Connections → Discord.
+
+Howler must be open at that time. If it was off and more than 10 minutes go by, the event shows as "Missed" and nothing starts.
+
+## How to open the panel from another computer (accounts)
+
+By default the panel only opens on the Howler PC, without a password. To use it from another computer (for example with Howler on a VPS):
+
+1. On the Howler PC, **Settings → Accounts → New account**: username, password (**Generate** makes a random one) and role. Accounts are only managed from that PC.
+2. **Turn on remote access** and close and reopen Howler.
+3. Open the panel port (8421) in the firewall (the same screen has the PowerShell command to copy) and, from the internet, on the router. Sign in at `http://<PC address>:8421`. Signed-in sessions stay valid if you restart Howler (12 hours).
+
+Roles: **Administrator** (everything except program settings, backups, updates and accounts, which can only be changed from the PC), **Moderator** (live control, penalties and lap review) and **View only**. After 5 wrong passwords attempts are blocked for 5 minutes. Changing the password or role signs that account out.
+
+> **Careful.** Over http the password travels unencrypted. Outside your local network use a tunnel or a proxy with https (Cloudflare Tunnel, Tailscale…).
+
+## How to use Howler on Linux
+
+Howler runs on Linux (server, panel and plugin). There is no graphical installer or `Howler.exe`, but there is a package: download `Howler-<version>-linux.tar.gz` from the release, unpack it and run `bash install.sh --server /path/to/your/server`, then `bash start.sh` (you need Node 24 and an AssettoServer v0.0.55-pre35 for Linux). With `--service` it becomes a systemd service. Every step is in `LINUX.md` (inside the package and in `docs/LINUX.md`). On a headless server, open the panel through an SSH tunnel (`ssh -L 8421:127.0.0.1:8421 user@server`) or with accounts (previous section).
+
 ## How to change time, weather and session live
 
 1. Open **Server → Live**.
@@ -156,6 +223,9 @@ There are two weather systems, chosen in **Server → Session and weather → We
 A lap can be **valid**, **void** or **pending review**. Pending ones are pit-exit laps: they don't count until you approve them in the **Pending review** card. You can also void or accept any recent lap, with a reason.
 
 With **Warn the driver**, Howler writes “Howler: lap X voided” in chat with the reason.
+
+If you would rather have pit-exit laps voided automatically, tick **Automatically void pit exits** on that same card. They show as void with their reason and you can recover them with **Accept**. It does not affect laps already pending.
+
 
 ## How to penalize a driver in a race
 
@@ -214,6 +284,19 @@ Each announcement has a **Test this announcement** button. You can add up to 10 
 2. Tick which records to announce: session best, track-and-car, or absolute track record.
 3. Change the text if you like (`{piloto}`, `{tiempo}`, `{coche}`, `{circuito}`, `{anterior}`, `{mejora}`; the English names work too in the editor).
 
+## How to use Howler alongside another program that uses the server's UDP port (penalties, etc.)
+
+**The problem.** The AC server can only send its UDP interface (`UDP_PLUGIN_ADDRESS` in `server_cfg.ini`) to **one single program**. Howler uses it to know who joins, the sessions and the positions. Penalty programs (Real Penalty and similar) use the same one. If both ask for that port, one of them gets no data.
+
+**The fix.** Howler acts as a go-between: it receives everything from the server, **copies it to the other program**, and passes back to the server whatever that program replies (kicks, penalties…). Both work at once and you don't have to choose. It all happens inside your PC.
+
+1. In the preset's `server_cfg.ini` keep `UDP_PLUGIN_ADDRESS=127.0.0.1:12000` (Howler's port) and `UDP_PLUGIN_LOCAL_PORT=11000`.
+2. Set up the **other program** to listen on a **different** free port (for example `12100`) and to talk to the server on `11000`, as it normally would.
+3. In Howler open **Settings → General → Share with other AC plugins**, type that port (`12100`; several ones separated by commas) and press **Save settings**.
+4. Restart Howler and the server.
+
+To undo it, empty the field. AssettoServer plugins written in C# (the ones in the `plugins` folder, including Howler's own) do **not** use this port and are not affected. In `howler.config.json` it is `acsp.forward`.
+
 ## How to link two Howlers (MultiHowler)
 
 *To share times between two servers without a common database. 10 minutes.*
@@ -228,6 +311,8 @@ Each announcement has a **Test this announcement** button. You can add up to 10 
 Data only flows from A to B if A gives **and** B receives. Each link shows when it last synced. You can **hide** a link's data (reversible) or **delete** it.
 
 > **Important.** It is enough for one of the two to be reachable from the internet, but both Howlers must be on to sync. Best is to have Howler start with Windows.
+
+Each link also has a **Share lap traces** switch (off by default; both sides must turn it on): with it, the comparer and the ghosts can use the best laps of the other server's drivers.
 
 ## How to change the website's look
 
@@ -260,7 +345,9 @@ You can also export all laps as CSV or JSON (the CSV opens in Excel; it carries 
 
 ## How to turn on advanced telemetry
 
-*Real brake, g-forces, wheel slip, ABS/TC and tyres in the comparer. Experimental.*
+*Real brake, g-forces, wheel slip, ABS/TC and tyres in the comparer. On by default.*
+
+The installer leaves it on (`EnableClientMessages: true` in `extra_cfg.yml` and `ClientTelemetry: true` in `plugin_howler_cfg.yml`). If you turned it off by hand, or install without the installer:
 
 1. In `<server>\cfg\plugin_howler_cfg.yml`, set `ClientTelemetry: true`.
 2. In `extra_cfg.yml`, check `EnableClientMessages: true`.
@@ -384,6 +471,8 @@ Every key is optional: anything missing takes its default. If something isn't va
 | `serverDir` | AC server folder | empty |
 | `language` | Language of what Howler writes (chat, Discord): `es` or `en` | `es` |
 | `http.host` / `http.port` | Where the website listens | `0.0.0.0` / `8420` |
+| `admin.remote.enabled` | Lets the panel be opened from other computers with a username and password (accounts created in Settings → Accounts). Off: the panel only listens on this PC. Howler must be restarted and the panel port (`admin.port`, 8421) opened in the firewall; outside your network use a tunnel or an https proxy | `false` |
+| `http.rateLimit` | Abuse limits on the public website: `enabled` (can be turned off), `perMinute` (requests per minute per address), `heavyPerMinute` (heavy queries), `liveConnectionsPerIp` and `liveConnectionsTotal` (live connections). Behind a tunnel (Cloudflare Tunnel, nginx…) each visitor counts separately if the tunnel sends their address in `CF-Connecting-IP` or `X-Forwarded-For` | `600` / `120` / `12` / `400` |
 | `admin.port` | Panel port (127.0.0.1 only) | `8421` |
 | `dataDir` | Data folder | `./data` |
 | `server.exe` | Server executable | `acServer.exe` |
@@ -416,7 +505,7 @@ Created by itself in `<server>\cfg\` the first time and never rewritten.
 | `Port` | Sector port (= `acsp.pluginPort`) | `12001` |
 | `TelemetryHz` | Samples per second per car (0 = off) | `10` |
 | `CommandPort` | Panel commands (127.0.0.1 only; 0 = off) | `12002` |
-| `ClientTelemetry` | Extra data from players with CSP (experimental) | `false` |
+| `ClientTelemetry` | Extra data from players with CSP | `true` |
 
 ## What Howler touches on your server
 
@@ -513,7 +602,7 @@ Third-party plugins compiled for the old version may fail to load.
 
 ## License, trademark and credits
 
-Howler is free but not open source: see `LICENSE`. The name and logo are reserved (`docs/TRADEMARK.md`). `HowlerPlugin` is AGPL-3.0, like AssettoServer, whose source is available from its project. Third-party components and the badge icons (Game-icons.net, CC BY 3.0) are in `THIRD-PARTY-NOTICES.md` and on the website's credits page.
+Howler is free software under the AGPL-3.0 license (see `LICENSE`), with an additional permission so that third-party modules and themes belong to their author. The name and logo are reserved (`docs/TRADEMARK.md`). AssettoServer, which the installer includes, is also AGPL-3.0 and its source is available from its project. Third-party components are in `THIRD-PARTY-NOTICES.md` and on the website's credits page.
 
 ## Known limitations
 

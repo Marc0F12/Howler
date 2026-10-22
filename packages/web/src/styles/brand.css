@@ -1,0 +1,14 @@
+/* Marca: mono en capas, iconos y animación de abrir */
+@font-face { font-family: 'HowlerWord'; src: url('../brand/HowlerWord-Anybody-800-130.woff2') format('woff2'); font-weight: 800; font-display: block; }
+.howler-mark { display: inline-block; line-height: 0; flex: none; }
+.howler-mark svg { width: 100%; height: 100%; display: block; }
+.icon { display: inline-block; flex: none; vertical-align: -0.2em; background: currentColor; -webkit-mask: var(--i) center / contain no-repeat; mask: var(--i) center / contain no-repeat; }
+.tabs button .icon, .subtabs button .icon { margin-right: 7px; vertical-align: -0.28em; opacity: 0.85; }
+.tabs button.on .icon, .subtabs button.on .icon { opacity: 1; }
+.mainnav .icon { margin-right: 7px; vertical-align: -0.28em; opacity: 0.85; }
+.mainnav .on .icon, .mainnav .on.icon { opacity: 1; }
+.splash { position: fixed; inset: 0; z-index: 1000; display: flex; align-items: center; justify-content: center; background: var(--bg); transition: opacity calc(250ms * var(--motion)) var(--ease); cursor: pointer; overflow: hidden; }
+.splash.leaving { opacity: 0; }
+.splash-mark { width: min(300px, 60vw); aspect-ratio: 1000 / 1360; height: auto; transform-origin: 38.9% 38.8%; }
+/* Las ondas del aullido solo se ven mientras aulla: en reposo el logo va limpio */
+.howler-mark #ondas > * { opacity: 0; }

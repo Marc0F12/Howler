@@ -1,0 +1,95 @@
+/* Ficha del servidor (panel): editor a la izquierda y, a la derecha, la ficha como la dibuja Content Manager.
+   CM es siempre oscuro y de acento naranja; aquí solo se imita su estructura (el fondo difuminado de CM no se copia). */
+.sheet { display: grid; gap: 16px; }
+.sheet-tpl { display: flex; flex-wrap: wrap; gap: 6px 8px; align-items: center; }
+.sheet-code { width: 100%; box-sizing: border-box; margin-top: 8px; background: var(--surface-2); color: var(--text); border: 1px solid var(--line); border-radius: var(--r2); padding: 8px 10px; font-family: ui-monospace, Consolas, monospace; font-size: var(--fs-sm); resize: vertical; }
+
+.sheet-cols { display: grid; grid-template-columns: minmax(0, 1fr) min(674px, 52%); gap: 20px; align-items: start; }
+@media (max-width: 1100px) { .sheet-cols { grid-template-columns: 1fr; } }
+.sheet-edit-col { display: grid; gap: 10px; min-width: 0; }
+.sheet-title-field { grid-template-columns: 1fr; }
+.sheet-title-field .field-hint { grid-column: 1; }
+.sheet-prev-col { position: sticky; top: calc(var(--panel-top-h, 60px) + 48px); display: grid; gap: 8px; min-width: 0; }
+.sheet-prev-h { margin: 0; font-size: var(--fs-label); font-weight: 700; color: var(--muted); }
+
+.rich, .cm-sheet { --cm-bg: #14161300; --cm-text: #d4d5d3; --cm-muted: #8d918c; --cm-accent: #ff4500; --cm-line: #2a2d29; --cm-title: #c9cac8; }
+
+/* ---- Ficha de CM ---- */
+.cm-sheet { display: grid; grid-template-columns: minmax(0, 1fr) 36%; background: #242424; color: var(--cm-text); font: 13px/1.3 'Segoe UI', system-ui, sans-serif; }
+.cm-sheet .muted { color: var(--cm-muted); }
+@media (max-width: 760px) { .cm-sheet { grid-template-columns: 1fr; } }
+.cm-main { padding: 14px 14px 12px 22px; display: grid; gap: 14px; min-width: 0; align-content: start; }
+.cm-head { display: grid; gap: 4px; }
+.cm-head::before { content: ''; width: 100px; height: 5px; background: var(--cm-accent); margin-bottom: 14px; }
+.cm-title-preview { margin: 0; font-size: 24px; font-weight: 400; color: var(--cm-title); overflow-wrap: anywhere; }
+.cm-link { color: var(--cm-accent); text-decoration: underline; }
+.cm-addr { display: flex; gap: 6px; align-items: center; font-size: 12px; }
+.cm-ping { margin-left: auto; }
+.cm-badge { background: #262a21; color: var(--cm-accent); padding: 0 5px; border-radius: 2px; font-weight: 700; font-size: 11px; }
+.cm-badge-ok { color: #3ddc3d; }
+.cm-pass { margin: 0; font-size: 15px; font-weight: 700; }
+.cm-cards { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+.cm-card { margin: 0; background: #070807; position: relative; overflow: hidden; aspect-ratio: 205 / 160; }
+.cm-card img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.cm-card figcaption { position: absolute; inset: auto 0 0 0; display: flex; justify-content: space-between; gap: 6px; padding: 4px 6px; background: #000a; color: #fff; font-size: 13px; }
+.cm-card figcaption span { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.cm-missing { height: 100%; display: grid; place-items: center; color: #3a3d39; font-size: 20px; }
+.cm-info { margin: 0 0 0 8px; display: grid; grid-template-columns: max-content 1fr max-content 1fr; gap: 3px 10px; font-size: 12px; }
+.cm-info dt { font-weight: 700; font-family: Tahoma, 'Segoe UI', sans-serif; }
+.cm-info dd { margin: 0; font-size: 13px; }
+.cm-info .cm-gap { margin-top: 14px; }
+.cm-final { font-size: 13px; line-height: 1.3; overflow-wrap: anywhere; white-space: pre-wrap; margin-top: 6px; }
+.cm-sessions { margin: 6px 0 0 8px; display: grid; gap: 2px; font-size: 13px; }
+.cm-sessions strong { font-size: 12px; margin-bottom: 4px; }
+.cm-sessions p { margin: 0; display: grid; grid-template-columns: 100px 1fr; padding-left: 12px; }
+.cm-sessions p.on { font-weight: 700; }
+.cm-empty { margin: 0 0 0 8px; font-size: 12px; }
+
+.cm-cars { list-style: none; margin: 0; padding: 16px 0 14px; display: grid; gap: 0; align-content: start; }
+.cm-cars li { padding: 3px 8px; color: var(--cm-muted); font-size: 13px; overflow-wrap: anywhere; }
+.cm-cars li.on { background: var(--cm-accent); color: #fff; font-weight: 700; }
+.cm-cars li span { font-weight: 400; opacity: .85; }
+@media (max-width: 760px) { .cm-cars { padding: 0 14px 12px 22px; } }
+.cm-foot { grid-column: 1 / -1; display: flex; flex-wrap: wrap; gap: 16px; padding: 7px 14px 7px 22px; border-top: 1px solid var(--cm-line); background: #0b0c0b; font-size: 13px; }
+
+/* ---- Descripción: mismo aspecto en el editor y en el resultado ---- */
+/* En CM las imágenes van en línea con el texto (el texto queda a su derecha, abajo), no en un bloque aparte */
+.cm-final img, .cm-desc img { max-width: 100%; height: auto; display: inline-block; vertical-align: bottom; }
+.cm-final a, .cm-desc a { color: var(--cm-accent); text-decoration: underline; }
+
+/* ---- Editor ---- */
+.rich-bar { display: flex; flex-wrap: wrap; gap: 4px; align-items: center; padding: 6px; background: #181a17; border: 1px solid var(--cm-line); border-bottom: 0; border-radius: var(--r2) var(--r2) 0 0; }
+.rich-bar .cm-tool { background: #232622; border-color: var(--cm-line); color: var(--cm-text); min-width: 30px; }
+.rich-sep { width: 1px; height: 20px; background: var(--cm-line); margin: 0 4px; }
+.rich-swatch { width: 18px; height: 18px; padding: 0; border: 1px solid var(--cm-muted); border-radius: 50%; cursor: pointer; }
+.rich-color { width: 26px; height: 22px; padding: 0; border: 1px solid var(--cm-line); background: none; }
+.rich-panel { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; padding: 8px; background: #181a17; border: 1px solid var(--cm-line); border-top: 0; color: var(--cm-text); }
+.rich-panel input[type='text'] { background: #0b0c0b; color: var(--cm-text); border-color: var(--cm-line); }
+.cm-desc { min-height: 260px; padding: 10px; border: 1px solid var(--cm-line); border-radius: 0 0 var(--r2) var(--r2); background: #242424; color: var(--cm-text); font: 13px/1.3 'Segoe UI', system-ui, sans-serif; overflow-wrap: anywhere; white-space: pre-wrap; cursor: text; }
+.cm-desc:focus-visible { outline: 2px solid var(--cm-accent); outline-offset: 0; }
+
+.cm-desc img.sel { outline: 2px solid var(--cm-accent); outline-offset: 2px; cursor: pointer; }
+.rich-w { display: inline-flex; align-items: center; gap: 6px; }
+.rich-w input { width: 80px; background: #0b0c0b; color: var(--cm-text); border-color: var(--cm-line); }
+
+/* Niveles de <font size> del editor = píxeles reales de [size=N] en CM (shared FONT_LEVEL_PX) */
+.cm-final font[size='1'], .cm-desc font[size='1'] { font-size: 9px; }
+.cm-final font[size='2'], .cm-desc font[size='2'] { font-size: 11px; }
+.cm-final font[size='3'], .cm-desc font[size='3'] { font-size: 13px; }
+.cm-final font[size='4'], .cm-desc font[size='4'] { font-size: 16px; }
+.cm-final font[size='5'], .cm-desc font[size='5'] { font-size: 20px; }
+.cm-final font[size='6'], .cm-desc font[size='6'] { font-size: 26px; }
+.cm-final font[size='7'], .cm-desc font[size='7'] { font-size: 34px; }
+.cm-final a, .cm-desc a { color: var(--cm-accent); text-decoration: underline; }
+.cm-final img, .cm-desc img { max-width: 100%; height: auto; display: inline-block; vertical-align: bottom; }
+.cm-desc img.sel { outline: 2px solid var(--cm-accent); outline-offset: 2px; cursor: pointer; }
+.rich-w { display: inline-flex; align-items: center; gap: 6px; }
+.rich-w input { width: 80px; background: #0b0c0b; color: var(--cm-text); border-color: var(--cm-line); }
+.rich-help { flex-basis: 100%; font-size: var(--fs-sm); line-height: 1.4; }
+.rich-help p, .rich-help ol { margin: 4px 0; }
+.rich-help ol { padding-left: 20px; }
+.cm-title-preview a { color: var(--cm-accent); text-decoration: underline; }
+
+.sheet-tpl-label { font-weight: 600; font-size: var(--fs-base); }
+.sheet-tpl-name { display: inline-flex; gap: 6px; align-items: center; }
+.sheet-tpl select { max-width: 260px; }

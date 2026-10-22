@@ -1,0 +1,14 @@
+{
+  "name": "@howler/simulator",
+  "version": "0.1.4",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "start": "tsx src/index.ts",
+    "typecheck": "tsc -p ."
+  },
+  "dependencies": {
+    "@howler/shared": "*"
+  },
+  "license": "SEE LICENSE IN LICENSE"
+}

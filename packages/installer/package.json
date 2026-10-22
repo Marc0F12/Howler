@@ -1,0 +1,14 @@
+{
+  "name": "@howler/installer",
+  "version": "0.1.4",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "migrate": "tsx src/cli.ts",
+    "typecheck": "tsc -p ."
+  },
+  "dependencies": {
+    "yaml": "^2.6.0"
+  },
+  "license": "SEE LICENSE IN LICENSE"
+}

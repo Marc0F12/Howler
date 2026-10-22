@@ -1,0 +1,10 @@
+{
+  "_comment": "Versión de AssettoServer con la que se ha validado Howler y su plugin. Cambiarla exige recompilar el plugin contra el mismo tag.",
+  "assettoServer": {
+    "version": "v0.0.55-pre35",
+    "url": "https://github.com/compujuckel/AssettoServer/releases/download/v0.0.55-pre35/assetto-server-win-x64.zip",
+    "sha256": "59FE87D2A03CF5C03413A78B6EBF4448890B2577DDCB40E202ACB6AEB7CF9821",
+    "size": 48570183,
+    "sourceTag": "v0.0.55-pre35"
+  }
+}

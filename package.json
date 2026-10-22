@@ -1,0 +1,33 @@
+{
+  "name": "howler",
+  "version": "0.1.5",
+  "private": true,
+  "type": "module",
+  "workspaces": [
+    "packages/*"
+  ],
+  "scripts": {
+    "dev": "concurrently -n server,web -c blue,magenta \"npm:dev:server\" \"npm:dev:web\"",
+    "dev:server": "npm run dev -w @howler/server",
+    "dev:web": "npm run dev -w @howler/web",
+    "sim": "npm run start -w @howler/simulator --",
+    "build": "npm run build -w @howler/web",
+    "package:beta": "node scripts/package-beta.mjs",
+    "package:setup": "node scripts/package-setup.mjs",
+    "package:linux": "node scripts/package-linux.mjs",
+    "setup:dev": "node scripts/setup-dev.mjs",
+    "start": "npm run start -w @howler/server",
+    "test": "vitest run",
+    "typecheck": "npm run typecheck --workspaces --if-present"
+  },
+  "devDependencies": {
+    "@types/node": "^24.0.0",
+    "concurrently": "^9.0.0",
+    "postject": "1.0.0-alpha.6",
+    "resedit": "^3.1.0",
+    "tsx": "^4.19.0",
+    "typescript": "^5.6.0",
+    "vitest": "^3.0.0"
+  },
+  "license": "SEE LICENSE IN LICENSE"
+}

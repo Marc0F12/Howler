@@ -125,6 +125,73 @@ Si tienes campeonatos, también puedes asignar a cada plaza un equipo y un pilot
 
 > **Importante.** Howler guarda una copia de cada archivo que toca (`.howler-prev`). Si luego guardas desde Content Manager, manda Content Manager.
 
+## Cómo dejar que Howler ajuste solo WeatherFX, los datos del circuito y data.acd
+
+Algunos circuitos y coches de mods hacen que el servidor no arranque si no cambias tres opciones. En **Servidor → Sesión y clima → Ajustes rápidos del servidor** cada una tiene tres posiciones:
+
+- **Encendido** o **Apagado**: lo decides tú.
+- **Auto**: Howler lo decide cada vez que arranca el servidor, según lo instalado, y te dice qué decidió y por qué.
+
+Las opciones son **Clima de CSP (WeatherFX)** (Auto = hay Pure o Sol instalado), **Datos del circuito** (Auto = el circuito no tiene zona horaria en `data_track_params.ini`) y **Coches sin data.acd** (Auto = algún coche de la lista no lo tiene). Si nunca eliges, Howler no toca nada. Se aplican al reiniciar: usa **Reiniciar el servidor para aplicarlo**.
+
+## Cómo personalizar la ficha de tu servidor en Content Manager
+
+*Es lo que ven los jugadores al elegir tu servidor en la lista: título, descripción, imágenes y enlaces. 10 minutos.*
+
+1. Abre **Servidor → Ficha del servidor**.
+2. Escribe el **título** (si quieres un prefijo como `[EU]`, usa paréntesis: Content Manager interpreta los corchetes en la cabecera).
+3. A la izquierda está el editor de la **descripción**: selecciona texto y usa la barra (negrita, cursiva, tamaño, color, enlace, imagen). A la derecha ves el **resultado final**, con el circuito y los coches reales de tu servidor.
+4. Para una imagen, pega su **enlace público** (Howler no aloja imágenes: súbela a Discord, imgur o GitHub y copia el enlace directo). Un enlace de GitHub de tipo `/blob/` se convierte solo.
+5. Si quieres empezar desde algo hecho, elige un **preset** y pulsa **Cargar**. Con **Guardar como preset…** guardas el tuyo y con **Usar por defecto** eliges cuál se carga con la descripción vacía.
+6. Pulsa **Guardar** (o **Guardar y reiniciar**). Los cambios se ven al reiniciar el servidor.
+
+> **Importante.** Howler deja siempre al pie de la descripción de serie una línea «Tiempos y estadísticas con Howler». Puedes quitarla o cambiarla.
+
+## Cómo preparar la sesión (combustible, daños, neumáticos, ayudas…)
+
+En **Servidor → Sesión y clima** están casi todos los ajustes de la sesión, ordenados por lo que más se toca: circuito y coches arriba, después cómo es la sesión (práctica, clasificación, carrera), el clima y el servidor.
+
+- Lo más usado (combustible, daños, desgaste, ayudas, neumáticos, reglas de carrera) está a la vista; lo demás, plegado en **Avanzado**. Hay buscador.
+- Arriba hay **presets**: unos de serie y los tuyos (**Guardar como preset…**). Un preset guarda los ajustes y el plan de sesiones, no la lista de coches.
+- Para fijar el reglaje de un coche (**setup fijo**), elígelo en la lista de coches: Howler lista los setups del servidor y los que tengas en tus Documentos.
+- Nada se aplica hasta que pulsas **Guardar** (o **Guardar y reiniciar**). Howler guarda una copia del archivo anterior (`.howler-prev`).
+
+## Cómo programar el servidor (eventos)
+
+En **Servidor → Programación** creas eventos: a la hora marcada, Howler aplica un preset de sesión y arranca el servidor (o lo reinicia, avisando antes a los jugadores, si ya estaba en marcha).
+
+1. Pulsa **Nuevo evento** y ponle nombre.
+2. Elige el **preset de sesión** (o «Sin cambiar ajustes»).
+3. Elige **Una sola vez** (fecha y hora) o **Cada semana** (días y hora). La hora es la del PC donde corre Howler.
+4. Opcional: **avisar por el chat** unos minutos antes y **parar solo** pasado un tiempo.
+5. Opcional: cambiar el **circuito** y los **coches** (con plazas por coche) que se ponen antes de arrancar, y marcar **Avisar también por Discord**.
+6. **Guardar evento**. **Ejecutar ahora** lo lanza sin esperar.
+
+Dos atajos en la misma pantalla:
+
+- **Fin de semana de carrera:** crea de una vez la práctica, la clasificación y la carrera como tres eventos seguidos, cada uno con su preset, su desfase y su parada. Cada evento que arranca releva al anterior.
+- **Desde un campeonato:** elige una carrera de un campeonato y crea los eventos con su circuito, sus coches permitidos y las fechas de práctica, clasificación y carrera que ya tiene (las que ya pasaron no se programan).
+
+Los avisos de Discord («se acerca» y «empieza») se pueden editar o apagar en Ajustes → Conexiones → Discord.
+
+Howler tiene que estar abierto a esa hora. Si estaba apagado y se pasan más de 10 minutos, el evento sale como «Perdido» y no arranca nada.
+
+## Cómo abrir el panel desde otro equipo (cuentas)
+
+Por defecto el panel solo se abre en el PC de Howler, sin contraseña. Para usarlo desde otro equipo (por ejemplo con Howler en un VPS):
+
+1. En el PC de Howler, **Ajustes → Cuentas → Nueva cuenta**: usuario, contraseña (**Generar** la crea aleatoria) y rol. Solo se gestionan cuentas desde ese PC.
+2. **Activar el acceso remoto** y cierra y abre Howler.
+3. Abre el puerto del panel (8421) en el cortafuegos (la misma pantalla trae el comando de PowerShell para copiar) y, desde internet, en el router. Entra en `http://<dirección del PC>:8421`. Las sesiones iniciadas siguen valiendo si reinicias Howler (12 horas).
+
+Roles: **Administrador** (todo salvo ajustes del programa, copias, actualizaciones y cuentas, que solo se tocan desde el PC), **Moderador** (control en directo, penalizaciones y revisar vueltas) y **Solo ver**. Tras 5 contraseñas malas se bloquean los intentos 5 minutos. Cambiar la contraseña o el rol cierra la sesión de esa cuenta.
+
+> **Ojo.** Por http la contraseña viaja sin cifrar. Fuera de tu red local usa un túnel o un proxy con https (Cloudflare Tunnel, Tailscale…).
+
+## Cómo usar Howler en Linux
+
+Howler corre en Linux (servidor, panel y plugin). No hay instalador gráfico ni `Howler.exe`, pero sí un paquete: descarga `Howler-<versión>-linux.tar.gz` de la release, descomprímelo y ejecuta `bash install.sh --server /ruta/a/tu/servidor` y después `bash start.sh` (necesitas Node 24 y un AssettoServer v0.0.55-pre35 para Linux). Con `--service` queda como servicio de systemd. Todos los pasos están en `LINUX.md` (dentro del paquete y en `docs/LINUX.md`). En un servidor sin pantalla, abre el panel con un túnel SSH (`ssh -L 8421:127.0.0.1:8421 usuario@servidor`) o con cuentas (sección anterior).
+
 ## Cómo cambiar la hora, el clima y la sesión en directo
 
 1. Abre **Servidor → En directo**.
@@ -154,6 +221,8 @@ Hay dos sistemas de clima, y se elige en **Servidor → Sesión y clima → Sist
 Una vuelta puede ser **válida**, **nula** o **pendiente de revisión**. Las pendientes son salidas de boxes: no cuentan hasta que las apruebas en la tarjeta **Pendientes de revisión**. También puedes anular o dar por buena cualquier vuelta reciente, con un motivo.
 
 Con **Avisar al piloto**, Howler escribe por chat «Howler: vuelta X anulada» con el motivo.
+Si prefieres que las salidas de boxes se anulen solas, marca **Anular automáticamente las salidas de boxes** en esa misma tarjeta. Salen como nulas con su motivo y puedes recuperarlas con **Dar por buena**. No afecta a las que ya estaban pendientes.
+
 
 ## Cómo penalizar a un piloto en una carrera
 
@@ -212,6 +281,19 @@ Cada aviso tiene botón **Probar este aviso**. Puedes añadir hasta 10 canales.
 2. Marca qué récords anunciar: mejor vuelta de la sesión, de circuito y coche, o absoluto del circuito.
 3. Cambia el texto si quieres (`{piloto}`, `{tiempo}`, `{coche}`, `{circuito}`, `{anterior}`, `{mejora}`).
 
+## Cómo usar Howler junto a otro programa que usa el puerto UDP del servidor (penalizaciones, etc.)
+
+**El problema.** El servidor de AC solo puede mandar su interfaz UDP (`UDP_PLUGIN_ADDRESS` en el `server_cfg.ini`) a **un único programa**. Howler la usa para saber quién entra, las sesiones y las posiciones. Programas como los de penalizaciones (Real Penalty y similares) usan la misma. Si ambos piden ese puerto, uno se queda sin datos.
+
+**La solución.** Howler hace de intermediario: recibe todo del servidor, **se lo copia al otro programa** y devuelve al servidor lo que ese programa conteste (expulsiones, penalizaciones...). Los dos funcionan a la vez y no hay que elegir. Todo ocurre dentro de tu PC.
+
+1. En el `server_cfg.ini` del preset deja `UDP_PLUGIN_ADDRESS=127.0.0.1:12000` (el puerto de Howler) y `UDP_PLUGIN_LOCAL_PORT=11000`.
+2. Configura el **otro programa** para que escuche en **otro** puerto libre (por ejemplo `12100`) y que hable con el servidor en el `11000`, como haría normalmente.
+3. En Howler abre **Ajustes → General → Compartir con otros plugins de AC**, escribe ese puerto (`12100`; si son varios, separados por comas) y pulsa **Guardar ajustes**.
+4. Reinicia Howler y el servidor.
+
+Para quitarlo, vacía el campo. Los plugins de AssettoServer escritos en C# (los de la carpeta `plugins`, incluido el de Howler) **no** usan este puerto y no se ven afectados. En `howler.config.json` es `acsp.forward`.
+
 ## Cómo vincular dos Howler (MultiHowler)
 
 *Para compartir tiempos entre dos servidores sin base de datos común. 10 minutos.*
@@ -226,6 +308,8 @@ Cada aviso tiene botón **Probar este aviso**. Puedes añadir hasta 10 canales.
 Los datos solo viajan de A a B si A da **y** B recibe. Cada vínculo muestra cuándo fue la última sincronización. Puedes **ocultar** los datos de un vínculo (reversible) o **borrarlos**.
 
 > **Importante.** Basta con que uno de los dos sea accesible desde internet, pero los dos Howler deben estar encendidos para sincronizar. Lo mejor es que Howler arranque con Windows.
+Cada vínculo tiene además el interruptor **Compartir trayectorias** (apagado de serie; los dos lados deben activarlo): con él, el comparador y los fantasmas pueden usar las mejores vueltas de los pilotos del otro servidor.
+
 
 ## Cómo cambiar el aspecto de la web
 
@@ -258,7 +342,9 @@ También puedes exportar todas las vueltas como CSV o JSON (el CSV se abre en Ex
 
 ## Cómo activar la telemetría avanzada
 
-*Freno real, fuerzas g, patinazos, ABS/TC y neumáticos en el comparador. Experimental.*
+*Freno real, fuerzas g, patinazos, ABS/TC y neumáticos en el comparador. Viene activada de serie.*
+
+El instalador la deja activada (`EnableClientMessages: true` en `extra_cfg.yml` y `ClientTelemetry: true` en `plugin_howler_cfg.yml`). Si la apagaste a mano, o instalas sin el instalador:
 
 1. En `<servidor>\cfg\plugin_howler_cfg.yml`, pon `ClientTelemetry: true`.
 2. En `extra_cfg.yml`, comprueba `EnableClientMessages: true`.
@@ -382,6 +468,8 @@ Todas las claves son opcionales: lo que falte toma su valor por defecto. Si algo
 | `serverDir` | Carpeta del servidor de AC | vacío |
 | `language` | Idioma de lo que escribe Howler (chat, Discord): `es` o `en` | `es` |
 | `http.host` / `http.port` | Dónde escucha la web | `0.0.0.0` / `8420` |
+| `admin.remote.enabled` | Permite abrir el panel desde otros equipos con usuario y contraseña (cuentas creadas en Ajustes → Cuentas). Apagado: el panel solo escucha en este PC. Hay que reiniciar Howler y abrir el puerto del panel (`admin.port`, 8421) en el cortafuegos; fuera de tu red usa un túnel o un proxy con https | `false` |
+| `http.rateLimit` | Límites contra abusos de la web pública: `enabled` (se pueden apagar), `perMinute` (peticiones por minuto y dirección), `heavyPerMinute` (consultas pesadas), `liveConnectionsPerIp` y `liveConnectionsTotal` (conexiones en directo). Con un túnel (Cloudflare Tunnel, nginx…) cada visitante cuenta aparte si el túnel manda su dirección en `CF-Connecting-IP` o `X-Forwarded-For` | `600` / `120` / `12` / `400` |
 | `admin.port` | Puerto del panel (solo 127.0.0.1) | `8421` |
 | `dataDir` | Carpeta de datos | `./data` |
 | `server.exe` | Ejecutable del servidor | `acServer.exe` |
@@ -390,6 +478,7 @@ Todas las claves son opcionales: lo que falte toma su valor por defecto. Si algo
 | `server.stopWarningSeconds` | Segundos de aviso antes de parar | `10` |
 | `acsp.listenHost` / `acsp.listenPort` | Dónde escucha Howler al servidor (`UDP_PLUGIN_ADDRESS`) | `127.0.0.1` / `12000` |
 | `acsp.serverHost` / `acsp.serverPort` | Dónde escucha el servidor (`UDP_PLUGIN_LOCAL_PORT`) | `127.0.0.1` / `11000` |
+| `acsp.forward` | Puertos UDP (en este PC) de otros programas que también usan la interfaz UDP del servidor (penalizaciones, etc.): Howler les copia todo y devuelve al servidor lo que contesten. Se edita en Ajustes → General → «Compartir con otros plugins de AC» | `[]` |
 | `acsp.positionIntervalMs` | Intervalo de posiciones | `100` |
 | `acsp.referenceOffsetM` | Calibración de la estimación de sectores (sin plugin) | `1` |
 | `acsp.pluginPort` | Puerto donde escucha Howler al plugin | `12001` |
@@ -414,7 +503,7 @@ Se crea solo en `<servidor>\cfg\` la primera vez y no se reescribe.
 | `Port` | Puerto para los sectores (= `acsp.pluginPort`) | `12001` |
 | `TelemetryHz` | Muestras por segundo y coche (0 = apagado) | `10` |
 | `CommandPort` | Órdenes del panel (solo 127.0.0.1; 0 = apagado) | `12002` |
-| `ClientTelemetry` | Datos extra de los jugadores con CSP (experimental) | `false` |
+| `ClientTelemetry` | Datos extra de los jugadores con CSP | `true` |
 
 ## Qué toca Howler en tu servidor
 
@@ -511,7 +600,7 @@ Los plugins de terceros compilados para la versión vieja pueden no cargar.
 
 ## Licencia, marca y créditos
 
-Howler es gratis pero no es código abierto: ver `LICENSE`. El nombre y el logo están reservados (`docs/TRADEMARK.md`). `HowlerPlugin` es AGPL-3.0, igual que AssettoServer, cuyo código está disponible en su proyecto. Los componentes de terceros y los iconos de las insignias (Game-icons.net, CC BY 3.0) están en `THIRD-PARTY-NOTICES.md` y en la página de créditos de la web.
+Howler es software libre bajo la licencia AGPL-3.0 (ver `LICENSE`), con un permiso adicional para que los módulos y temas de terceros sean de su autor. El nombre y el logo están reservados (`docs/TRADEMARK.md`). AssettoServer, que el instalador incluye, también es AGPL-3.0 y su código está disponible en su proyecto. Los componentes de terceros están en `THIRD-PARTY-NOTICES.md`.
 
 ## Limitaciones conocidas
 

@@ -20,8 +20,8 @@ public class HowlerConfiguration : IValidateConfiguration<HowlerConfigurationVal
     [YamlMember(Description = "Puerto UDP (solo 127.0.0.1) donde el plugin recibe las órdenes del panel de Howler: hora, clima, lastre... 0 = desactivado")]
     public int CommandPort { get; init; } = 12002;
 
-    [YamlMember(Description = "EXPERIMENTAL: reparte a los clientes con CSP un script que manda el pedal de freno real, la aceleración y datos de las ruedas (necesita EnableClientMessages: true en extra_cfg.yml). Los datos salen del PC de cada jugador. false = desactivado")]
-    public bool ClientTelemetry { get; init; } = false;
+    [YamlMember(Description = "Reparte a los clientes con CSP un script que manda el pedal de freno real, la aceleración y datos de las ruedas (necesita EnableClientMessages: true en extra_cfg.yml). Los datos salen del PC de cada jugador y solo los mandan los que tienen CSP. false = desactivado")]
+    public bool ClientTelemetry { get; init; } = true;
 }
 
 public class HowlerConfigurationValidator : AbstractValidator<HowlerConfiguration>
