@@ -5,7 +5,7 @@
 **Tiempos, estadísticas y control para servidores de Assetto Corsa** (AssettoServer v0.0.55-pre35).
 **Lap times, stats and control for Assetto Corsa servers.**
 
-**👉 [Mira qué hace sin instalar nada / See what it does without installing anything](https://marc0f12.github.io/Howler/)**
+**👉 [Mira qué hace sin instalar nada / See what it does without installing anything](https://marc0f12.github.io/Howler/)** · [🎬 Vídeo / Video (70 s)](https://marc0f12.github.io/Howler/#video)
 
 Howler recoge las vueltas, los sectores y los incidentes de tu servidor, los guarda en una base de datos propia y los enseña en una web pública (tiempos, sesiones, pilotos, campeonatos, comparador de vueltas, fantasmas) y en un panel de control (arrancar y parar el servidor, ajustes de sesión, clima, penalizaciones, campeonatos, Discord…). Sustituye a stracker. Software libre bajo AGPL-3.0.
 

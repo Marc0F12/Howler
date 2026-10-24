@@ -61,7 +61,7 @@ footer{padding:32px 0;border-top:1px solid var(--line);color:var(--muted);font-s
 </style>
 </head>
 <body>
-<header class="top"><div class="w"><b>Howler</b><a href="#tour">Tour</a><a href="#clips">Clips</a><a href="#everything">Everything</a><a href="#how">How it works</a><a href="#get">Download</a></div></header>
+<header class="top"><div class="w"><b>Howler</b><a href="#video">Video</a><a href="#tour">Tour</a><a href="#clips">Clips</a><a href="#everything">Everything</a><a href="#how">How it works</a><a href="#get">Download</a></div></header>
 
 <main>
 <div class="w hero">
@@ -72,6 +72,8 @@ footer{padding:32px 0;border-top:1px solid var(--line);color:var(--muted);font-s
   </div>
   <div class="shot"><img src="img/g01-live.gif" alt="Cars moving on the live map while the standings update" width="1280" height="720"></div>
 </div>
+
+<section id="video"><div class="w"><h2>Watch it in 70 seconds</h2><video controls preload="metadata" poster="img/video-poster.jpg" style="width:100%;border:1px solid var(--line);border-radius:8px;margin-top:16px" src="howler-presentacion.mp4"></video></div></section>
 
 <section id="tour"><div class="w">
   <h2>Take the tour</h2>
@@ -197,7 +199,7 @@ const S=[
 ["p05-server-sheet.png","Server sheet","Edit how your server looks in Content Manager with a live preview of the result."],
 ["c-settings-accounts--accounts.png","Accounts","Admin, moderator and view-only roles for remote access. Off by default."],
 ["x-import--import-from-stracker.png","Import from stracker","Bring your history over. Laps are re-judged with Howler's own rules."],
-["i03-options.png","Installer","Detects your server, backs it up, installs the plugin and can open the firewall port."]
+["i01-welcome.png","Installer","Detects your server, backs it up and installs the plugin for you, with every step explained."]
 ];
 const $=id=>document.getElementById(id);let i=0;
 const ol=$('steps');
