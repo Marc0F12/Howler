@@ -26,7 +26,7 @@ const lapSeconds = Number(opt('lap-seconds', '25'));
 const acDir = opt('ac', '');
 const trackId = opt('track', 'ks_vallelunga');
 const layoutId = opt('layout', trackId === 'ks_vallelunga' ? 'club' : '');
-// --names "A,B,C": nombres de los pilotos simulados (para capturas públicas sin nombres reales).
+// --names "A,B,C": nombres de los pilotos simulados (para capturas públicas sin nombres reales). --cars "a,b": coches (si hay menos que pilotos, se usa el primero).
 const driverCount = Math.min(Number(opt('drivers', '4')), 8);
 const [targetHost, targetPort] = opt('target', '127.0.0.1:12000').split(':') as [string, string];
 const listenPort = Number(opt('listen', '11000'));
@@ -47,7 +47,7 @@ const ROSTER = [
   { name: 'Dani', guid: '76561190000000006', car: 'ks_abarth500_assetto_corse', pace: 1.05 },
   { name: 'Rafa', guid: '76561190000000007', car: 'ks_mazda_mx5_nd', pace: 1.06 },
   { name: 'Noa', guid: '76561190000000008', car: 'ks_abarth500_assetto_corse', pace: 1.02 },
-].slice(0, driverCount).map((d, i) => ({ ...d, name: opt('names', '').split(',')[i]?.trim() || d.name }));
+].slice(0, driverCount).map((d, i) => ({ ...d, name: opt('names', '').split(',')[i]?.trim() || d.name, car: opt('cars', '').split(',')[i]?.trim() || opt('cars', '').split(',')[0]?.trim() || d.car }));
 
 interface SimCar {
   id: number;

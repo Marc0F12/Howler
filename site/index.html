@@ -1,0 +1,222 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Howler: lap times, stats and control for Assetto Corsa servers</title>
+<meta name="description" content="Open-source timing, statistics and server control for AssettoServer. See what it does without installing anything.">
+<style>
+:root{--bg:#14120f;--surface:#1d1a16;--line:#332e27;--text:#f1ede6;--muted:#a79f92;--accent:#e8b84a;--on:#14120f;--best:#b66cff;--pb:#46c36b}
+@media (prefers-color-scheme:light){:root{--bg:#f6f2ea;--surface:#fff;--line:#ddd5c5;--text:#1d1a16;--muted:#5f574b;--accent:#1f4fd8;--on:#fff}}
+*{box-sizing:border-box}html{scroll-behavior:smooth}
+body{margin:0;background:var(--bg);color:var(--text);font:16px/1.55 system-ui,"Segoe UI",sans-serif}
+a{color:var(--accent)}img{max-width:100%;height:auto;display:block}
+.w{max-width:1120px;margin:0 auto;padding:0 20px}
+header.top{position:sticky;top:0;z-index:5;background:color-mix(in srgb,var(--bg) 92%,transparent);border-bottom:1px solid var(--line)}
+header.top .w{display:flex;gap:20px;align-items:center;height:52px}
+header.top b{font-size:18px;margin-right:auto}
+header.top a{color:var(--muted);text-decoration:none;font-size:14px}header.top a:hover{color:var(--text)}
+.btn{display:inline-block;background:var(--accent);color:var(--on)!important;padding:10px 18px;border-radius:6px;font-weight:600;text-decoration:none}
+.btn.alt{background:none;border:1px solid var(--line);color:var(--text)!important}
+.hero{padding:64px 0 32px;display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.25fr);gap:40px;align-items:center}
+.hero h1{font-size:clamp(30px,4.4vw,48px);line-height:1.1;margin:0 0 16px}
+.hero p{color:var(--muted);font-size:18px;margin:0 0 24px}
+.hero .shot{border:1px solid var(--line);border-radius:8px;overflow:hidden}
+section{padding:48px 0;border-top:1px solid var(--line)}
+h2{font-size:28px;margin:0 0 8px}.lead{color:var(--muted);margin:0 0 28px;max-width:62ch}
+/* tour */
+.tour{display:grid;grid-template-columns:280px minmax(0,1fr);gap:24px}
+.steps{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:2px}
+.steps button{all:unset;cursor:pointer;display:block;width:100%;padding:9px 12px;border-radius:6px;color:var(--muted);font-size:15px}
+.steps button:hover{color:var(--text)}
+.steps button[aria-current=true]{background:var(--surface);color:var(--text);box-shadow:inset 3px 0 var(--accent)}
+.stage{background:var(--surface);border:1px solid var(--line);border-radius:8px;overflow:hidden}
+.stage img{width:100%;height:auto;aspect-ratio:auto}
+.cap{padding:16px 20px;border-top:1px solid var(--line)}
+.cap h3{margin:0 0 4px;font-size:18px}.cap p{margin:0;color:var(--muted)}
+.nav{display:flex;gap:8px;padding:0 20px 16px}
+.nav button{font:inherit;background:none;color:var(--text);border:1px solid var(--line);border-radius:6px;padding:6px 14px;cursor:pointer}
+.nav span{margin-left:auto;color:var(--muted);font-size:14px;align-self:center}
+/* grids */
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:20px}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:8px;overflow:hidden}
+.card img{width:100%;aspect-ratio:16/10;object-fit:cover;object-position:top;border-bottom:1px solid var(--line)}
+.card div{padding:14px 16px}.card h3{margin:0 0 4px;font-size:17px}.card p{margin:0;color:var(--muted);font-size:15px}
+.feat{columns:3 260px;column-gap:32px;margin:0;padding:0;list-style:none}
+.feat li{break-inside:avoid;padding:4px 0 4px 18px;position:relative;color:var(--muted)}
+.feat li::before{content:"";position:absolute;left:0;top:13px;width:8px;height:2px;background:var(--accent)}
+.feat b{color:var(--text)}
+.themes{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px}
+.themes img{border:1px solid var(--line);border-radius:6px}
+.themes figcaption{font-size:13px;color:var(--muted);margin-top:4px}.themes figure{margin:0}
+.dl{display:flex;gap:12px;flex-wrap:wrap;margin-top:8px}
+main img{cursor:zoom-in}
+dialog.lb{border:0;padding:0;background:transparent;max-width:96vw;max-height:96vh;overflow:visible}
+dialog.lb::backdrop{background:rgba(0,0,0,.88)}
+dialog.lb img{max-width:96vw;max-height:92vh;width:auto;height:auto;border-radius:6px;cursor:zoom-out}
+dialog.lb p{margin:8px 0 0;text-align:center;color:#ddd;font-size:14px}
+footer{padding:32px 0;border-top:1px solid var(--line);color:var(--muted);font-size:14px}
+@media (max-width:820px){.hero,.tour{grid-template-columns:1fr}.steps{flex-direction:row;overflow-x:auto}.steps button{white-space:nowrap}}
+@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
+</style>
+</head>
+<body>
+<header class="top"><div class="w"><b>Howler</b><a href="#tour">Tour</a><a href="#clips">Clips</a><a href="#everything">Everything</a><a href="#how">How it works</a><a href="#get">Download</a></div></header>
+
+<main>
+<div class="w hero">
+  <div>
+    <h1>Lap times, stats and control for your Assetto Corsa server.</h1>
+    <p>Howler replaces stracker for AssettoServer: live timing, records, lap comparison, championships, a full server panel and Discord notices. Free and open source.</p>
+    <div class="dl"><a class="btn" href="#get">Download</a><a class="btn alt" href="#tour">Take the tour</a></div>
+  </div>
+  <div class="shot"><img src="img/g01-live.gif" alt="Cars moving on the live map while the standings update" width="1280" height="720"></div>
+</div>
+
+<section id="tour"><div class="w">
+  <h2>Take the tour</h2>
+  <p class="lead">Click through the real screens, or use the arrow keys. Everything here was captured from a running Howler with demo data.</p>
+  <div class="tour">
+    <ol class="steps" id="steps"></ol>
+    <div class="stage" id="stage">
+      <img id="tour-img" src="img/w02-home-full.png" alt="Home: the latest session" width="1600" height="900">
+      <div class="cap"><h3 id="tour-title"></h3><p id="tour-text"></p></div>
+      <div class="nav"><button id="prev">← Previous</button><button id="next">Next →</button><span id="count"></span></div>
+    </div>
+  </div>
+</div></section>
+
+<section id="clips"><div class="w">
+  <h2>In motion</h2>
+  <p class="lead">Short clips of the parts that are better seen moving.</p>
+  <div class="grid">
+    <div class="card"><img src="img/g03-compare-play.gif" alt="" loading="lazy"><div><h3>Lap comparison</h3><p>Replay two or three laps on the map at their own pace; gaps, speed, pedals and corners line up.</p></div></div>
+    <div class="card"><img src="img/g04-ghosts.gif" alt="" loading="lazy"><div><h3>Ghosts</h3><p>The best laps of a combination racing each other, with zoom and a camera that follows a car.</p></div></div>
+    <div class="card"><img src="img/g02-record-banner.gif" alt="" loading="lazy"><div><h3>New record</h3><p>A banner and an optional sound the moment a record falls.</p></div></div>
+    <div class="card"><img src="img/g05-championship-wheel.gif" alt="" loading="lazy"><div><h3>Championships</h3><p>A wheel of races with schedule, weather, cars and download links.</p></div></div>
+    <div class="card"><img src="img/g08-live-time-weather.gif" alt="" loading="lazy"><div><h3>Time and weather, live</h3><p>Change the server's time of day and weather with a preview of the sky.</p></div></div>
+    <div class="card"><img src="img/g09-wizard.gif" alt="" loading="lazy"><div><h3>Championship wizard</h3><p>Participants, teams, races and scoring in five steps.</p></div></div>
+    <div class="card"><img src="img/g07-times-filter.gif" alt="" loading="lazy"><div><h3>Track and car picker</h3><p>A 3D carousel with the previews from your Assetto Corsa install.</p></div></div>
+    <div class="card"><img src="img/g06-championship-badges.gif" alt="" loading="lazy"><div><h3>Championship badges</h3><p>Pick an image or build a badge from layers.</p></div></div>
+  </div>
+</div></section>
+
+<section id="everything"><div class="w">
+  <h2>Everything it does</h2>
+  <p class="lead">Grouped by what you are trying to do.</p>
+  <h3>Timing and stats</h3>
+  <ul class="feat">
+    <li><b>Live standings</b> with purple/green/yellow sectors and gaps</li>
+    <li><b>Exact sector times</b> from the server plugin</li>
+    <li><b>Records</b> per track and car, with ideal lap and weather</li>
+    <li><b>Session history</b> and a page for every session</li>
+    <li><b>Driver, track and car profiles</b>, head-to-head, rankings</li>
+    <li><b>King of the hill</b>: every lap that lowered the session best</li>
+    <li><b>Live map</b> with a vector track drawn from the game's own line</li>
+    <li><b>Telemetry</b> for players with CSP: brake, throttle, G, tyres, ABS/TC</li>
+  </ul>
+  <h3 style="margin-top:24px">Run the server</h3>
+  <ul class="feat">
+    <li><b>Start, stop, restart</b> with a clean shutdown and live console</li>
+    <li><b>Full session panel</b> with presets, fuel, damage, tyres, assists</li>
+    <li><b>Cars and track</b> with Content Manager-style pickers</li>
+    <li><b>Scheduled events</b>: weekly or one-off, race weekends, from a championship</li>
+    <li><b>Live control</b>: time, weather, chat, kick, ban, ballast</li>
+    <li><b>Server sheet</b> editor for how it looks in Content Manager</li>
+    <li><b>Startup diagnosis</b> that explains why a server will not start</li>
+    <li><b>Accounts</b> with admin, moderator and view-only roles for remote access</li>
+  </ul>
+  <h3 style="margin-top:24px">Competition</h3>
+  <ul class="feat">
+    <li><b>Lap rules</b>: cuts, collisions, minimum time, per track</li>
+    <li><b>Review queue</b> for pit-exit laps and doubtful laps</li>
+    <li><b>Penalties</b>: warnings, added time, disqualification, automatic rules</li>
+    <li><b>Championships</b>: individual, pairs or teams, any scoring</li>
+    <li><b>Mod download links</b> and car/track cards per race</li>
+  </ul>
+  <h3 style="margin-top:24px">Connect and keep</h3>
+  <ul class="feat">
+    <li><b>Discord</b> notices for records, sessions, events</li>
+    <li><b>MultiHowler</b>: link several servers and share data</li>
+    <li><b>Import from stracker</b></li>
+    <li><b>Backups</b> and CSV/JSON export</li>
+    <li><b>6 themes</b>, accent colour, drag-and-drop page layout</li>
+    <li><b>Spanish and English</b></li>
+    <li><b>Windows installer</b> and a Linux package</li>
+  </ul>
+  <h3 style="margin-top:24px">Six themes</h3>
+  <div class="themes">
+    <figure><img src="img/w70-theme-original-light.png" alt="" loading="lazy"><figcaption>Original (light and dark)</figcaption></figure>
+    <figure><img src="img/w70-theme-f1.png" alt="" loading="lazy"><figcaption>F1</figcaption></figure>
+    <figure><img src="img/w70-theme-gt.png" alt="" loading="lazy"><figcaption>GT</figcaption></figure>
+    <figure><img src="img/w70-theme-essential.png" alt="" loading="lazy"><figcaption>Essential</figcaption></figure>
+    <figure><img src="img/w70-theme-cm.png" alt="" loading="lazy"><figcaption>CM</figcaption></figure>
+  </div>
+</div></section>
+
+<section id="how"><div class="w">
+  <h2>How it works</h2>
+  <p class="lead">Howler listens to the server, stores everything in a local database and serves the website. Nothing leaves your machine unless you link servers or set up Discord.</p>
+  <div class="grid">
+    <div class="card"><img src="img/d-s01-flow.png" alt="" loading="lazy"><div><h3>Where the data comes from</h3><p>Server events and an optional plugin feed one local database.</p></div></div>
+    <div class="card"><img src="img/d-s03-telemetry.png" alt="" loading="lazy"><div><h3>Player telemetry</h3><p>CSP clients send pedals, G and tyre data through a script the server hands out. Players install nothing.</p></div></div>
+    <div class="card"><img src="img/d-s04-multihowler.png" alt="" loading="lazy"><div><h3>MultiHowler</h3><p>Peers share laps read-only; each lap is only ever edited by the Howler that recorded it.</p></div></div>
+    <div class="card"><img src="img/d-s06-glance.png" alt="" loading="lazy"><div><h3>At a glance</h3><p>The whole system on one page.</p></div></div>
+  </div>
+</div></section>
+
+<section id="get"><div class="w">
+  <h2>Get Howler</h2>
+  <p class="lead">Free, AGPL-3.0. Windows installer with a guided setup, or a Linux package. The source is public.</p>
+  <div class="dl">
+    <a class="btn" href="https://github.com/Marc0F12/Howler/releases/latest">Download the latest release</a>
+    <a class="btn alt" href="https://github.com/Marc0F12/Howler">Source code</a>
+  </div>
+</div></section>
+</main>
+<footer><div class="w">Howler is not affiliated with Kunos Simulazioni or the AssettoServer project. Screens show demo data with invented drivers.</div></footer>
+
+<script>
+const S=[
+["w02-home-full.png","Home: the latest session","Live map, podium, full standings and the king of the hill. It follows whoever is on track and updates on its own."],
+["w03-standings-sectors.png","Standings with sectors","Best sector of the session in purple, personal best in green, the rest in yellow. A voided lap never paints a record."],
+["w10-times.png","Times and records","One row per driver and car with the gap, sectors, ideal lap, speed, laps and the weather of that lap."],
+["w31-driver.png","Driver profiles","Laps, clean-lap rate, favourite track and car, records and podiums, and how each best time improved."],
+["w32-versus.png","Head to head","Only the combinations both drivers ran; the faster best lap wins each row."],
+["w51-compare-full.png","Compare laps","A summary sentence, a map coloured by who is faster, linked charts with shared zoom, and a corner-by-corner table."],
+["w52-compare-tyres.png","Tyres per wheel","For players with CSP: temperature and pressure of each wheel following the cursor."],
+["w60-ghosts.png","Ghosts","The best laps racing on the map with live gaps and sector colours."],
+["w41-championship.png","Championships","Teams, a wheel of races, schedule as a timeline, car cards and results with the standings chart."],
+["b-server-session--session.png","Session panel","Presets, session plan, conditions, assists and tyres. One setting is one entry in a registry, so the panel stays complete."],
+["c-server-live--time-and-weather.png","Time and weather, live","Move the time with a slider and pick any of the 26 CSP weather types with a preview."],
+["c-server-schedule--scheduled-events.png","Scheduled events","Weekly or one-off. Each can change preset, track and cars, warn players, announce on Discord and stop itself."],
+["c-competition-rules--profiles.png","Lap rules","Decide what voids a lap, per track. Test against your history before applying."],
+["c-competition-penalties--apply-a-penalty.png","Penalties","Warnings, added time or disqualification, plus automatic rules for cuts and collisions."],
+["x-discord--2-announcements-records.png","Discord","Every notice can be switched on or off and edited, with a test button."],
+["c-settings-connections--links.png","MultiHowler","Link servers with an invitation and an approval step; choose what each side shares."],
+["p05-server-sheet.png","Server sheet","Edit how your server looks in Content Manager with a live preview of the result."],
+["c-settings-accounts--accounts.png","Accounts","Admin, moderator and view-only roles for remote access. Off by default."],
+["x-import--import-from-stracker.png","Import from stracker","Bring your history over. Laps are re-judged with Howler's own rules."],
+["i03-options.png","Installer","Detects your server, backs it up, installs the plugin and can open the firewall port."]
+];
+const $=id=>document.getElementById(id);let i=0;
+const ol=$('steps');
+S.forEach((s,n)=>{const li=document.createElement('li'),b=document.createElement('button');b.textContent=s[1];b.onclick=()=>go(n);li.append(b);ol.append(li)});
+function go(n){i=(n+S.length)%S.length;const s=S[i];
+  $('tour-img').src='img/'+s[0];$('tour-img').alt=s[1];$('tour-title').textContent=s[1];$('tour-text').textContent=s[2];
+  $('count').textContent=(i+1)+' / '+S.length;
+  [...ol.querySelectorAll('button')].forEach((b,k)=>b.setAttribute('aria-current',k===i));
+  ol.querySelectorAll('button')[i].scrollIntoView({block:'nearest',inline:'nearest'});}
+$('prev').onclick=()=>go(i-1);$('next').onclick=()=>go(i+1);
+document.addEventListener('keydown',e=>{if(e.target.closest('input,textarea'))return;const r=$('tour').getBoundingClientRect();if(r.bottom<0||r.top>innerHeight)return;
+  if(e.key==='ArrowRight')go(i+1);if(e.key==='ArrowLeft')go(i-1)});
+go(0);
+</script>
+<dialog class="lb" id="lb" aria-label="Image viewer"><img id="lb-img" alt=""><p id="lb-cap"></p></dialog>
+<script>
+const lb=document.getElementById("lb");
+document.querySelector("main").addEventListener("click",e=>{const im=e.target.closest("img");if(!im)return;document.getElementById("lb-img").src=im.currentSrc||im.src;document.getElementById("lb-img").alt=im.alt;document.getElementById("lb-cap").textContent=im.alt||"";lb.showModal()});
+lb.addEventListener("click",()=>lb.close());
+</script>
+</body>
+</html>
