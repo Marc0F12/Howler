@@ -1,4 +1,4 @@
-import type { SmartKey, SmartMode, SmartSettingDto, SoundsDto, UpdateStateDto, ManagedDriverDto, MhStateDto, InstalledContentDto, DiscordEventId, DiscordEventSetting, PenaltyDto, PenaltyInput, PenaltySessionDto, RacePenaltyRules, ImportReportDto, StrackerApplyInput, StrackerPreviewDto, ChampionshipDto, ChampionshipInput, ChampionshipStatus, ChampionshipSummaryDto, SessionCandidateDto, AdminLapDto, AdminStateDto, CommandResultDto, LapRulesConfig, LapRulesStateDto, RevalidationDto, ServerDirCheckDto, SessionSettingsDto, WeatherEntryDto, CarChecksumsStateDto, ServerDiagnosisDto, EntryListDto, EntrySlotDto, WeatherStateDto, ServerSheetDto, SheetPresetsDto, SessionPanelDto, SessionsPlan, SettingValue, ScheduleStateDto, ScheduledEventInput, AccountsStateDto, AccountRole, WhoAmIDto } from '@howler/shared';
+import type { SmartKey, SmartMode, SmartSettingDto, SoundsDto, UpdateStateDto, ManagedDriverDto, MhStateDto, InstalledContentDto, DiscordEventId, DiscordEventSetting, PenaltyDto, PenaltyInput, PenaltySessionDto, RacePenaltyRules, ImportReportDto, StrackerApplyInput, StrackerPreviewDto, ChampionshipDto, ChampionshipInput, ChampionshipStatus, ChampionshipSummaryDto, SessionCandidateDto, AdminLapDto, AdminStateDto, CommandResultDto, LapRulesConfig, LapRulesStateDto, RevalidationDto, ServerDirCheckDto, SessionSettingsDto, WeatherEntryDto, CarChecksumsStateDto, ServerDiagnosisDto, EntryListDto, EntrySlotDto, WeatherStateDto, ServerSheetDto, SheetPresetsDto, SessionPanelDto, SessionsPlan, SettingValue, ScheduleStateDto, ScheduledEventInput, AccountsStateDto, AccountRole, WhoAmIDto, CarTyresDto, SignupStateDto, SignupSettings } from '@howler/shared';
 
 export interface SessionPresetsDto { presets: { id: string; name: string; values: Record<string, SettingValue>; sessions: SessionsPlan }[] }
 export interface SetupsDto { server: { file: string; car: string | null; bytes: number }[]; user: { car: string; track: string; file: string }[] }
@@ -107,6 +107,12 @@ export const adminApi = {
   entryList: () => adminGet<EntryListDto>('/admin/api/entry-list'),
   saveEntryList: (slots: EntrySlotDto[], applyAndRestart = false) => adminPut<EntryListDto & { restarting: boolean }>('/admin/api/entry-list', { slots, applyAndRestart }),
   saveServerTrack: (track: string, layout: string) => adminPut<EntryListDto & { restarting: boolean }>('/admin/api/server-track', { track, layout, applyAndRestart: false }),
+  signups: (id: number) => adminGet<SignupStateDto>('/admin/api/championships/' + id + '/signups'),
+  saveSignupSettings: (id: number, s: SignupSettings) => adminPut<SignupStateDto>('/admin/api/championships/' + id + '/signup', s),
+  approveSignup: (id: number, sid: number, teamId: number | null, car: string | null) => adminPost<SignupStateDto>('/admin/api/championships/' + id + '/signups/' + sid + '/approve', { teamId, car }),
+  rejectSignup: (id: number, sid: number) => adminPost<SignupStateDto>('/admin/api/championships/' + id + '/signups/' + sid + '/reject', {}),
+  removeSignup: (id: number, sid: number) => adminDelete<SignupStateDto>('/admin/api/championships/' + id + '/signups/' + sid),
+  carTyres: () => adminGet<CarTyresDto>('/admin/api/tyres'),
   carSkins: (model: string) => adminGet<{ id: string; name: string }[]>(`/admin/api/content/cars/${encodeURIComponent(model)}/skins`),
   sounds: () => adminGet<SoundsDto>('/admin/api/sounds'),
   selectSound: (record: string) => adminPut<SoundsDto>('/admin/api/sounds/select', { record }),

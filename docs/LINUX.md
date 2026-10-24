@@ -1,15 +1,32 @@
 # Howler en Linux o en un VPS
 
+> **¿Nunca has usado Linux?** Lee la [guía paso a paso](LINUX-GUIA.md): comandos, comprobaciones y solución a los errores más habituales.
+
 Estado: **comprobado en Linux (Ubuntu) con GitHub Actions** (`.github/workflows/linux.yml`, 2026-10-20): los tests, la compilación de la web, el arranque de Howler, el panel (lectura y escritura de los ajustes de sesión), el arranque y la parada de un «servidor de AC» falso desde el panel, la detección con `pgrep`, el simulador registrando vueltas y la compilación de `HowlerPlugin` con .NET 9 pasan en Linux. **No comprobado:** AssettoServer real en Linux con jugadores, `xdg-open` en un escritorio, el servicio de systemd y el túnel SSH de esta guía.
 
-## Instalación rápida (paquete de Linux)
-Descarga `Howler-<versión>-linux.tar.gz` de la última release (https://github.com/Marc0F12/Howler/releases), y con Node 24 instalado:
+## Instalación (doble clic)
+1. Descarga `Howler-<versión>-linux.tar.gz` de la última release (https://github.com/Marc0F12/Howler/releases) y descomprímelo (clic derecho → «Extraer aquí»).
+2. Entra en la carpeta `howler` y haz **doble clic en «Instalar Howler»**. Si tu gestor de archivos pregunta, elige «Ejecutar» o «Confiar y ejecutar». Se abre una ventana de terminal con un asistente.
+3. Responde pulsando **Intro** a todo (lo que se propone entre corchetes suele ser lo correcto). El asistente:
+   - descarga **Node.js** a la carpeta de Howler si tu equipo no lo tiene (no hace falta administrador);
+   - busca un servidor de AssettoServer que ya tengas, o **crea uno nuevo** (descarga AssettoServer y lo une a tu Assetto Corsa) o te deja indicar la carpeta;
+   - copia el plugin, prepara los archivos del servidor (con copia de seguridad `.howler-prev`) y crea la configuración;
+   - si hay systemd, te ofrece que Howler **arranque solo con el equipo**; si no, lo arranca en ese momento.
+4. Para abrirlo otro día: doble clic en **«Iniciar Howler»** (si lo dejaste como servicio ya está encendido).
+
+La web queda en `http://<IP del equipo>:8420`. El panel, en `http://127.0.0.1:8421` (solo desde ese equipo; desde otro, mira «Abrir el panel desde tu PC»).
+
+**Si el doble clic no hace nada** (algunos escritorios no ejecutan archivos `.desktop` sin permiso): abre un terminal en la carpeta y escribe `bash install.sh`. Es lo mismo.
+
+**Actualizar:** descomprime la versión nueva sobre la misma carpeta y vuelve a hacer doble clic en «Instalar Howler». `howler.config.json` y `data/` no se tocan.
+
+### Para quien prefiera indicarlo a mano
 ```bash
-tar -xzf Howler-*-linux.tar.gz && cd howler
 bash install.sh --server /ruta/a/tu/servidor     # copia el plugin, prepara el servidor y crea howler.config.json
+bash install.sh --server /ruta --service         # además lo deja como servicio de systemd
 bash start.sh                                    # arranca Howler
 ```
-Con `--service` además lo deja como servicio de systemd (de tu usuario, o del sistema si lo ejecutas como root). Para actualizar, descomprime la versión nueva sobre la misma carpeta y repite `install.sh`: `howler.config.json` y `data/` no se tocan. El paquete ya lleva el plugin compilado, así que no hace falta .NET.
+El paquete ya lleva el plugin compilado, así que no hace falta .NET.
 
 Lo que sigue explica cada paso a mano, por si prefieres hacerlo tú o instalar desde el código.
 
@@ -90,4 +107,12 @@ Howler arranca y para el servidor de AC por ti (con aviso a los jugadores), así
 - El selector de setups fijos lee `Documentos/Assetto Corsa/setups`, que en un VPS no existe: copia a mano los `.ini` a la carpeta `setups/` del servidor.
 
 ## Docker
-No hay imagen de Docker todavía. Docker sería una «caja» con Howler, Node y AssettoServer ya preparados para arrancar con un solo comando; solo ayuda a quien tiene un VPS y no es necesario para usar Howler en Linux.
+Hay una imagen preparada en la carpeta `docker/` del repositorio: Node, Howler y AssettoServer en un solo contenedor.
+1. Copia en `docker/` el paquete de Linux de la release con el nombre `howler-linux.tar.gz`.
+2. Cambia `HOWLER_ADMIN_PASSWORD` en `docker-compose.yml` (mínimo 10 caracteres).
+3. Pon en `docker/server/` tu servidor: `presets/`, `content/` y `system/` (el programa AssettoServer lo pone la imagen).
+4. `docker compose up -d --build`.
+
+La web queda en el puerto 8420. El panel, en `http://127.0.0.1:8421` del equipo que ejecuta Docker, con el usuario y la contraseña del compose (desde otro equipo, túnel SSH). La configuración y los datos viven en `docker/state/`, y sobreviven a actualizar la imagen. Los puertos del juego (9600 TCP y UDP) y el 8081 se abren en el compose.
+
+**Estado:** escrito y revisado, pero **no probado** (no había Docker donde se preparó). Si falla algo, el registro (`docker logs howler`) dice qué.

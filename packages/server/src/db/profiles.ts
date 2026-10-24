@@ -82,10 +82,11 @@ export class Profiles {
   }
 
   /**
-   * Top 10 de varias clasificaciones de pilotos. Las vueltas pendientes o anuladas no cuentan para récords ni tiempo.
+   * Top N (10 por defecto, máx. 50) de varias clasificaciones de pilotos. Las vueltas pendientes o anuladas no cuentan para récords ni tiempo.
    * `track`/`layout` limitan a un circuito y `since` (ISO) a las vueltas dadas desde ese momento.
    */
-  rankings(f: { track?: string; layout?: string; since?: string } = {}): RankingsDto {
+  rankings(f: { track?: string; layout?: string; since?: string; top?: number } = {}): RankingsDto {
+    const limit = Math.min(50, Math.max(1, Math.floor(f.top ?? 10)));
     const cond: string[] = [];
     const args: string[] = [];
     if (f.track !== undefined) { cond.push('l.track = ?'); args.push(f.track); }
@@ -96,9 +97,20 @@ export class Profiles {
     const top = (sql: string): { driverId: number; driverName: string; value: number }[] =>
       (this.db.prepare(sql).all(...args) as Row[]).map((r) => ({ driverId: r.id, driverName: r.name, value: r.v }));
     const perDriver = (select: string, where = '1 = 1', having = '', order = 'v DESC, d.name') =>
-      top(`SELECT d.id, d.name, ${select} AS v FROM drivers d JOIN laps l ON l.driver_id = d.id AND ${w} WHERE ${where} GROUP BY d.id ${having} ORDER BY ${order} LIMIT 10`);
+      top(`SELECT d.id, d.name, ${select} AS v FROM drivers d JOIN laps l ON l.driver_id = d.id AND ${w} WHERE ${where} GROUP BY d.id ${having} ORDER BY ${order} LIMIT ${limit}`);
     return {
       laps: perDriver('COUNT(*)'),
+      validLaps: perDriver('SUM(l.valid)'),
+      topSpeed: perDriver('MAX(l.max_speed)', 'l.max_speed IS NOT NULL AND l.max_speed > 0'),
+      sessions: perDriver('COUNT(DISTINCT l.session_id)'),
+      cars: perDriver('COUNT(DISTINCT l.car)'),
+      daysActive: perDriver('COUNT(DISTINCT substr(l.created_at, 1, 10))'),
+      // Podios: combinaciones (con rivales) donde su mejor vuelta válida es de las 3 mejores.
+      podiums: top(
+        `WITH b AS (SELECT l.driver_id, l.track, l.layout, l.car, MIN(l.lap_ms) AS m FROM laps l WHERE l.valid = 1 AND ${w} GROUP BY l.driver_id, l.track, l.layout, l.car),
+              r AS (SELECT driver_id, RANK() OVER (PARTITION BY track, layout, car ORDER BY m) AS rk, COUNT(*) OVER (PARTITION BY track, layout, car) AS n FROM b)
+         SELECT d.id, d.name, COUNT(*) AS v FROM r JOIN drivers d ON d.id = r.driver_id WHERE r.rk <= 3 AND r.n > 1
+         GROUP BY d.id ORDER BY v DESC, d.name LIMIT ${limit}`),
       // Récord vigente de cada combinación con rivales (una sola vuelta por combinación; con empate, la más antigua).
       records: top(
         `WITH combos AS (
@@ -108,11 +120,27 @@ export class Profiles {
          SELECT d.id, d.name, COUNT(*) AS v FROM combos
            JOIN laps l ON l.id = combos.best_id AND ${w}
            JOIN drivers d ON d.id = l.driver_id
-         GROUP BY d.id ORDER BY v DESC, d.name LIMIT 10`),
+         GROUP BY d.id ORDER BY v DESC, d.name LIMIT ${limit}`),
       timeMs: perDriver('SUM(l.lap_ms)', '(l.out_lap = 0 OR l.valid = 1)'),
       cleanPct: perDriver('ROUND(100.0 * SUM(l.valid) / COUNT(*), 1)', '1 = 1', 'HAVING COUNT(*) >= 20', 'v DESC, COUNT(*) DESC'),
       tracks: perDriver("COUNT(DISTINCT l.track || '|' || l.layout)"),
     };
+  }
+
+  /** Para el mapa del mundo: cada circuito+layout con sus vueltas y los 3 mejores tiempos (un piloto una vez, con su mejor coche). */
+  worldBoard(): { track: string; layout: string; laps: number; top: { driverId: number; driverName: string; lapMs: number; car: string }[] }[] {
+    const tracks = this.db.prepare('SELECT track, layout, COUNT(*) AS n FROM laps WHERE hidden = 0 GROUP BY track, layout ORDER BY track, layout').all() as Row[];
+    const best = this.db.prepare(
+      `WITH b AS (SELECT id, track, layout, driver_id, car, lap_ms, ROW_NUMBER() OVER (PARTITION BY track, layout, driver_id ORDER BY lap_ms, id) AS rn FROM laps WHERE valid = 1 AND hidden = 0),
+            r AS (SELECT *, ROW_NUMBER() OVER (PARTITION BY track, layout ORDER BY lap_ms, id) AS rk FROM b WHERE rn = 1)
+       SELECT r.track, r.layout, r.driver_id, d.name, r.car, r.lap_ms FROM r JOIN drivers d ON d.id = r.driver_id WHERE r.rk <= 3 ORDER BY r.track, r.layout, r.rk`,
+    ).all() as Row[];
+    const by = new Map<string, { driverId: number; driverName: string; lapMs: number; car: string }[]>();
+    for (const r of best) {
+      const k = `${r.track}|${r.layout}`;
+      (by.get(k) ?? by.set(k, []).get(k)!).push({ driverId: r.driver_id, driverName: r.name, lapMs: r.lap_ms, car: r.car });
+    }
+    return tracks.map((t) => ({ track: t.track, layout: t.layout, laps: t.n, top: by.get(`${t.track}|${t.layout}`) ?? [] }));
   }
 
   driverProfile(id: number): DriverProfileDto | null {

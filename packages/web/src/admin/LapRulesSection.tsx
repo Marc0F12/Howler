@@ -4,8 +4,6 @@ import { formatLapTime, type CollisionRule, type LapRules, type LapRulesConfig, 
 import { api } from '../api';
 import { useContentNames } from '../content';
 import { adminApi } from './adminApi';
-import { PendingLapsCard } from './PendingLapsCard';
-import { RecentLapsCard } from './RecentLapsCard';
 import { Card, ConfirmButton, Field, Notice, useNotice } from './ui';
 
 const same = (a: unknown, b: unknown) => JSON.stringify(a) === JSON.stringify(b);
@@ -147,7 +145,6 @@ export function LapRulesSection() {
 
   return (
     <>
-      <PendingLapsCard />
       <Card title={t('Perfil por defecto')}>
         <p className="hint">{t('Un perfil es un conjunto de reglas que decide cuándo se anula una vuelta. Este es el que se usa en los circuitos que no tengan uno propio. Con «Solo cortes», Howler se comporta como hasta ahora.')}</p>
         <Field label={t('Perfil')} hint={describeRules((all[draft.default] ?? Object.values(state.builtins)[0]!).rules)}>
@@ -209,7 +206,6 @@ export function LapRulesSection() {
         {preview && <RevalidationResult r={preview} />}
       </Card>
 
-      <RecentLapsCard />
     </>
   );
 }

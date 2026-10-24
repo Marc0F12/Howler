@@ -169,7 +169,7 @@ function junction(dest: string, link: string) {
 
 export function createNewServer(o: NewServerOptions): NewServerResult {
   if (!existsSync(join(o.acDir, 'content', 'cars'))) throw new Error('La carpeta de Assetto Corsa no es válida: falta content\\cars.');
-  if (!existsSync(join(o.assettoDir, 'AssettoServer.exe'))) throw new Error('Falta AssettoServer.exe para crear el servidor.');
+  if (!['AssettoServer.exe', 'AssettoServer'].some((e) => existsSync(join(o.assettoDir, e)))) throw new Error('Falta AssettoServer para crear el servidor.');
   if (existsSync(o.target) && readdirSync(o.target).length > 0) throw new Error('La carpeta del servidor nuevo ya tiene archivos: elige una vacía.');
   const system = [join(o.acDir, 'server', 'system'), join(o.acDir, 'system')].find((d) => existsSync(join(d, 'data')));
   if (!system) throw new Error('No encuentro los datos de sistema de Assetto Corsa (server\\system\\data).');

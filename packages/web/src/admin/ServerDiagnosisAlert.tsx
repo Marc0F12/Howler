@@ -45,7 +45,7 @@ function describe(d: ServerDiagnosisDto): { title: string; why: string; hint?: s
     case 'csp-version':
       return { title: t('Una función del servidor necesita CSP {version} (versión {build}) como mínimo.', { version: p.version ?? '?', build: p.build ?? '?' }), why: t('Sube el CSP mínimo exigido (MinimumCSPVersion en el extra_cfg.yml o la versión de CSP del circuito en Content Manager) o desactiva esa función.') };
     case 'no-entries':
-      return { title: t('La lista de coches está vacía.'), why: t('Añade al menos un coche en Servidor → Sesión y clima → Coches del servidor.') };
+      return { title: t('La lista de coches está vacía.'), why: t('Añade al menos un coche en Preparar → Circuito y coches.') };
     case 'bad-config':
       return { title: t('Hay un error en un archivo de configuración.'), why: t('Revisa el extra_cfg.yml y el server_cfg.ini (sangrías, dos puntos y valores). Detalle: {msg}', { msg: p.msg ?? '?' }) };
     case 'udp-plugin':

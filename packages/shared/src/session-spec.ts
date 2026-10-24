@@ -91,7 +91,7 @@ export const SETTINGS: SettingSpec[] = [
   s({ id: 'tyresOut', key: 'ALLOWED_TYRES_OUT', kind: 'int', def: 2, min: -1, max: 4, step: 1, unit: 'ruedas', group: 'tyres', tier: 'big',
     label: { es: 'Ruedas fuera de pista permitidas', en: 'Wheels off track allowed' }, help: { es: 'A partir de cuántas ruedas fuera cuenta como corte. -1 = sin límite (no hay cortes).', en: 'From how many wheels off it counts as a cut. -1 = no limit (no cuts).' } }),
   s({ id: 'legalTyres', key: 'LEGAL_TYRES', kind: 'text', def: '', group: 'tyres', tier: 'big',
-    label: { es: 'Compuestos permitidos', en: 'Allowed compounds' }, help: { es: 'Nombres cortos separados por «;» (por ejemplo SV;S). Vacío = todos. Cada coche tiene sus compuestos.', en: 'Short names separated by ";" (for example SV;S). Empty = all. Each car has its own compounds.' } }),
+    label: { es: 'Compuestos permitidos', en: 'Allowed compounds' }, help: { es: 'Marca los compuestos que se pueden usar (o escribe sus nombres cortos separados por «;», por ejemplo SV;S). Sin marcar = todos. Cada coche tiene los suyos.', en: 'Tick the compounds that can be used (or type their short names separated by ";", for example SV;S). None ticked = all. Each car has its own.' } }),
 
   // ---- Reglas de carrera ----
   s({ id: 'startRule', key: 'START_RULE', kind: 'choice', def: 0, choices: [

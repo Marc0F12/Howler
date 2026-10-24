@@ -142,7 +142,7 @@
 
 @media (max-width: 760px) {
   .cup-head-row { grid-template-columns: auto minmax(0, 1fr); }
-  .cup-head-row .cup-mods { grid-column: 1 / -1; }
+  .cup-head-row .cup-head-actions { grid-column: 1 / -1; }
   .cup-item { grid-template-columns: 96px minmax(0, 1fr); }
   .cup-round-grid { grid-template-columns: minmax(0, 1fr); gap: 28px; }
   .cup-car-card { grid-template-columns: minmax(0, 1fr); gap: 14px; }
@@ -168,3 +168,18 @@
 .cup-skin-pop { position: absolute; right: 0; top: calc(100% + 6px); z-index: 25; width: 220px; display: grid; gap: 6px; padding: 8px; background: var(--surface); border: 1px solid var(--line); border-radius: var(--r3); }
 .cup-skin-pop img { width: 100%; aspect-ratio: 16 / 10; object-fit: cover; border-radius: var(--r2); background: var(--surface-2); display: block; }
 .cup-skin-pop span, .cup-skin-pop p { margin: 0; font-size: var(--fs-sm); color: var(--muted); }
+
+/* Inscripción pública */
+.cup-head-actions { display: flex; flex-wrap: wrap; gap: 8px; align-items: flex-start; }
+.signup-dialog { border: 1px solid var(--line); border-radius: var(--r3); background: var(--surface); color: var(--text); padding: 0; width: min(520px, calc(100vw - 32px)); max-height: calc(100vh - 32px); overflow: auto; }
+.signup-dialog::backdrop { background: color-mix(in srgb, var(--bg) 70%, black); }
+.signup-body { display: grid; gap: 14px; padding: 24px; }
+.signup-body h2 { margin: 0; font-size: var(--fs-xl); }
+.signup-info { margin: 0; white-space: pre-line; color: var(--muted); }
+.su-field { display: grid; gap: 4px; }
+.su-field > span { font-weight: 600; font-size: var(--fs-sm); }
+.su-field input, .su-field select { width: 100%; }
+.su-field small { font-size: var(--fs-label); }
+.signup-actions { display: flex; justify-content: flex-end; gap: 8px; }
+.signup-error { margin: 0; color: var(--down); }
+.signup-trap { position: absolute; left: -10000px; width: 1px; height: 1px; overflow: hidden; }

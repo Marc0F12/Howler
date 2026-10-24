@@ -23,5 +23,8 @@ export * from './badge';
 export * from './smart-settings';
 export * from './server-sheet';
 export * from './session-spec';
+export * from './tyres';
+export * from './signup';
 export * from './schedule';
 export * from './accounts';
+export * from './world-map';

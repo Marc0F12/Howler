@@ -30,7 +30,7 @@
 
 .card { min-width: 0; background: var(--surface); border: 1px solid var(--line); border-radius: var(--r4); }
 .card-head { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 14px 16px; border-bottom: 1px solid var(--line); }
-.card-head h3 { margin: 0; font-size: var(--fs-base); }
+.card-head h3 { margin: 0; font-size: var(--fs-lg); font-weight: 700; }
 .card-body { padding: 14px 16px 16px; display: grid; gap: 12px; }
 .state-pill { display: inline-flex; align-items: center; gap: 8px; font-size: var(--fs-sm); font-weight: 600; }
 
@@ -56,7 +56,9 @@ input[type='range'] { width: 220px; accent-color: var(--accent); }
 details { border-top: 1px solid var(--line); padding-top: 10px; }
 summary { cursor: pointer; font-size: var(--fs-base); font-weight: 600; color: var(--muted); margin-bottom: 8px; }
 
-.hint { margin: 0; font-size: var(--fs-sm); color: var(--muted); line-height: 1.5; }
+/* Explicaciones: más pequeñas, apagadas y con una «i» al margen, para saber de un vistazo que son ayuda y no datos ni controles */
+.hint, .sx-hint, .sp-block > .sp-help { margin: 0; position: relative; padding-left: 24px; max-width: 78ch; font-size: var(--fs-sm); color: var(--muted); line-height: 1.5; }
+.hint::before, .sx-hint::before, .sp-block > .sp-help::before { content: 'i'; position: absolute; left: 0; top: 0.2em; width: 16px; height: 16px; box-sizing: border-box; border: 1px solid currentColor; border-radius: 50%; font: italic 700 10px/14px var(--font-ui, inherit); text-align: center; opacity: 0.85; }
 .warn { margin: 0; padding: 10px 12px; border-radius: var(--r2); font-size: var(--fs-sm); line-height: 1.5; background: color-mix(in srgb, var(--wait) 12%, transparent); border: 1px solid color-mix(in srgb, var(--wait) 40%, transparent); }
 .notice { margin: 0; padding: 9px 12px; border-radius: var(--r2); font-size: var(--fs-sm); }
 .notice.ok { background: color-mix(in srgb, var(--live) 12%, transparent); border: 1px solid color-mix(in srgb, var(--live) 40%, transparent); }

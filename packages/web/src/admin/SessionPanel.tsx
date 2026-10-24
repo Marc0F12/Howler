@@ -9,6 +9,7 @@ import { ConfirmButton, Notice, useNotice } from './ui';
 import { summarize } from './session-summary';
 import { Icon } from '../components/Icon';
 import { GROUP_ICON, SESSION_ICON, SETTING_ICON } from './session-icons';
+import { TyrePicker } from './TyrePicker';
 
 const BIG_GROUPS: SettingGroup[] = ['conditions', 'assists', 'tyres', 'race'];
 const MORE_GROUPS: SettingGroup[] = ['conditions', 'race', 'general', 'votes', 'ai'];
@@ -39,6 +40,8 @@ function SettingRow({ spec, value, onChange, disabled }: { spec: SettingSpec; va
         ))}
       </div>
     );
+  } else if (spec.kind === 'text' && spec.id === 'legalTyres') {
+    control = <TyrePicker id={id} value={String(value)} disabled={disabled} onChange={onChange} />;
   } else if (spec.kind === 'text') {
     control = <input id={id} type="text" value={String(value)} disabled={disabled} maxLength={200} onChange={(e) => onChange(e.target.value)} />;
   } else {
@@ -54,7 +57,7 @@ function SettingRow({ spec, value, onChange, disabled }: { spec: SettingSpec; va
   }
   return (
     <div className={`sp-row${spec.kind === 'bool' ? ' inline' : ''}${changed ? ' changed' : ''}`}>
-      <span className="sp-ico"><Icon name={SETTING_ICON[spec.id] ?? GROUP_ICON[spec.group]} size={26} /></span>
+      <span className="sp-ico"><Icon name={SETTING_ICON[spec.id] ?? GROUP_ICON[spec.group]} size={22} /></span>
       <div className="sp-text">
         <label id={`${id}-l`} htmlFor={id} className="sp-name">{label(spec)}{changed && <span className="sp-dot" title={t('Distinto del valor de serie')} aria-label={t('Distinto del valor de serie')} />}</label>
         <span className="sp-help">{help(spec)}</span>
@@ -72,7 +75,7 @@ function SessionRow({ id, plan, onChange }: { id: SessionId; plan: SessionPlan; 
     <div className={`sp-session${off ? ' off' : ''}`}>
       <label className="sp-switch sp-session-name">
         <input type="checkbox" checked={plan.enabled} onChange={(e) => set({ enabled: e.target.checked })} />
-        <Icon name={SESSION_ICON[id]} size={26} /><strong>{txt(SESSION_LABEL[id], lang())}</strong>
+        <Icon name={SESSION_ICON[id]} size={22} /><strong>{txt(SESSION_LABEL[id], lang())}</strong>
       </label>
       <div className="sp-session-body">
         {id === 'race' && (
@@ -148,7 +151,7 @@ export function SessionPanel({ running, preset }: { running: boolean; preset: st
   return (
     <section className="sp" aria-label={t('Ajustes de la sesión')}>
       <header className="sp-head">
-        <h3><Icon name="settings" size={26} />{t('Ajustes de la sesión · preset {preset}', { preset: preset || '(cfg/)' })}</h3>
+        <h3><Icon name="settings" size={22} />{t('Ajustes de la sesión · preset {preset}', { preset: preset || '(cfg/)' })}</h3>
         <input type="search" className="sp-search" value={query} onChange={(e) => setQuery(e.target.value)} placeholder={t('Buscar un ajuste (combustible, mantas, ABS…)')} aria-label={t('Buscar un ajuste')} />
       </header>
       <div className="sp-presets">
@@ -190,14 +193,14 @@ export function SessionPanel({ running, preset }: { running: boolean; preset: st
       ) : (
         <>
           <div className="sp-block sp-sessions">
-            <h4><Icon name="sessions" size={26} />{t('Sesiones')}</h4>
+            <h4><Icon name="sessions" size={22} />{t('Sesiones')}</h4>
             <p className="sp-help">{t('Qué sesiones hay y cuánto dura cada una. Se repiten en bucle si el modo bucle está activo.')}</p>
             {SESSION_IDS.map((id) => <SessionRow key={id} id={id} plan={sessions[id]} onChange={(p) => setSessions((c) => ({ ...c!, [id]: p }))} />)}
           </div>
           <div className="sp-grid">
             {BIG_GROUPS.map((g) => (
               <div key={g} className="sp-block">
-                <h4><Icon name={GROUP_ICON[g]} size={26} />{txt(GROUP_META[g].title, lang())}</h4>
+                <h4><Icon name={GROUP_ICON[g]} size={22} />{txt(GROUP_META[g].title, lang())}</h4>
                 <p className="sp-help">{txt(GROUP_META[g].hint, lang())}</p>
                 {bySpec(g, 'big').map(row)}
               </div>

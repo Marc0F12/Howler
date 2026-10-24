@@ -348,6 +348,25 @@ const MIGRATIONS: string[] = [
   ALTER TABLE mh_peers ADD COLUMN share_traces INTEGER NOT NULL DEFAULT 0;
   ALTER TABLE laps ADD COLUMN trace_checked INTEGER NOT NULL DEFAULT 0;
   `,
+  // Inscripción pública a campeonatos: ajustes (JSON) y solicitudes pendientes de aprobar.
+  `
+  ALTER TABLE championships ADD COLUMN signup TEXT;
+  CREATE TABLE championship_signups (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    championship_id INTEGER NOT NULL REFERENCES championships(id) ON DELETE CASCADE,
+    created_at TEXT NOT NULL,
+    name TEXT NOT NULL,
+    steam TEXT NOT NULL,
+    team TEXT NOT NULL DEFAULT '',
+    car TEXT NOT NULL DEFAULT '',
+    email TEXT NOT NULL DEFAULT '',
+    answers TEXT NOT NULL DEFAULT '[]',
+    status TEXT NOT NULL DEFAULT 'pending',
+    decided_at TEXT,
+    driver_id INTEGER
+  );
+  CREATE INDEX championship_signups_champ ON championship_signups(championship_id, status);
+  `,
 ];
 
 /** Versión de esquema de esta versión de Howler (nº de migraciones). */

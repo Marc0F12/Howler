@@ -203,7 +203,7 @@ export interface CarProfileDto {
 
 export interface RankingEntryDto { driverId: number; driverName: string; value: number }
 
-/** Clasificaciones de pilotos (top 10 de cada una). */
+/** Clasificaciones de pilotos (top N de cada una; 10 por defecto). */
 export interface RankingsDto {
   /** Más vueltas dadas. */
   laps: RankingEntryDto[];
@@ -215,6 +215,18 @@ export interface RankingsDto {
   cleanPct: RankingEntryDto[];
   /** Más circuitos distintos. */
   tracks: RankingEntryDto[];
+  /** Más vueltas válidas. */
+  validLaps: RankingEntryDto[];
+  /** Velocidad máxima alcanzada (km/h). */
+  topSpeed: RankingEntryDto[];
+  /** Más sesiones distintas. */
+  sessions: RankingEntryDto[];
+  /** Más coches distintos. */
+  cars: RankingEntryDto[];
+  /** Más días distintos con actividad. */
+  daysActive: RankingEntryDto[];
+  /** Más podios (top 3 de circuito y coche con rivales). */
+  podiums: RankingEntryDto[];
 }
 
 // ---- Historial de sesiones ----

@@ -47,6 +47,7 @@ async function setup(over: Partial<AdminDeps> = {}, online: { carId: number; dri
     saveConfig: (patch) => { saved.push(patch); config = { ...config, ...(patch as object) } as HowlerConfig; },
     repo,
     saveLapRules: (cfg) => { config = { ...config, lapRules: cfg } as HowlerConfig; },
+    saveWorldMap: (cfg) => { config = { ...config, worldMap: cfg } as HowlerConfig; },
     saveAppearance: (a) => { config = { ...config, appearance: a } as HowlerConfig; },
     onLapsChanged: changed,
     process: serverProcess,
@@ -63,6 +64,19 @@ async function setup(over: Partial<AdminDeps> = {}, online: { carId: number; dri
 
 const post = (app: Awaited<ReturnType<typeof setup>>['app'], url: string, payload: unknown, headers: Record<string, string> = H) =>
   app.inject({ method: 'POST', url, headers, payload: JSON.stringify(payload) });
+
+describe('mapa del mundo', () => {
+  it('guarda las ubicaciones a mano y rechaza coordenadas imposibles', async () => {
+    const ctx = await setup();
+    const { app } = ctx;
+    const ok = await app.inject({ method: 'PUT', url: '/admin/api/world-map', headers: H, payload: JSON.stringify({ online: true, manual: { 'monza|': { lat: 45.6, lon: 9.29 } } }) });
+    expect(ok.statusCode).toBe(200);
+    expect(ok.json().online).toBe(true);
+    expect(ctx.config.worldMap.manual['monza|']).toEqual({ lat: 45.6, lon: 9.29 });
+    const bad = await app.inject({ method: 'PUT', url: '/admin/api/world-map', headers: H, payload: JSON.stringify({ online: false, manual: { x: { lat: 120, lon: 0 } } }) });
+    expect(bad.statusCode).toBe(400);
+  });
+});
 
 describe('apariencia', () => {
   it('guarda la disposición limpia y la devuelve', async () => {

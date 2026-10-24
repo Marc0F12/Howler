@@ -35,7 +35,7 @@ export const enSchedule: Record<string, string> = {
   "¿Borrar?": "Delete?",
   "Liga del jueves": "Thursday league",
   "Preset de sesión": "Session preset",
-  "Aún no tienes presets: guarda uno en «Sesión y clima» → Presets para poder elegirlo aquí.": "You have no presets yet: save one in “Session and weather” → Presets so you can pick it here.",
+  "Aún no tienes presets: guarda uno en Preparar → Sesión → Presets para poder elegirlo aquí.": "You have no presets yet: save one in Prepare → Session → Presets so you can pick it here.",
   "Se aplica justo antes de arrancar. «Sin cambiar ajustes» arranca con lo que haya guardado.": "It is applied right before starting. “Don't change settings” starts with whatever is saved.",
   "Repetir": "Repeat",
   "Una sola vez": "One time",

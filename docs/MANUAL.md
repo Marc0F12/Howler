@@ -113,7 +113,7 @@ Para que el servidor arranque solo con Howler, pon `server.startWithHowler` a `t
 
 ## Cómo cambiar coches, skins y circuito
 
-1. Abre **Servidor → Sesión y clima**.
+1. Abre **Preparar** (Circuito y coches, Sesión, Clima…).
 2. En **Coches del servidor**, pulsa **+ Añadir coches** y elige coche y skin. Los selectores enseñan vistas previas y se pueden filtrar.
 3. Mira el contador `coches/boxes`: no puede haber más coches que plazas del circuito (los espectadores no cuentan).
 4. Para cambiar de circuito, pulsa **Cambiar circuito** en el bloque Circuito.
@@ -127,7 +127,7 @@ Si tienes campeonatos, también puedes asignar a cada plaza un equipo y un pilot
 
 ## Cómo dejar que Howler ajuste solo WeatherFX, los datos del circuito y data.acd
 
-Algunos circuitos y coches de mods hacen que el servidor no arranque si no cambias tres opciones. En **Servidor → Sesión y clima → Ajustes rápidos del servidor** cada una tiene tres posiciones:
+Algunos circuitos y coches de mods hacen que el servidor no arranque si no cambias tres opciones. En **Preparar → Comprobaciones → Ajustes rápidos del servidor** cada una tiene tres posiciones:
 
 - **Encendido** o **Apagado**: lo decides tú.
 - **Auto**: Howler lo decide cada vez que arranca el servidor, según lo instalado, y te dice qué decidió y por qué.
@@ -138,7 +138,7 @@ Las opciones son **Clima de CSP (WeatherFX)** (Auto = hay Pure o Sol instalado),
 
 *Es lo que ven los jugadores al elegir tu servidor en la lista: título, descripción, imágenes y enlaces. 10 minutos.*
 
-1. Abre **Servidor → Ficha del servidor**.
+1. Abre **Preparar → Ficha del servidor**.
 2. Escribe el **título** (si quieres un prefijo como `[EU]`, usa paréntesis: Content Manager interpreta los corchetes en la cabecera).
 3. A la izquierda está el editor de la **descripción**: selecciona texto y usa la barra (negrita, cursiva, tamaño, color, enlace, imagen). A la derecha ves el **resultado final**, con el circuito y los coches reales de tu servidor.
 4. Para una imagen, pega su **enlace público** (Howler no aloja imágenes: súbela a Discord, imgur o GitHub y copia el enlace directo). Un enlace de GitHub de tipo `/blob/` se convierte solo.
@@ -149,7 +149,7 @@ Las opciones son **Clima de CSP (WeatherFX)** (Auto = hay Pure o Sol instalado),
 
 ## Cómo preparar la sesión (combustible, daños, neumáticos, ayudas…)
 
-En **Servidor → Sesión y clima** están casi todos los ajustes de la sesión, ordenados por lo que más se toca: circuito y coches arriba, después cómo es la sesión (práctica, clasificación, carrera), el clima y el servidor.
+En **Preparar** están casi todos los ajustes de la sesión, una pantalla por tarea: **Circuito y coches**, **Sesión** (práctica, clasificación, carrera, condiciones, ayudas, neumáticos), **Clima**, **Comprobaciones** (contraseña, ajustes automáticos, `data.acd`) y **Ficha del servidor**.
 
 - Lo más usado (combustible, daños, desgaste, ayudas, neumáticos, reglas de carrera) está a la vista; lo demás, plegado en **Avanzado**. Hay buscador.
 - Arriba hay **presets**: unos de serie y los tuyos (**Guardar como preset…**). Un preset guarda los ajustes y el plan de sesiones, no la lista de coches.
@@ -202,7 +202,7 @@ Howler corre en Linux (servidor, panel y plugin). No hay instalador gráfico ni 
 
 Aquí también: siguiente sesión, reiniciar sesión, mensaje al chat, expulsar, banear, lastre y restrictor.
 
-Hay dos sistemas de clima, y se elige en **Servidor → Sesión y clima → Sistema de clima**:
+Hay dos sistemas de clima, y se elige en **Preparar → Clima → Sistema de clima**:
 
 - **Clásico**: la lista de climas del preset (`[WEATHER_n]`). Funciona con cualquier cliente.
 - **CSP WeatherFX**: para Pure o Sol. Cada jugador elige su script en su Content Manager, y el servidor solo manda el *tipo* de clima. Necesita CSP en los clientes.
@@ -218,7 +218,7 @@ Hay dos sistemas de clima, y se elige en **Servidor → Sesión y clima → Sist
 
 ![Reglas de vuelta](manual/img/panel-reglas.png)
 
-Una vuelta puede ser **válida**, **nula** o **pendiente de revisión**. Las pendientes son salidas de boxes: no cuentan hasta que las apruebas en la tarjeta **Pendientes de revisión**. También puedes anular o dar por buena cualquier vuelta reciente, con un motivo.
+Una vuelta puede ser **válida**, **nula** o **pendiente de revisión**. Las pendientes son salidas de boxes: no cuentan hasta que las apruebas en **Servidor → Revisar vueltas**. También puedes anular o dar por buena cualquier vuelta reciente, con un motivo.
 
 Con **Avisar al piloto**, Howler escribe por chat «Howler: vuelta X anulada» con el motivo.
 Si prefieres que las salidas de boxes se anulen solas, marca **Anular automáticamente las salidas de boxes** en esa misma tarjeta. Salen como nulas con su motivo y puedes recuperarlas con **Dar por buena**. No afecta a las que ya estaban pendientes.
@@ -256,6 +256,15 @@ La web pública los enseña en **Campeonatos**.
 
 > **Consejo.** Los resultados de carrera se reconstruyen con las vueltas guardadas (el servidor no guarda resultados oficiales): gana quien más vueltas da y, a igualdad, el menor tiempo total más penalizaciones.
 
+## Cómo dejar que la gente se inscriba en un campeonato
+
+1. Abre **Competición → Campeonatos → Gestionar** y ve a la tarjeta **Inscripción pública**.
+2. Activa **Inscripción abierta** y elige qué preguntar (equipo, coche, correo opcional). Puedes añadir hasta 5 preguntas propias y un texto con las normas. Pulsa **Guardar**.
+3. Con el campeonato en estado **Activo**, su página en la web enseña el botón **Inscribirse**. Cada persona manda su nombre y el enlace a su perfil de Steam.
+4. Las solicitudes llegan a la misma tarjeta. **Aprobar** la mete en el campeonato (eliges equipo y coche; Howler consulta su perfil público de Steam en ese momento) y **Rechazar** borra su correo y sus respuestas. **Descargar CSV** te da la lista.
+
+> **Consejo.** Nadie entra solo: hasta que no la apruebas, la solicitud no cambia el campeonato. Una misma dirección puede mandar 5 solicitudes por hora y un mismo perfil de Steam solo una. Las rechazadas se borran a los 30 días.
+
 ## Cómo importar el historial de stracker
 
 1. Abre **Ajustes → Datos → Importar**.
@@ -283,7 +292,7 @@ Cada aviso tiene botón **Probar este aviso**. Puedes añadir hasta 10 canales.
 
 ## Cómo usar Howler junto a otro programa que usa el puerto UDP del servidor (penalizaciones, etc.)
 
-**El problema.** El servidor de AC solo puede mandar su interfaz UDP (`UDP_PLUGIN_ADDRESS` en el `server_cfg.ini`) a **un único programa**. Howler la usa para saber quién entra, las sesiones y las posiciones. Programas como los de penalizaciones (Real Penalty y similares) usan la misma. Si ambos piden ese puerto, uno se queda sin datos.
+**El problema.** El servidor de AC solo puede mandar su interfaz UDP (`UDP_PLUGIN_ADDRESS` en el `server_cfg.ini`) a **un único programa**. Howler la usa para saber quién entra, las sesiones y las posiciones. Programas como los de penalizaciones (Real Penalty, KissMyRank y similares) usan la misma. Si ambos piden ese puerto, uno se queda sin datos.
 
 **La solución.** Howler hace de intermediario: recibe todo del servidor, **se lo copia al otro programa** y devuelve al servidor lo que ese programa conteste (expulsiones, penalizaciones...). Los dos funcionan a la vez y no hay que elegir. Todo ocurre dentro de tu PC.
 

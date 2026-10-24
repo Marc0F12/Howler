@@ -1,6 +1,7 @@
 import type { DatabaseSync } from 'node:sqlite';
 import { LapAdmin } from './lap-admin';
 import { Championships } from './championships';
+import { Signups } from './signups';
 import { Imports } from './imports';
 import { MultiHowlerStore, serverSql, type ServerFilter } from './multihowler';
 import { MhTraces } from './mh-traces';
@@ -81,6 +82,8 @@ export class Repository {
   readonly lapAdmin: LapAdmin;
   /** Campeonatos y su clasificación. */
   readonly championships: Championships;
+  /** Inscripción pública a campeonatos. */
+  readonly signups: Signups;
   /** Importación de datos de otras herramientas (stracker...). */
   readonly imports: Imports;
   /** Avisos, tiempo añadido y descalificaciones de carrera. */
@@ -102,6 +105,7 @@ export class Repository {
     this.penalties = new Penalties(db);
     this.recordScopes = new RecordScopes(db);
     this.championships = new Championships(db, this.penalties);
+    this.signups = new Signups(db);
     this.imports = new Imports(db);
     this.multihowler = new MultiHowlerStore(db);
     this.mhTraces = new MhTraces(db, (t, l, c) => this.pruneTraces(t, l, c));

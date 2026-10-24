@@ -4,7 +4,7 @@
  * nunca se ejecuta ni se pinta tal cual.
  */
 
-import { sanitizeThemeSelection, type ThemeSelection } from './theme';
+import { sanitizePanelTheme, sanitizeThemeSelection, type ThemeSelection } from './theme';
 
 export const LAYOUT_FORMAT = 'howler-layout';
 export const FORMAT_VERSION = 2;
@@ -178,6 +178,8 @@ export interface AppearanceConfig {
   layouts: Partial<Record<PageId, LayoutEntry[]>>;
   /** Tema elegido por el administrador: id de uno de serie o tema propio importado. Ausente = «original». */
   theme?: ThemeSelection;
+  /** Tema propio del panel de control. Ausente = el panel usa el mismo tema que la web. */
+  panelTheme?: ThemeSelection;
 }
 export const DEFAULT_APPEARANCE: AppearanceConfig = { layouts: {}, display: DEFAULT_DISPLAY };
 
@@ -194,6 +196,7 @@ export function sanitizeAppearance(raw: unknown): AppearanceConfig {
     }
   }
   const theme = sanitizeThemeSelection(r.theme);
+  const panelTheme = sanitizePanelTheme(r.panelTheme);
   const display = sanitizeDisplay(r.display);
-  return theme === undefined ? { layouts, display } : { layouts, display, theme };
+  return { layouts, display, ...(theme === undefined ? {} : { theme }), ...(panelTheme === undefined ? {} : { panelTheme }) };
 }

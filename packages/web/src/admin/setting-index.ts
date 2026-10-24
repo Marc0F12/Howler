@@ -1,0 +1,31 @@
+/** Índice del buscador del panel: qué ajuste vive en qué pestaña. Si añades o mueves un ajuste, actualízalo aquí. `words` = sinónimos para encontrarlo. */
+export interface SettingEntry { label: string; tab: string; words: string }
+
+export const SETTING_INDEX: SettingEntry[] = [
+  { label: 'Arrancar, parar o reiniciar el servidor', tab: 'server', words: 'consola logs estado conectar' },
+  { label: 'Cambiar la hora, el clima o la lluvia ahora', tab: 'live', words: 'agarre siguiente sesion chat expulsar banear lastre restrictor' },
+  { label: 'Aprobar o anular vueltas pendientes', tab: 'review', words: 'salida de boxes revisar moderar' },
+  { label: 'Eventos programados', tab: 'schedule', words: 'horario fin de semana de carrera automatico parar' },
+  { label: 'Circuito y coches del servidor', tab: 'cars', words: 'entry list skins plazas boxes pilotos reservados equipos' },
+  { label: 'Duración y tipo de las sesiones', tab: 'session', words: 'practica clasificacion carrera combustible daños desgaste ayudas abs neumaticos presets setups' },
+  { label: 'Sistema de clima y lista de climas', tab: 'weather', words: 'pure sol wfx csp weatherfx' },
+  { label: 'Contraseña del servidor', tab: 'checks', words: 'password data.acd datos del circuito ajustes automaticos' },
+  { label: 'Título y descripción en Content Manager', tab: 'sheet', words: 'ficha nombre del servidor bbcode imagen' },
+  { label: 'Reglas de vuelta válida', tab: 'rules', words: 'cortes choques perfiles tiempo minimo recalcular' },
+  { label: 'Penalizaciones', tab: 'penalties', words: 'descalificar tiempo añadido avisos automaticas' },
+  { label: 'Campeonatos', tab: 'championships', words: 'puntos equipos inscripcion carreras mods' },
+  { label: 'Tema, colores y disposición de la web', tab: 'appearance', words: 'acento titulos modulos apariencia panel' },
+  { label: 'Idioma, hora, fecha y unidades de la web', tab: 'display', words: 'formato 12h 24h millas km mph' },
+  { label: 'Sonido de récord y volumen', tab: 'display', words: 'audio altavoz banana' },
+  { label: 'Mapa del mundo: ubicar circuitos y permitir satélite', tab: 'world', words: 'coordenadas latitud longitud calles openstreetmap esri' },
+  { label: 'Gestor de pilotos', tab: 'drivers', words: 'renombrar ocultar unir duplicados' },
+  { label: 'MultiHowler: vincular con otros servidores', tab: 'multihowler', words: 'clave invitacion sincronizar insignia' },
+  { label: 'Avisos de Discord', tab: 'discord', words: 'webhook notificaciones canal' },
+  { label: 'Carpeta del servidor de AC y arranque', tab: 'general', words: 'ejecutable preset arrancar con howler aviso de parada' },
+  { label: 'Puertos y compartir con otros plugins', tab: 'general', words: 'web panel udp forward real penalty cortafuegos' },
+  { label: 'Actualizaciones de Howler', tab: 'general', words: 'version canal beta buscar' },
+  { label: 'Idioma de los mensajes del servidor', tab: 'general', words: 'chat discord' },
+  { label: 'Importar el historial de stracker', tab: 'import', words: 'db3 migrar' },
+  { label: 'Copias de seguridad y exportar vueltas', tab: 'backup', words: 'restaurar csv json datos' },
+  { label: 'Cuentas y acceso remoto', tab: 'accounts', words: 'usuarios contraseñas moderador administrador' },
+];

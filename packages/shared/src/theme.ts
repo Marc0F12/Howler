@@ -62,6 +62,8 @@ export interface Theme {
   /** Colores de la banda de «nuevo récord» (opcionales: sin ellos, el amarillo `wait` del tema con texto negro). */
   tickerBg?: string;
   tickerFg?: string;
+  /** Títulos e iconos del panel y de los menús con el color de acento (opcional: apagado). */
+  accentTitles?: boolean;
 }
 
 /** Colores de las gráficas por defecto: paleta categórica validada para fondo oscuro con el validador del skill dataviz (separación para daltonismo y contraste ≥ 3:1). Orden fijo; el 9.º elemento no existe. */
@@ -151,7 +153,7 @@ export function validateTheme(input: unknown): ThemeChecked {
   if (!isObj(input)) return bad('El archivo no es un tema.');
   if (input.format !== THEME_FORMAT) return bad('No es un archivo de tema de Howler.');
   if (typeof input.version !== 'number' || input.version > THEME_VERSION) return bad('Versión de tema no admitida.');
-  const allowed = new Set(['format', 'version', 'id', 'name', 'base', 'colors', 'chart', 'radius', 'shape', 'texture', 'fade', 'font', 'numberFont', 'motion', 'density', 'panels', 'rank', 'best', 'displayFont', 'tickerBg', 'tickerFg']);
+  const allowed = new Set(['format', 'version', 'id', 'name', 'base', 'colors', 'chart', 'radius', 'shape', 'texture', 'fade', 'font', 'numberFont', 'motion', 'density', 'panels', 'rank', 'best', 'displayFont', 'tickerBg', 'tickerFg', 'accentTitles']);
   if (Object.keys(input).some((k) => !allowed.has(k))) return bad('El tema trae campos desconocidos.');
   if (typeof input.id !== 'string' || !/^[a-z0-9-]{1,32}$/.test(input.id)) return bad('El identificador del tema no es válido.');
   if (typeof input.name !== 'string' || !input.name.trim() || input.name.length > 40) return bad('El nombre del tema no es válido.');
@@ -172,6 +174,7 @@ export function validateTheme(input: unknown): ThemeChecked {
   if (input.best !== undefined && !oneOf(BESTS, input.best)) return bad('El estilo de mejores tiempos no existe.');
   if (input.displayFont !== undefined && !oneOf(FONTS, input.displayFont)) return bad('La tipografía de títulos no existe.');
   for (const k of ['tickerBg', 'tickerFg'] as const) if (input[k] !== undefined && (typeof input[k] !== 'string' || !HEX.test(input[k] as string))) return bad('Los colores de la banda de récord deben ser del tipo #rrggbb.');
+  if (input.accentTitles !== undefined && typeof input.accentTitles !== 'boolean') return bad('La opción de títulos con color de acento no es válida.');
   if (typeof input.fade !== 'boolean') return bad('La opción de difuminado no es válida.');
   if (typeof input.motion !== 'number' || !(input.motion >= 0 && input.motion <= 2)) return bad('El movimiento debe estar entre 0 y 2.');
   return {
@@ -186,6 +189,7 @@ export function validateTheme(input: unknown): ThemeChecked {
       ...(input.displayFont ? { displayFont: input.displayFont } : {}),
       ...(input.tickerBg ? { tickerBg: (input.tickerBg as string).toLowerCase() } : {}),
       ...(input.tickerFg ? { tickerFg: (input.tickerFg as string).toLowerCase() } : {}),
+      ...(input.accentTitles === true ? { accentTitles: true } : {}),
     },
   };
 }
@@ -202,6 +206,12 @@ export function sanitizeThemeSelection(raw: unknown): ThemeSelection | undefined
   if (typeof raw === 'string') return builtinTheme(raw) && raw !== DEFAULT_THEME_ID ? raw : undefined;
   if (isObj(raw)) { const c = validateTheme(raw); if (c.ok) return c.value; }
   return undefined;
+}
+
+/** Como `sanitizeThemeSelection`, pero aquí «original» también cuenta: el panel puede ser Original aunque la web use otro tema. */
+export function sanitizePanelTheme(raw: unknown): ThemeSelection | undefined {
+  if (typeof raw === 'string') return builtinTheme(raw) ? raw : undefined;
+  return sanitizeThemeSelection(raw);
 }
 
 // --- Traducción a variables CSS ----------------------------------------------------------------------------------
@@ -249,7 +259,7 @@ export function themeVars(theme: Theme): { vars: Record<string, string>; attrs: 
   if (theme.tickerBg) vars['--ticker-bg'] = theme.tickerBg;
   if (theme.tickerFg) vars['--ticker-fg'] = theme.tickerFg;
   theme.chart.forEach((col, i) => { vars[`--chart-${i + 1}`] = col; });
-  const attrs = { 'data-theme': theme.id, 'data-shape': theme.shape, 'data-texture': theme.texture, 'data-fade': theme.fade ? 'on' : 'off', 'data-density': theme.density, 'data-panels': theme.panels ?? 'boxed', 'data-base': theme.base, 'data-rank': theme.rank ?? 'plain', 'data-best': theme.best ?? 'text', 'data-numfont': theme.numberFont };
+  const attrs = { 'data-theme': theme.id, 'data-shape': theme.shape, 'data-texture': theme.texture, 'data-fade': theme.fade ? 'on' : 'off', 'data-density': theme.density, 'data-panels': theme.panels ?? 'boxed', 'data-base': theme.base, 'data-rank': theme.rank ?? 'plain', 'data-best': theme.best ?? 'text', 'data-numfont': theme.numberFont, 'data-accent-titles': theme.accentTitles ? 'on' : 'off' };
   return { vars, attrs };
 }
 
@@ -277,4 +287,12 @@ export function withTicker(theme: Theme, bg: string | undefined, fg: string | un
   const next: Theme = { ...rest, ...(bg ? { tickerBg: bg.toLowerCase() } : {}), ...(fg ? { tickerFg: fg.toLowerCase() } : {}) };
   if (!BUILTIN_THEMES.some((b) => b.id === theme.id)) return next;
   return bg || fg ? { ...next, id: `${theme.id}-custom`.slice(0, 32), name: `${theme.name} · propio`.slice(0, 40) } : next;
+}
+
+/** El mismo tema con los títulos e iconos en el color de acento (o sin él). Un tema de serie pasa a ser propio (`<id>-custom`). */
+export function withAccentTitles(theme: Theme, on: boolean): Theme {
+  const { accentTitles: _a, ...rest } = theme;
+  const next: Theme = on ? { ...rest, accentTitles: true } : rest;
+  if (!BUILTIN_THEMES.some((b) => b.id === theme.id)) return next;
+  return on ? { ...next, id: `${theme.id}-custom`.slice(0, 32), name: `${theme.name} · propio`.slice(0, 40) } : next;
 }

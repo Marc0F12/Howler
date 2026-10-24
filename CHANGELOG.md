@@ -2,6 +2,36 @@
 
 Cada versión agrupa sus cambios en **Novedades**, **Mejoras**, **Arreglos** y **Diseño**, con una línea por cambio. El texto de cada versión es el que sale en el aviso de actualización del panel.
 
+## 0.1.6
+
+<!-- lang:es -->
+### Novedades
+- Mapa del mundo: cada circuito jugado aparece en su sitio, con zoom, y al pasar el ratón salen sus 3 mejores. Satélite y calles son opcionales; el administrador puede ubicar un circuito pinchando en el mapa o buscando su dirección.
+- Inscripción pública a campeonatos: formulario en la web, cola de solicitudes en el panel para aprobar o rechazar, y descarga en CSV.
+- Linux con doble clic: «Instalar Howler» busca o crea el servidor, descarga AssettoServer y Node si hacen falta y deja Howler arrancando solo. Como en Windows, sin tocar la terminal.
+- Docker: imagen con Howler y AssettoServer lista para usar con `docker compose`.
+- Rankings en su propia página, con 11 clasificaciones y filtro Top 3, 5, 10 o 30.
+- Selector de compuestos permitidos que lee los datos de los coches, también los cifrados.
+
+### Mejoras
+- Panel reorganizado: nuevo grupo «Preparar», «Revisar vueltas» aparte, Ajustes dividido en «Comunidad y web» y «Sistema», y buscador de ajustes.
+- Apariencia: la barra de guardado queda fija, el panel puede usar un tema distinto al de la web y el color de acento es libre.
+- Títulos del panel con una jerarquía más clara y explicaciones con la marca «i».
+
+<!-- lang:en -->
+### New
+- World map: every played track appears in its place, with zoom, and hovering shows its top 3. Satellite and street views are optional; the administrator can place a track by clicking the map or searching its address.
+- Public championship sign-up: a form on the website, a request queue in the panel to approve or reject, and CSV download.
+- Double-click setup on Linux: "Install Howler" finds or creates the server, downloads AssettoServer and Node if needed and leaves Howler starting by itself. Like on Windows, no terminal needed.
+- Docker: an image with Howler and AssettoServer ready to use with `docker compose`.
+- Rankings on their own page, with 11 tables and a Top 3, 5, 10 or 30 filter.
+- Allowed-tyre picker that reads the cars' data, encrypted ones included.
+
+### Improved
+- Reorganised panel: new "Prepare" group, "Review laps" on its own, Settings split into "Community and web" and "System", and a settings search.
+- Appearance: the save bar stays fixed, the panel can use a different theme from the website and the accent colour is free.
+- Panel titles with a clearer hierarchy and explanations marked with an "i".
+
 ## 0.1.5
 
 <!-- lang:es -->

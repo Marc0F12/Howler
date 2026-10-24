@@ -12,6 +12,7 @@ import './styles/features.css';
 import './styles/badge.css';
 import './styles/brand.css';
 import './styles/session-panel.css';
+import './styles/world.css';
 import { syncDisplay } from './display-sync';
 
 // Primero se averigua el idioma, la hora, la fecha y las medidas que eligió el panel; después se carga la web, que los lee al arrancar.

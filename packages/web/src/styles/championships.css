@@ -183,3 +183,6 @@ a.btn { text-decoration: none; display: inline-block; }
 .ghost-forces { border: 1px solid var(--line); border-radius: var(--r3); padding: 6px 8px 4px; background: var(--surface); }
 .ghost-forces-head { display: flex; align-items: baseline; justify-content: space-between; gap: 8px; padding: 0 2px; font-size: var(--fs-sm); }
 .ghost-forces-svg { display: block; width: min(100%, 190px); height: auto; margin: 0 auto; }
+
+.rank-group { margin: 18px 0 8px; font-size: var(--fs-lg); }
+.rank-group + .grid-2 { align-items: start; }

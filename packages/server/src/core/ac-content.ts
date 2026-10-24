@@ -3,6 +3,7 @@ import { join } from 'node:path';
 import type { ContentCardDto, ContentNamesDto, InstalledContentDto } from '@howler/shared';
 import { cleanTrackId, folderKey, parseGeotags } from '@howler/shared';
 import { SAFE_NAME } from './track-map';
+import { carTyres, readCarDataFile, type CarTyre } from './car-data';
 
 /**
  * Lee de la instalación de AC lo que sirve para enseñar coches y circuitos: nombre real, marca, país e imagen de
@@ -59,7 +60,7 @@ export function formatTrackLength(v: unknown): string | null {
 
 const DRIVETRAINS: Record<string, string> = { rwd: 'Trasera (RWD)', fwd: 'Delantera (FWD)', awd: 'Total (AWD)', '4wd': 'Total (4WD)' };
 
-/** Tracción y marchas de `data/drivetrain.ini`, si la carpeta `data` está sin empaquetar (con `data.acd` cifrado no se puede leer). */
+/** Tracción y marchas de `drivetrain.ini` (suelto o dentro de `data.acd`, que se descifra con el nombre de la carpeta del coche). */
 export function parseDrivetrainIni(text: string): { traction: string | null; gears: number | null } {
   let section = '';
   let traction: string | null = null;
@@ -85,6 +86,8 @@ export interface ContentReader {
   trackCard(track: string, layout: string): ContentCardDto | null;
   /** Skins de un coche (id de carpeta y nombre de `ui_skin.json` si lo tiene). */
   carSkins(id: string): { id: string; name: string }[];
+  /** Compuestos de neumático del coche (de `tyres.ini`, suelto o dentro de `data.acd`). Vacío si no se pueden leer. */
+  carTyres(id: string): CarTyre[];
   /** Imagen de una skin concreta. */
   skinPreview(id: string, skin: string): string | null;
   /** Ruta de la imagen de un coche (la primera skin que tenga preview.jpg). */
@@ -180,10 +183,8 @@ export function createContentReader(contentDirs: string[]): ContentReader {
       const tags = Array.isArray(json.tags) ? json.tags.map((t) => String(t).toLowerCase()) : [];
       let traction = Object.keys(DRIVETRAINS).filter((k) => tags.includes(k)).map((k) => DRIVETRAINS[k]!)[0] ?? null;
       let gears: number | null = null;
-      try {
-        const ini = join(dir, 'data', 'drivetrain.ini');
-        if (existsSync(ini)) { const d = parseDrivetrainIni(readFileSync(ini, 'utf8')); traction = d.traction ?? traction; gears = d.gears; }
-      } catch { /* data.acd cifrado o ilegible: solo lo de ui_car.json */ }
+      const ini = readCarDataFile(dir, 'drivetrain.ini');
+      if (ini) { const d = parseDrivetrainIni(ini); traction = d.traction ?? traction; gears = d.gears; }
       if (traction) specs['Tracción'] = traction;
       if (gears) specs['Marchas'] = String(gears);
       const year = typeof json.year === 'number' || /^\d{4}$/.test(String(json.year ?? '')) ? String(json.year) : null;
@@ -202,6 +203,10 @@ export function createContentReader(contentDirs: string[]): ContentReader {
       set('Boxes', formatSpec(json.pitboxes));
       set('Sentido', str(json.run));
       return { name, subtitle: [str(json.city), str(json.country)].filter(Boolean).join(', ') || null, specs, geo: parseGeotags(json.geotags) };
+    },
+    carTyres(id) {
+      const dir = carDir(id);
+      return dir ? carTyres(dir) : [];
     },
     carSkins(id) {
       const dir = carDir(id);

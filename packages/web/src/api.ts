@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
-import type { ServerDto, ChampionshipDto, ChampionshipSummaryDto, CarListItemDto, CarProfileDto, DriverListItemDto, RankingsDto, SessionHistoryPageDto, DriverProfileDto, TrackListItemDto, TrackProfileDto, ComboDto, LiveEvent, ProgressionStepDto, RecordDto, RecordsDto, ReplayDto, SessionLapDto, StatusDto, TimingDto } from '@howler/shared';
+import type { ServerDto, ChampionshipDto, ChampionshipSummaryDto, CarListItemDto, CarProfileDto, DriverListItemDto, RankingsDto, WorldMapDto, SessionHistoryPageDto, DriverProfileDto, TrackListItemDto, TrackProfileDto, ComboDto, LiveEvent, ProgressionStepDto, RecordDto, RecordsDto, ReplayDto, SessionLapDto, StatusDto, TimingDto } from '@howler/shared';
 
 async function get<T>(url: string): Promise<T> {
   const r = await fetch(url);
@@ -29,11 +29,12 @@ export const api = {
     return get<SessionHistoryPageDto>(`/api/sessions?${q}`);
   },
   sessionTiming: (id: number) => get<TimingDto>(`/api/sessions/${id}/timing`),
-  rankings: (f: { track?: string; layout?: string; days?: number } = {}) => {
+  rankings: (f: { track?: string; layout?: string; days?: number; top?: number } = {}) => {
     const q = new URLSearchParams();
     for (const [k, v] of Object.entries(f)) if (v !== undefined && v !== '') q.set(k, String(v));
     return get<RankingsDto>(`/api/rankings?${q}`);
   },
+  world: () => get<WorldMapDto>('/api/world'),
   drivers: () => get<DriverListItemDto[]>('/api/drivers'),
   driver: (id: number) => get<DriverProfileDto>(`/api/drivers/${id}`),
   tracks: () => get<TrackListItemDto[]>('/api/tracks'),

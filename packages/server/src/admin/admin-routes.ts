@@ -8,6 +8,7 @@ import { resolveRules } from '../core/lap-rules';
 import type { Repository } from '../db/repository';
 import { type ImageStore } from '../core/championship-images';
 import { registerChampionshipRoutes } from './championship-routes';
+import { registerSignupAdminRoutes } from './signup-routes';
 import { registerSoundRoutes } from './sound-routes';
 import type { SoundStore } from '../core/sounds';
 import { registerDiscordRoutes } from './discord-routes';
@@ -17,6 +18,7 @@ import type { Scheduler } from './scheduler';
 import { registerAccountRoutes } from './account-routes';
 import { roleAllows, type AuthService } from './auth';
 import { registerRulesRoutes } from './rules-routes';
+import { registerWorldRoutes } from './world-routes';
 import { SAFE_NAME } from '../core/track-map';
 import { routeKit } from './route-kit';
 import { registerImportRoutes } from './import-routes';
@@ -55,6 +57,8 @@ export interface AdminDeps {
   repo: Repository;
   /** Guarda las reglas de vuelta válida (sustituye la sección entera) y las deja en vigor. */
   saveLapRules: (cfg: LapRulesConfig) => void;
+  /** Guarda los ajustes del mapa del mundo (sustituye la sección entera). */
+  saveWorldMap: (cfg: { online: boolean; manual: Record<string, { lat: number; lon: number }> }) => void;
   /** Avisa a la web de que han cambiado vueltas (para que recargue tiempos y clasificaciones). */
   onLapsChanged: () => void;
   /** Coches y circuitos instalados en AC (para el selector de carreras). */
@@ -184,7 +188,9 @@ export function registerAdminRoutes(app: FastifyInstance, d: AdminDeps) {
   registerPresetRoutes(app, d, kit);
   registerScheduleRoutes(app, d, kit);
   registerRulesRoutes(app, d, kit);
+  registerWorldRoutes(app, d, kit);
   registerChampionshipRoutes(app, d, kit);
+  registerSignupAdminRoutes(app, d, kit);
   registerSoundRoutes(app, d, kit);
   registerDiscordRoutes(app, d, kit);
 
@@ -305,7 +311,9 @@ export function registerAdminRoutes(app: FastifyInstance, d: AdminDeps) {
   app.put('/admin/api/appearance', guard(async (req, reply) => {
     // Idioma, hora y medidas se guardan aparte de la disposición y el tema: si la orden no los trae, se conservan
     const body = (req as { body: unknown }).body as Record<string, unknown> | null;
-    const next = sanitizeAppearance({ ...(body ?? {}), display: body?.display ?? sanitizeAppearance(d.getConfig().appearance).display });
+    const before = sanitizeAppearance(d.getConfig().appearance);
+    // El tema del panel (`panelTheme`) también se conserva si la orden no lo menciona; con `null` se quita
+    const next = sanitizeAppearance({ ...(body ?? {}), display: body?.display ?? before.display, panelTheme: body && 'panelTheme' in body ? body.panelTheme : before.panelTheme });
     d.saveAppearance(next);
     return reply.send(next);
   }));

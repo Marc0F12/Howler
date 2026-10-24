@@ -1,12 +1,12 @@
 import { useRef, useState, type CSSProperties } from 'react';
-import { ACCENT_SWATCHES, BUILTIN_THEMES, THEME_CARDS, resolveTheme, withAccent, withTicker, validateTheme, type Theme, type ThemeSelection } from '@howler/shared';
+import { ACCENT_SWATCHES, BUILTIN_THEMES, THEME_CARDS, resolveTheme, withAccent, withAccentTitles, withTicker, validateTheme, type Theme, type ThemeSelection } from '@howler/shared';
 import { RecordBand, SAMPLE_RECORD } from '../components/RecordTicker';
 import { downloadText } from '../download';
 import { t, tm } from '../i18n';
 import { Card, Notice } from './ui';
 
 /** Selector de tema (solo el administrador lo cambia). Lo elegido se ve en la vista previa y se publica con «Guardar y publicar». */
-export function ThemeCard({ value, onChange, dirty }: { value: ThemeSelection | undefined; onChange: (s: ThemeSelection | undefined) => void; dirty: boolean }) {
+export function ThemeCard({ value, onChange, dirty, scope = 'web' }: { value: ThemeSelection | undefined; onChange: (s: ThemeSelection | undefined) => void; dirty: boolean; scope?: 'web' | 'panel' }) {
   const current = resolveTheme(value);
   const custom = BUILTIN_THEMES.includes(current) ? null : current;
   const fileRef = useRef<HTMLInputElement>(null);
@@ -34,8 +34,8 @@ export function ThemeCard({ value, onChange, dirty }: { value: ThemeSelection | 
     </button>
   );
   return (
-    <Card title={t('Tema')} aside={dirty ? <span className="badge pending">{t('Cambios sin guardar')}</span> : undefined}>
-      <p className="hint">{t('El tema cambia colores, formas y tipografía de toda la web y del panel. Solo lo cambia el administrador desde aquí.')}</p>
+    <Card title={scope === 'panel' ? t('Tema del panel') : t('Tema')} aside={dirty ? <span className="badge pending">{t('Cambios sin guardar')}</span> : undefined}>
+      <p className="hint">{scope === 'panel' ? t('Colores, formas y tipografía del panel de control. Solo se ve desde el panel; la web pública no cambia.') : t('El tema cambia colores, formas y tipografía de la web (y del panel, si no tiene uno propio). Solo lo cambia el administrador desde aquí.')}</p>
       <div className="theme-grid">{THEME_CARDS.map(card)}{custom && card(custom)}</div>
       {current.id.startsWith('original') && (
         <div className="segmented" role="group" aria-label={t('Modo del tema Original')}>
@@ -48,7 +48,13 @@ export function ThemeCard({ value, onChange, dirty }: { value: ThemeSelection | 
         {ACCENT_SWATCHES.map((c) => (
           <button key={c} type="button" className={`accent-dot ${current.colors.accent.toLowerCase() === c ? 'on' : ''}`} style={{ background: c }} aria-label={c} aria-pressed={current.colors.accent.toLowerCase() === c} onClick={() => onChange(withAccent(current, c))} />
         ))}
+        <label className="accent-custom muted">{t('Otro color')}
+          <input type="color" value={current.colors.accent} onChange={(e) => onChange(withAccent(current, e.target.value))} aria-label={t('Elegir otro color de acento')} />
+          <code>{current.colors.accent}</code>
+        </label>
       </div>
+      <label className="sp-switch"><input type="checkbox" checked={current.accentTitles === true} onChange={(e) => onChange(withAccentTitles(current, e.target.checked))} /><span>{t('Títulos e iconos con el color de acento')}</span></label>
+      {scope === 'web' && (<>
       <div className="accent-row" role="group" aria-label={t('Banda de nuevo récord')}>
         <span className="muted">{t('Banda de nuevo récord')}</span>
         <label className="muted">{t('Fondo')} <input type="color" value={current.tickerBg ?? current.colors.wait} onChange={(e) => onChange(withTicker(current, e.target.value, current.tickerFg))} aria-label={t('Fondo de la banda de nuevo récord')} /></label>
@@ -61,6 +67,7 @@ export function ThemeCard({ value, onChange, dirty }: { value: ThemeSelection | 
         </div>
         <button type="button" className="btn" onClick={() => setReplay((n) => n + 1)}>{t('Ver la animación')}</button>
       </div>
+      </>)}
       <div className="actions">
         <button type="button" className="btn" onClick={() => downloadText(`howler-theme-${current.id}.json`, JSON.stringify(current, null, 2))}>{t('Exportar el tema actual')}</button>
         <button type="button" className="btn" onClick={() => fileRef.current?.click()}>{t('Importar un tema…')}</button>

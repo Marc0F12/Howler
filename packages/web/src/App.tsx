@@ -11,6 +11,7 @@ import { HowlerMark } from './components/HowlerMark';
 import { Splash } from './components/Splash';
 import { t } from './i18n';
 import { HomePage } from './pages/HomePage';
+import { RankingsPage } from './pages/RankingsPage';
 import { CarPage } from './pages/CarPage';
 import { ChampionshipPage } from './pages/ChampionshipPage';
 import { ChampionshipsPage } from './pages/ChampionshipsPage';
@@ -24,12 +25,13 @@ import { VersusPage } from './pages/VersusPage';
 
 // El panel y el comparador pesan mucho y no los usa todo el mundo: se descargan solo al abrirlos.
 const AdminPanel = lazy(() => import('./admin/AdminPanel').then((m) => ({ default: m.AdminPanel })));
+const WorldPage = lazy(() => import('./pages/WorldPage').then((m) => ({ default: m.WorldPage })));
 const ComparePage = lazy(() => import('./pages/ComparePage').then((m) => ({ default: m.ComparePage })));
 const loading = <p className="empty">{t('Cargando…')}</p>;
 
 type Route =
   | { name: 'home' } | { name: 'records' } | { name: 'panel' }
-  | { name: 'sessions' } | { name: 'session'; id: number } | { name: 'rankings' } | { name: 'drivers' } | { name: 'tracks' } | { name: 'cars' }
+  | { name: 'sessions' } | { name: 'session'; id: number } | { name: 'rankings' } | { name: 'world' } | { name: 'drivers' } | { name: 'tracks' } | { name: 'cars' }
   | { name: 'driver'; id: number } | { name: 'track'; track: string; layout: string } | { name: 'car'; car: string }
   | { name: 'championships' } | { name: 'championship'; id: number }
   | { name: 'compare'; track: string; layout: string; picks: string[] }
@@ -57,6 +59,7 @@ export function parseRoute(h: string): Route {
     case 'panel': return { name: 'panel' };
     case 'records': return { name: 'records' };
     case 'rankings': return { name: 'rankings' };
+    case 'world': return { name: 'world' };
     case 'sessions': return { name: 'sessions' };
     case 'session': { const id = Number(arg); return Number.isInteger(id) && id > 0 ? { name: 'session', id } : { name: 'sessions' }; }
     case 'drivers': return { name: 'drivers' };
@@ -83,7 +86,7 @@ function useRoute(): Route {
 
 /** A qué entrada del menú pertenece cada página (una ficha cuenta como su listado). */
 const SECTION: Record<Route['name'], string> = {
-  home: 'home', records: 'records', panel: 'panel', drivers: 'drivers', rankings: 'records', sessions: 'sessions', session: 'sessions', driver: 'drivers', tracks: 'more', track: 'more', cars: 'more', car: 'more', compare: 'records', versus: 'drivers',
+  home: 'home', records: 'records', panel: 'panel', drivers: 'drivers', rankings: 'more', world: 'more', sessions: 'sessions', session: 'sessions', driver: 'drivers', tracks: 'more', track: 'more', cars: 'more', car: 'more', compare: 'records', versus: 'drivers',
   championships: 'championships', championship: 'championships',
 };
 
@@ -145,7 +148,7 @@ function PublicApp() {
     ['home', '#/', t('Inicio')], ['records', '#/records', t('Tiempos')], ['sessions', '#/sessions', t('Sesiones')], ['drivers', '#/drivers', t('Pilotos')], ['championships', '#/championships', t('Campeonatos')],
   ];
   const NAV_ICON: Record<string, string> = { home: 'home', records: 'timing', sessions: 'sessions', drivers: 'drivers', championships: 'championships' };
-  const MORE: [string, string][] = [['#/tracks', t('Circuitos')], ['#/cars', t('Coches')]];
+  const MORE: [string, string][] = [['#/rankings', t('Rankings')], ['#/world', t('Mapa')], ['#/tracks', t('Circuitos')], ['#/cars', t('Coches')]];
   const inMore = SECTION[route.name] === 'more';
   const [moreOpen, setMoreOpen] = useState(false);
   useEffect(() => { setMoreOpen(false); }, [route]);
@@ -185,7 +188,9 @@ function PublicApp() {
       <main>
         <Suspense fallback={loading}>
         {route.name === 'panel' && admin ? <AdminPanel />
-          : route.name === 'records' || route.name === 'rankings' ? <RecordsPage view={route.name} />
+          : route.name === 'world' ? <WorldPage />
+          : route.name === 'rankings' ? <RankingsPage />
+          : route.name === 'records' ? <RecordsPage />
           : route.name === 'sessions' ? <SessionsPage />
           : route.name === 'session' ? <SessionPage id={route.id} />
           : route.name === 'drivers' ? <DriversPage />

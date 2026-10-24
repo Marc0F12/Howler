@@ -21,7 +21,7 @@ export interface RateLimitConfig {
 export const DEFAULT_RATE_LIMIT: RateLimitConfig = { enabled: true, perMinute: 600, heavyPerMinute: 120, liveConnectionsPerIp: 12, liveConnectionsTotal: 400 };
 
 /** Rutas que cuestan de verdad (agregados grandes, trazas, imágenes) frente a las que solo leen un dato pequeño. */
-const HEAVY = /^\/api\/(records(?!\/latest)|compare|replay|rankings|sessions(?!\/\d+\/(?:timing|progression))|tracks\/profile|cars\/profile|content\/|map)/;
+const HEAVY = /^\/api\/(records(?!\/latest)|compare|replay|rankings|sessions(?!\/\d+\/(?:timing|progression))|tracks\/profile|cars\/profile|content\/|map|world)/;
 const LIVE = /^\/api\/(live|positions)(?:\?|$)/;
 
 export const isHeavy = (url: string) => HEAVY.test(url);

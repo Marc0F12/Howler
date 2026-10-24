@@ -234,3 +234,14 @@ describe('mejor vuelta personal (para guardar solo esa traza)', () => {
     expect(repo.isPersonalBest(99999)).toBe(false);
   });
 });
+
+describe('worldBoard', () => {
+  it('da los 3 mejores de cada circuito, un piloto una vez y con su mejor coche', () => {
+    const { repo, ana } = seed();
+    const monza = repo.profiles.worldBoard().find((b) => b.track === 'monza')!;
+    expect(monza.laps).toBe(6);
+    expect(monza.top.map((t) => [t.driverName, t.lapMs, t.car])).toEqual([['Ana', 99_000, 'bmw'], ['Beto', 100_000, 'mx5'], ['Cris', 105_000, 'mx5']]);
+    expect(monza.top[0]!.driverId).toBe(ana);
+    expect(repo.profiles.worldBoard().find((b) => b.track === 'imola')!.top).toHaveLength(2);
+  });
+});

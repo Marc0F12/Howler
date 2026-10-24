@@ -1,9 +1,10 @@
 import { closeSync, createReadStream, existsSync, openSync, readSync, statSync } from 'node:fs';
+import { registerSignupRoutes } from './signup-routes';
 import { resolve } from 'node:path';
 import fastifyStatic from '@fastify/static';
 import Fastify from 'fastify';
 import { z } from 'zod';
-import { cleanTrackId, DEFAULT_SOUND, sanitizeAppearance, type PositionsDto, type ReplayDto } from '@howler/shared';
+import { cleanTrackId, DEFAULT_SOUND, sanitizeAppearance, worldKey, type PositionsDto, type ReplayDto, type WorldMapConfig, type WorldMapDto, type WorldPinDto } from '@howler/shared';
 import type { FastifyReply } from 'fastify';
 import type { Bus } from '../core/bus';
 import { registerMultiHowlerPublic } from './multihowler-routes';
@@ -46,7 +47,7 @@ export function driverKm(combos: { track: string; layout: string; laps: number }
   return known ? Math.round(km * 10) / 10 : null;
 }
 
-export async function buildApp(deps: { repo: Repository; tracker: Tracker; bus: Bus; trackDirs?: string[]; contentDirs?: string[]; avatars?: AvatarService; images?: ImageStore; sounds?: SoundStore; admin?: AdminDeps; multihowler?: MultiHowler; getAppearance?: () => unknown; rateLimit?: RateLimitConfig }) {
+export async function buildApp(deps: { repo: Repository; tracker: Tracker; bus: Bus; trackDirs?: string[]; contentDirs?: string[]; avatars?: AvatarService; images?: ImageStore; sounds?: SoundStore; admin?: AdminDeps; multihowler?: MultiHowler; getAppearance?: () => unknown; getWorldMap?: () => WorldMapConfig; rateLimit?: RateLimitConfig }) {
   const trackDirs = deps.trackDirs ?? [];
   const content = createContentReader(deps.contentDirs ?? []);
   // forceCloseConnections: al cerrar, se cortan también las conexiones largas (los datos en directo de la web); si no, Howler se quedaba
@@ -67,6 +68,18 @@ export async function buildApp(deps: { repo: Repository; tracker: Tracker; bus: 
   if (deps.multihowler) registerMultiHowlerPublic(app, deps.multihowler);
 
   // Disposición de la web (solo lectura; se cambian desde el panel).
+  // Mapa del mundo: circuitos jugados con su ubicación (a mano, o la de su ui_track.json) y sus 3 mejores tiempos. Sin ubicación no salen.
+  app.get('/api/world', async (_req, reply): Promise<WorldMapDto> => {
+    const cfg = deps.getWorldMap?.() ?? { online: false, manual: {} };
+    const pins: WorldPinDto[] = [];
+    for (const b of deps.repo.profiles.worldBoard()) {
+      const manual = cfg.manual[worldKey(b.track, b.layout)];
+      const geo = manual ?? content.trackCard(b.track, b.layout)?.geo;
+      if (geo) pins.push({ ...b, lat: geo.lat, lon: geo.lon, manual: !!manual });
+    }
+    reply.header('Cache-Control', 'no-cache');
+    return { online: cfg.online, pins };
+  });
   app.get('/api/appearance', async (_req, reply) => reply.header('Cache-Control', 'no-cache').send(sanitizeAppearance(deps.getAppearance?.())));
   app.get('/api/status', async () => deps.tracker.status());
   const serverQuery = z.object({ server: z.string().max(40).optional() });
@@ -84,8 +97,8 @@ export async function buildApp(deps: { repo: Repository; tracker: Tracker; bus: 
   const notFound = (reply: import('fastify').FastifyReply) => reply.code(404).send({ error: 'No existe' });
   app.get('/api/drivers', async () => deps.repo.profiles.driverList());
   app.get('/api/rankings', async (req) => {
-    const q = z.object({ track: z.string().max(120).optional(), layout: z.string().max(120).optional(), days: z.coerce.number().int().min(1).max(3660).optional() }).parse(req.query);
-    return deps.repo.profiles.rankings({ track: q.track, layout: q.layout, since: q.days ? new Date(Date.now() - q.days * 86_400_000).toISOString() : undefined });
+    const q = z.object({ track: z.string().max(120).optional(), layout: z.string().max(120).optional(), days: z.coerce.number().int().min(1).max(3660).optional(), top: z.coerce.number().int().min(1).max(50).optional() }).parse(req.query);
+    return deps.repo.profiles.rankings({ track: q.track, layout: q.layout, top: q.top, since: q.days ? new Date(Date.now() - q.days * 86_400_000).toISOString() : undefined });
   });
   app.get('/api/drivers/:id', async (req, reply) => {
     const p = deps.repo.profiles.driverProfile(idParam.parse(req.params).id);
@@ -125,6 +138,8 @@ export async function buildApp(deps: { repo: Repository; tracker: Tracker; bus: 
   };
   app.get('/api/championships', async () => deps.repo.championships.list(false).map(autoFit));
   app.get('/api/championships/:id', async (req, reply) => { const c = deps.repo.championships.get(idParam.parse(req.params).id, true); return c ? autoFit(c) : notFound(reply); });
+
+  registerSignupRoutes(app, deps.repo);
 
   app.get('/api/championship-images/:file', async (req, reply) => {
     const { file } = z.object({ file: z.string().max(80) }).parse(req.params);

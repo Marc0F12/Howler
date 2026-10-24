@@ -80,6 +80,8 @@ export interface ChampionshipSummaryDto {
   rounds: number;
   played: number;
   participants: number;
+  /** Solo en el panel: solicitudes de inscripción sin revisar. */
+  pendingSignups?: number;
   next: { number: number; track: string; layout: string; raceAt: string | null } | null;
   leader: { driverId: number; name: string } | null;
 }

@@ -1,0 +1,79 @@
+/* Mapa del mundo */
+.wm { position: relative; height: clamp(420px, 68vh, 760px); overflow: hidden; border-radius: var(--r3); background: var(--surface); border: 1px solid var(--line); touch-action: none; cursor: grab; user-select: none; }
+.wm:active { cursor: grabbing; }
+.wm-svg { display: block; }
+.wm-land { fill: var(--surface-2); stroke: var(--line); stroke-width: 0.8; }
+.wm-tiles { position: absolute; inset: 0; background: var(--surface); }
+.wm-tiles img { position: absolute; display: block; max-width: none; }
+.wm-hint { margin: 0 0 8px; font-size: var(--fs-sm); }
+.wm-attr { position: absolute; right: 8px; bottom: 6px; margin: 0; padding: 2px 6px; font-size: var(--fs-label); color: var(--muted); background: var(--scrim); border-radius: var(--r2); pointer-events: none; }
+
+/* Chinchetas y círculos */
+.wm-pin { position: absolute; z-index: 2; width: 0; height: 0; }
+.wm-pin.open { z-index: 6; }
+.wm-pin-main { z-index: 2; position: absolute; display: flex; align-items: center; justify-content: center; color: inherit; text-decoration: none; }
+.wm-pushpin { display: block; width: 24px; height: 32px; fill: var(--accent); stroke: var(--bg); stroke-width: 1.4; transform: translate(-50%, -100%); transform-origin: 50% 100%; transition: transform calc(120ms * var(--motion)); }
+.wm-pushpin circle { fill: var(--on-accent); stroke: none; }
+.wm-pin-main:hover .wm-pushpin, .wm-pin.open .wm-pushpin { transform: translate(-50%, -100%) scale(1.15); }
+.wm-pin.wm-img .wm-pin-main { width: 58px; height: 58px; left: -29px; top: -29px; border-radius: 50%; overflow: hidden; background: var(--surface-2); border: 2px solid var(--accent); transition: transform calc(140ms * var(--motion)); }
+.wm-pin.wm-img.open .wm-pin-main, .wm-pin.wm-img .wm-pin-main:hover { transform: scale(1.12); }
+.wm-pin.wm-img img { width: 100%; height: 100%; object-fit: cover; }
+.wm-initials { font-weight: 700; font-size: var(--fs-base); color: var(--text); }
+.wm-pin:focus-within .wm-pin-main { outline: 2px solid var(--accent-text); outline-offset: 2px; }
+.wm-label { position: absolute; left: 0; top: 38px; transform: translateX(-50%); white-space: nowrap; padding: 2px 8px; font-size: var(--fs-sm); font-weight: 600; color: var(--text); background: var(--surface-2); border: 1px solid var(--line); border-radius: var(--r2); pointer-events: none; }
+.wm-pin:not(.wm-img) .wm-label { top: 8px; }
+
+/* Grupos de circuitos cercanos */
+.wm-cluster { position: absolute; z-index: 3; width: 38px; height: 38px; margin: -19px 0 0 -19px; display: grid; place-items: center; border-radius: 50%; border: 2px solid var(--bg); background: var(--accent); color: var(--on-accent); font: inherit; font-weight: 700; font-size: var(--fs-base); font-family: var(--font-num); cursor: pointer; transition: transform calc(120ms * var(--motion)); }
+.wm-cluster:hover { transform: scale(1.1); }
+
+/* Abanico de los 3 mejores: el 1.º arriba, el 2.º a la izquierda y el 3.º a la derecha */
+.wm-fan { position: absolute; left: 0; top: 0; width: 0; height: 0; }
+.wm-fan::before { content: ''; position: absolute; left: -95px; top: -125px; width: 190px; height: 190px; border-radius: 50%; } /* puente para que el cursor no «salga» al ir hacia un piloto */
+.wm-fan.flip::before { top: -65px; }
+.wm-fan-item { position: absolute; left: 0; top: 0; display: flex; flex-direction: column; align-items: center; gap: 3px; width: 82px; margin-left: -41px; color: var(--text); text-decoration: none; animation: wm-pop calc(180ms * var(--motion)) both; }
+.wm-fan-item.p1 { translate: 0 -112px; }
+.wm-fan-item.p2 { translate: -86px -58px; animation-delay: calc(40ms * var(--motion)); }
+.wm-fan-item.p3 { translate: 86px -58px; animation-delay: calc(80ms * var(--motion)); }
+.wm-fan.flip .wm-fan-item.p1 { translate: 0 62px; }
+.wm-fan.flip .wm-fan-item.p2 { translate: -86px 24px; }
+.wm-fan.flip .wm-fan-item.p3 { translate: 86px 24px; }
+.wm-fan-avatar { position: relative; display: block; border-radius: 50%; border: 2px solid var(--accent); background: var(--surface-2); line-height: 0; }
+.wm-fan-avatar b { position: absolute; right: -6px; top: -6px; min-width: 18px; height: 18px; display: grid; place-items: center; border-radius: 9px; background: var(--accent); color: var(--on-accent); font-size: var(--fs-label); font-family: var(--font-num); }
+.wm-fan-time { padding: 1px 6px; font-size: var(--fs-sm); font-weight: 600; background: var(--surface-2); border: 1px solid var(--line); border-radius: var(--r2); white-space: nowrap; }
+.wm-fan-item:hover .wm-fan-avatar, .wm-fan-item:focus-visible .wm-fan-avatar { border-color: var(--accent-text); }
+@keyframes wm-pop { from { opacity: 0; scale: 0.6; } to { opacity: 1; scale: 1; } }
+
+/* Zoom */
+.wm-ctl { position: absolute; left: 10px; top: 10px; z-index: 8; display: flex; flex-direction: column; gap: 4px; cursor: default; }
+.wm-ctl button { min-width: 34px; height: 34px; padding: 0 8px; font: inherit; font-size: var(--fs-base); color: var(--text); background: var(--surface-2); border: 1px solid var(--line); border-radius: var(--r2); cursor: pointer; }
+.wm-ctl button:hover { background: var(--surface); }
+.wm-ctl .wm-all { font-size: var(--fs-sm); }
+
+@media (prefers-reduced-motion: reduce) { .wm-fan-item { animation: none; } }
+
+/* Selector de tipo de mapa */
+.wm-modes { display: flex; gap: 4px; }
+.wm-modes button { padding: 5px 12px; font: inherit; font-size: var(--fs-sm); font-weight: 600; color: var(--muted); background: none; border: 0; border-radius: var(--r2); cursor: pointer; }
+.wm-modes button:hover { color: var(--text); background: var(--surface); }
+.wm-modes button.on { color: var(--text); background: var(--surface-2); }
+
+.world-found { list-style: none; margin: 6px 0 0; padding: 0; display: grid; gap: 4px; font-size: var(--fs-sm); }
+
+/* Elegir un sitio en el mapa */
+.wm.wm-pick { cursor: crosshair; height: min(60vh, 560px); }
+.wm-marker { position: absolute; z-index: 5; width: 26px; height: 26px; margin: -13px 0 0 -13px; border: 2px solid var(--accent); border-radius: 50%; background: color-mix(in srgb, var(--accent) 25%, transparent); pointer-events: none; }
+.wm-marker::before, .wm-marker::after { content: ''; position: absolute; background: var(--accent); }
+.wm-marker::before { left: 50%; top: -9px; bottom: -9px; width: 2px; margin-left: -1px; }
+.wm-marker::after { top: 50%; left: -9px; right: -9px; height: 2px; margin-top: -1px; }
+.wm-picker { width: min(960px, 96vw); padding: 14px; color: var(--text); background: var(--surface); border: 1px solid var(--line); border-radius: var(--r4); }
+.wm-picker::backdrop { background: var(--scrim); }
+.wm-picker header { display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap; margin-bottom: 8px; }
+.wm-picker h3 { margin: 0; font-size: var(--fs-lg); }
+.wm-picker footer { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin-top: 10px; }
+
+.wm-search { position: relative; margin: 0 0 8px; }
+.wm-search input { width: min(420px, 70%); }
+.wm-hits { position: absolute; z-index: 20; left: 0; top: 100%; width: min(560px, 100%); margin: 4px 0 0; padding: 4px; list-style: none; background: var(--surface-2); border: 1px solid var(--line); border-radius: var(--r2); }
+.wm-hits button { width: 100%; padding: 6px 10px; font: inherit; font-size: var(--fs-sm); text-align: left; color: var(--text); background: none; border: 0; border-radius: var(--r2); cursor: pointer; }
+.wm-hits button:hover, .wm-hits button:focus-visible { background: var(--surface); }

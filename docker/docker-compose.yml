@@ -1,0 +1,21 @@
+# Howler + AssettoServer. Antes: copia aquí el paquete de Linux de la release como «howler-linux.tar.gz».
+#   docker compose up -d --build
+# Web: http://IP:8420 · Panel: http://127.0.0.1:8421 (usuario y contraseña de abajo)
+services:
+  howler:
+    build: .
+    container_name: howler
+    init: true
+    restart: unless-stopped
+    environment:
+      HOWLER_ADMIN_USER: admin
+      HOWLER_ADMIN_PASSWORD: cambia-esta-contraseña   # mínimo 10 caracteres; cámbiala
+    ports:
+      - "8420:8420"                # web pública
+      - "127.0.0.1:8421:8421"      # panel (solo desde este equipo; para verlo desde fuera, túnel SSH)
+      - "9600:9600/tcp"            # juego
+      - "9600:9600/udp"
+      - "8081:8081"                # HTTP de AssettoServer
+    volumes:
+      - ./state:/state             # configuración, base de datos y copias de Howler
+      - ./server:/server           # tu servidor: aquí van presets/, content/ y system/

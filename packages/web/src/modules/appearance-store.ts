@@ -1,5 +1,5 @@
-import { createContext, useContext, useEffect, useSyncExternalStore } from 'react';
-import { applyTheme } from '../theme-apply';
+import { createContext, useContext, useEffect, useState, useSyncExternalStore } from 'react';
+import { applyTheme, isPanelRoute } from '../theme-apply';
 import { DEFAULT_APPEARANCE, resolveLayout, sanitizeAppearance, type AppearanceConfig, type LayoutEntry, type PageId, type PlacedEntry } from '@howler/shared';
 
 // Una sola copia de la apariencia para toda la web: se pide una vez y el panel la puede actualizar al guardar.
@@ -9,6 +9,8 @@ const listeners = new Set<() => void>();
 const emit = () => listeners.forEach((l) => l());
 
 export function setAppearance(a: AppearanceConfig) { current = a; emit(); }
+/** La apariencia guardada ahora mismo (sin suscribirse), o `null` si aún no ha cargado. */
+export const getAppearance = () => current;
 
 function load() {
   if (loading || current) return;
@@ -38,8 +40,17 @@ export function useLayout(page: PageId): PlacedEntry[] | null {
   return resolveLayout(page, stored);
 }
 
-/** Aplica a toda la página el tema elegido por el administrador cada vez que cambia. */
+/** Aplica a toda la página el tema elegido por el administrador: el de la web, o el del panel mientras se está en él (si no tiene uno propio, el mismo). */
 export function useApplyTheme() {
   const a = useAppearance();
-  useEffect(() => { if (a) applyTheme(a.theme); }, [a]);
+  const [panel, setPanel] = useState(isPanelRoute);
+  useEffect(() => {
+    const on = () => setPanel(isPanelRoute());
+    window.addEventListener('hashchange', on);
+    return () => window.removeEventListener('hashchange', on);
+  }, []);
+  useEffect(() => {
+    if (!a) return;
+    if (panel) applyTheme(a.panelTheme ?? a.theme, 'panel'); else applyTheme(a.theme, 'web');
+  }, [a, panel]);
 }

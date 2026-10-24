@@ -196,7 +196,7 @@ export function ImportSection() {
             {(report.lapsUpdated > 0 || report.sessionsUpdated > 0) && <div><dt>{t('Completadas')}</dt><dd>{t('{a} vueltas (temperaturas o ayudas) y {b} sesiones (ajustes) ya importadas', { a: num(report.lapsUpdated), b: num(report.sessionsUpdated) })}</dd></div>}
             {report.validityChanged > 0 && <div><dt>{t('Cambios')}</dt><dd>{t('{n} vueltas cuentan distinto que en stracker por tus reglas', { n: num(report.validityChanged) })}</dd></div>}
           </dl>
-          {report.lapsPending > 0 && <p className="hint">{t('Las pendientes son salidas de boxes: revísalas en «Reglas de vuelta» → «Pendientes de revisión».')}</p>}
+          {report.lapsPending > 0 && <p className="hint">{t('Las pendientes son salidas de boxes: revísalas en Servidor → Revisar vueltas.')}</p>}
           <ul className="warn-list">{report.notes.map((n) => <li key={n}>{tm(n)}</li>)}</ul>
         </Card>
       )}

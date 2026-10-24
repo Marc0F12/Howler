@@ -188,13 +188,13 @@ const updateService = new UpdateService({
     },
 });
 const multihowler = new MultiHowler(repo.multihowler, { shared: repo.sharedChampionships, traces: repo.mhTraces, onLapsChanged: () => bus.emit({ type: 'results' }) });
-const app = await buildApp({ repo, tracker, bus, trackDirs: trackDirs(), contentDirs: contentDirs(), avatars, images, sounds, multihowler, getAppearance: () => config.appearance, rateLimit: config.http.rateLimit });
+const app = await buildApp({ repo, tracker, bus, trackDirs: trackDirs(), contentDirs: contentDirs(), avatars, images, sounds, multihowler, getAppearance: () => config.appearance, getWorldMap: () => config.worldMap, rateLimit: config.http.rateLimit });
 await app.listen({ host: config.http.host, port: config.http.port });
 
 // Panel de control: otra instancia que solo escucha en 127.0.0.1, así nadie fuera de este PC puede abrirlo.
 const adminPort = config.admin.port;
 const adminApp = await buildApp({
-  repo, tracker, bus, trackDirs: trackDirs(), contentDirs: contentDirs(), images, sounds, getAppearance: () => config.appearance,
+  repo, tracker, bus, trackDirs: trackDirs(), contentDirs: contentDirs(), images, sounds, getAppearance: () => config.appearance, getWorldMap: () => config.worldMap,
   admin: {
     multihowler,
     updates: updateService,
@@ -212,6 +212,7 @@ const adminApp = await buildApp({
     saveConfig: (patch) => { saveConfig(patch); config = loadConfig(); setServerLang(config.language); },
     repo,
     saveAppearance: (a) => { saveConfig({ appearance: a }, undefined, ['appearance']); config = loadConfig(); },
+    saveWorldMap: (cfg) => { saveConfig({ worldMap: cfg }, undefined, ['worldMap']); config = loadConfig(); },
     saveLapRules: (cfg) => { saveConfig({ lapRules: cfg }, undefined, ['lapRules']); config = loadConfig(); setServerLang(config.language); },
     onLapsChanged: () => bus.emit({ type: 'results' }),
     installedContent: () => contentReader().installed(),

@@ -19,4 +19,13 @@ describe('configuración', () => {
     expect(loadConfig().language).toBe('en');
     expect(loadConfig().http.port).toBe(9000);
   });
+
+  it('conserva el tema del panel (panelTheme) junto al de la web al guardar y volver a cargar', () => {
+    const d = mkdtempSync(join(tmpdir(), 'howler-cfg-')); dirs.push(d);
+    const file = join(d, 'howler.config.json');
+    writeFileSync(file, '{}');
+    process.env.HOWLER_CONFIG = file;
+    saveConfig({ appearance: { layouts: {}, theme: 'gt', panelTheme: 'original' } }, file, ['appearance']);
+    expect(loadConfig().appearance).toMatchObject({ theme: 'gt', panelTheme: 'original' });
+  });
 });

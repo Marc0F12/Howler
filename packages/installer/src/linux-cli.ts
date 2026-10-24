@@ -1,6 +1,9 @@
 import { dirname, join, resolve } from 'node:path';
 import { writeHowlerConfig } from './plan';
+import { writeFileSync } from 'node:fs';
 import { setupLinuxServer } from './linux-setup';
+import { findAssettoCorsa } from './new-server';
+import { defaultCandidates, installSystemdService, runWizard, terminalIo } from './linux-wizard';
 
 /**
  *   node app/setup-linux.mjs --server <carpeta del servidor> [--preset SERVER_00] [--home <carpeta de Howler>]
@@ -15,6 +18,17 @@ const opt = (name: string) => {
 
 const serverDir = opt('server');
 const home0 = resolve(opt('home') ?? join(dirname(process.argv[1] ?? '.'), '..'));
+const nodeBin = opt('node') ?? process.execPath;
+// Asistente (doble clic en «Instalar Howler»): pregunta lo mínimo y lo hace todo.
+if (args.includes('--wizard')) {
+  runWizard(terminalIo(), { home: home0, node: nodeBin, serverCandidates: defaultCandidates(home0), acInstalls: findAssettoCorsa() })
+    .then((r) => { if (r.startNow) writeFileSync(join(home0, '.start-now'), ''); })
+    .catch((e) => { console.error('Error:', (e as Error).message); process.exit(1); });
+} else if (args.includes('--service') && !serverDir) {
+  try { console.log(`Servicio instalado: ${installSystemdService(home0, nodeBin)}`); } catch (e) { console.error('Error:', (e as Error).message); process.exit(1); }
+} else main();
+
+function main() {
 // Sin servidor todavía: solo deja creado howler.config.json (el servidor se añade luego desde el panel o editando el archivo).
 if (!serverDir && args.includes('--init')) {
   console.log(writeHowlerConfig(home0, '') === 'created' ? `howler.config.json creado en ${home0}. Pon en serverDir la carpeta de tu servidor.` : `howler.config.json ya existía en ${home0}: no se ha tocado.`);
@@ -35,4 +49,5 @@ try {
 } catch (e) {
   console.error('Error:', (e as Error).message);
   process.exit(1);
+}
 }

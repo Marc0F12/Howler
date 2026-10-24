@@ -7,7 +7,6 @@ import { FilterPanel } from '../components/FilterPanel';
 import { GhostReplay } from '../components/GhostReplay';
 import { CarLink, TrackLink } from '../components/links';
 import { RecordsTable } from '../components/RecordsTable';
-import { RankingsPage } from './RankingsPage';
 
 const trackKey = (c: Pick<ComboDto, 'track' | 'layout'>) => `${c.track}|${c.layout}`;
 
@@ -16,7 +15,7 @@ const trackKey = (c: Pick<ComboDto, 'track' | 'layout'>) => `${c.track}|${c.layo
  * elección). Con un circuito sale la tabla con la mejor vuelta de cada piloto; sin circuito, el récord de cada
  * combinación, y al pulsar una fila se abre su tabla. Al entrar se parte de la última combinación jugada.
  */
-export function RecordsPage({ view = 'records' }: { view?: 'records' | 'rankings' }) {
+export function RecordsPage() {
   const [server, setServer] = useState('all');
   const servers = useLive(api.servers, [], (e) => e.type === 'results').data ?? [];
   const combos = useLive(() => api.combos(server), [server], (e) => e.type === 'lap' || e.type === 'results');
@@ -56,13 +55,6 @@ export function RecordsPage({ view = 'records' }: { view?: 'records' | 'rankings
   const selectedTrack = all.find((c) => trackKey(c) === track);
   const matching = all.filter((c) => (!track || trackKey(c) === track) && (!cars.length || cars.includes(c.car)));
 
-  const tabs = (
-    <nav className="subtabs" aria-label={t('Vistas de tiempos')}>
-      <a href="#/records" className={view === 'records' ? 'on' : ''}>{t('Tablas')}</a>
-      <a href="#/rankings" className={view === 'rankings' ? 'on' : ''}>{t('Rankings')}</a>
-    </nav>
-  );
-  if (view === 'rankings') return <section className="panel"><div className="panel-head"><h2>{t('Tiempos')}</h2></div>{tabs}<RankingsPage /></section>;
 
   return (
     <section className="panel">
@@ -74,7 +66,6 @@ export function RecordsPage({ view = 'records' }: { view?: 'records' | 'rankings
           </button>
         )}
       </div>
-      {tabs}
       {servers.length > 1 && (
         <label className="server-pick">{t('Servidor')}{' '}
           <select value={server} onChange={(e) => { setServer(e.target.value); setTrack(''); setCars([]); }}>

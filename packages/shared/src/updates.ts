@@ -1,7 +1,7 @@
 // Actualizaciones: versión, comparación y tipos que ve el panel. Las notas vienen de las Releases de GitHub.
 
 /** Versión de esta compilación. Debe coincidir con la de package.json (hay un test que lo comprueba). */
-export const HOWLER_VERSION = '0.1.5';
+export const HOWLER_VERSION = '0.1.6';
 
 export interface UpdateAssetDto { name: string; sizeBytes: number }
 

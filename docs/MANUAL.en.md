@@ -115,7 +115,7 @@ To have the server start together with Howler, set `server.startWithHowler` to `
 
 ## How to change cars, skins and track
 
-1. Open **Server → Session and weather**.
+1. Open **Prepare** (Cars and track, Session, Weather…).
 2. Under **Server cars**, click **+ Add cars** and pick a car and a skin. The pickers show previews and can be filtered.
 3. Watch the `cars/pit boxes` counter: you can't have more cars than pit boxes on the track (spectators don't count).
 4. To change the track, click **Change track** in the Track block.
@@ -129,7 +129,7 @@ If you have championships you can also give each slot a team and a reserved driv
 
 ## How to let Howler adjust WeatherFX, track data and data.acd for you
 
-Some mod tracks and cars stop the server from starting unless you change three options. Under **Server → Session and weather → Quick server settings** each one has three positions:
+Some mod tracks and cars stop the server from starting unless you change three options. Under **Prepare → Checks → Quick server settings** each one has three positions:
 
 - **On** or **Off**: you decide.
 - **Auto**: Howler decides every time it starts the server, based on what is installed, and tells you what it chose and why.
@@ -140,7 +140,7 @@ The options are **CSP weather (WeatherFX)** (Auto = Pure or Sol is installed), *
 
 *This is what players see when they pick your server in the list: title, description, images and links. 10 minutes.*
 
-1. Open **Server → Server sheet**.
+1. Open **Prepare → Server sheet**.
 2. Type the **title** (if you want a prefix like `[EU]`, use parentheses: Content Manager reads square brackets in the header).
 3. On the left is the **description** editor: select text and use the bar (bold, italic, size, colour, link, image). On the right you see the **final result**, with your server's real track and cars.
 4. For an image, paste its **public link** (Howler does not host images: upload it to Discord, imgur or GitHub and copy the direct link). A GitHub `/blob/` link is converted automatically.
@@ -151,7 +151,7 @@ The options are **CSP weather (WeatherFX)** (Auto = Pure or Sol is installed), *
 
 ## How to set up the session (fuel, damage, tyres, assists…)
 
-**Server → Session and weather** holds almost every session setting, ordered by how often you touch them: track and cars first, then what the session is like (practice, qualifying, race), weather and the server.
+**Prepare** holds almost every session setting, one screen per task: **Cars and track**, **Session** (practice, qualifying, race, conditions, assists, tyres), **Weather**, **Checks** (password, automatic settings, `data.acd`) and **Server sheet**.
 
 - The most used ones (fuel, damage, wear, assists, tyres, race rules) are in view; the rest is folded under **Advanced**. There is a search box.
 - At the top there are **presets**: some built in and your own (**Save as preset…**). A preset stores the settings and the session plan, not the car list.
@@ -204,7 +204,7 @@ Howler runs on Linux (server, panel and plugin). There is no graphical installer
 
 Also here: next session, restart session, chat message, kick, ban, ballast and restrictor.
 
-There are two weather systems, chosen in **Server → Session and weather → Weather system**:
+There are two weather systems, chosen in **Prepare → Weather → Weather system**:
 
 - **Classic**: the preset's weather list (`[WEATHER_n]`). Works with any client.
 - **CSP WeatherFX**: for Pure or Sol. Each player picks their script in their own Content Manager, and the server only sends the weather *type*. Needs CSP on the clients.
@@ -220,7 +220,7 @@ There are two weather systems, chosen in **Server → Session and weather → We
 
 ![Lap rules](manual/img/panel-reglas.png)
 
-A lap can be **valid**, **void** or **pending review**. Pending ones are pit-exit laps: they don't count until you approve them in the **Pending review** card. You can also void or accept any recent lap, with a reason.
+A lap can be **valid**, **void** or **pending review**. Pending ones are pit-exit laps: they don't count until you approve them in **Server → Review laps**. You can also void or accept any recent lap, with a reason.
 
 With **Warn the driver**, Howler writes “Howler: lap X voided” in chat with the reason.
 
@@ -259,6 +259,15 @@ The public website shows them under **Championships**.
 
 > **Tip.** Race results are rebuilt from the saved laps (the server keeps no official results): whoever completes the most laps wins and, if tied, the lowest total time plus penalties.
 
+## How to let people sign up for a championship
+
+1. Open **Competition → Championships → Manage** and go to the **Public sign-up** card.
+2. Turn on **Sign-up open** and choose what to ask (team, car, optional email). You can add up to 5 questions of your own and a text with the rules. Press **Save**.
+3. With the championship **Active**, its web page shows a **Sign up** button. Each person sends their name and the link to their Steam profile.
+4. Requests arrive in the same card. **Approve** puts them in the championship (you pick team and car; Howler checks their public Steam profile at that moment) and **Reject** deletes their email and answers. **Download CSV** gives you the list.
+
+> **Tip.** Nobody gets in on their own: until you approve it, a request changes nothing. One address can send 5 requests per hour and one Steam profile only one. Rejected ones are deleted after 30 days.
+
 ## How to import stracker's history
 
 1. Open **Settings → Data → Import**.
@@ -286,7 +295,7 @@ Each announcement has a **Test this announcement** button. You can add up to 10 
 
 ## How to use Howler alongside another program that uses the server's UDP port (penalties, etc.)
 
-**The problem.** The AC server can only send its UDP interface (`UDP_PLUGIN_ADDRESS` in `server_cfg.ini`) to **one single program**. Howler uses it to know who joins, the sessions and the positions. Penalty programs (Real Penalty and similar) use the same one. If both ask for that port, one of them gets no data.
+**The problem.** The AC server can only send its UDP interface (`UDP_PLUGIN_ADDRESS` in `server_cfg.ini`) to **one single program**. Howler uses it to know who joins, the sessions and the positions. Penalty programs (Real Penalty, KissMyRank and similar) use the same one. If both ask for that port, one of them gets no data.
 
 **The fix.** Howler acts as a go-between: it receives everything from the server, **copies it to the other program**, and passes back to the server whatever that program replies (kicks, penalties…). Both work at once and you don't have to choose. It all happens inside your PC.
 

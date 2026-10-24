@@ -346,9 +346,9 @@ details.fold[open] > summary { margin-bottom: 8px; }
 .timing td, .timing th { white-space: nowrap; }
 
 /* Tarjetas del panel, abiertas como el resto del Original: filete superior y título de sección; el cuerpo respira */
-[data-panels='open'] .card { background: none; border: 0; border-top: 1px solid var(--line); border-radius: 0; padding-top: 4px; }
-[data-panels='open'] .card-head { border-bottom: 0; padding-inline: 0; }
-[data-panels='open'] .card-head h3 { font-size: var(--fs-label); font-weight: 600; letter-spacing: 0.09em; text-transform: uppercase; color: var(--muted); }
+[data-panels='open'] .card { background: none; border: 0; border-top: 1px solid var(--muted); border-radius: 0; padding-top: 10px; margin-top: 8px; }
+[data-panels='open'] .card-head { border-bottom: 0; padding-inline: 0; padding-bottom: 6px; }
+[data-panels='open'] .card-head h3 { font-size: var(--fs-lg); font-weight: 700; letter-spacing: 0; color: var(--text); }
 [data-panels='open'] .card-body { padding-inline: 0; padding-top: 6px; }
 
 /* ===== Títulos con la tipografía de títulos del tema ===== */
@@ -366,7 +366,7 @@ details.fold[open] > summary { margin-bottom: 8px; }
   box-shadow: inset 0 1px 0 color-mix(in srgb, var(--text) 7%, transparent);
 }
 [data-panels='glass'] .panel-head, [data-panels='glass'] .card-head { border-bottom-color: color-mix(in srgb, var(--text) 7%, transparent); }
-[data-panels='glass'] .panel-head h2, [data-panels='glass'] .card-head h3 { font-size: var(--fs-sm); font-weight: 400; letter-spacing: 0.04em; }
+[data-panels='glass'] .panel-head h2, [data-panels='glass'] .card-head h3 { font-size: var(--fs-base); font-weight: 600; letter-spacing: 0.04em; }
 [data-panels='glass'] .podium-card { box-shadow: none; background: color-mix(in srgb, var(--surface-2) 55%, transparent) padding-box, linear-gradient(135deg, var(--medal), var(--medal-dark) 55%, var(--medal)) border-box; }
 [data-panels='glass'] .podium-card::after { display: none; }
 [data-panels='glass'] .session-title { font-size: var(--fs-xl); letter-spacing: 0.02em; }
@@ -452,3 +452,18 @@ details.fold[open] > summary { margin-bottom: 8px; }
 :where(a, button, input, select, textarea, summary, [tabindex]):focus-visible { outline: 2px solid var(--accent-text, var(--accent)); outline-offset: 2px; }
 
 .ticker-sample { display: grid; gap: 8px; justify-items: start; margin: 10px 0; } .ticker-sample-cell { width: 100%; height: 88px; container-type: size; } .ticker-sample-cell > .record-ticker { height: 100%; }
+
+/* Opción del tema: títulos e iconos con el color de acento (usa --accent-text, el acento ya comprobado para leerse como texto) */
+[data-accent-titles='on'] :is(.card-head h3, .sx-head h2, .panel-head h2, .sp-block h4, .sp-head h3, .cup-sec-head h2) { color: var(--accent-text); }
+[data-accent-titles='on'] :is(.tabs, .subtabs, .mainnav, .sx-nav, .sx-head, .sp-ico, .sp-block h4, .sp-head h3, .sp-more summary, .card-head) .icon { color: var(--accent-text); opacity: 1; }
+.accent-custom { display: inline-flex; align-items: center; gap: 8px; margin-left: 8px; }
+.accent-custom input[type='color'] { width: 34px; height: 28px; padding: 0; border: 1px solid var(--line); border-radius: var(--r2); background: none; cursor: pointer; }
+.accent-custom code { font-family: var(--font-num); font-size: var(--fs-sm); color: var(--text); }
+
+/* Buscador de ajustes del panel */
+.panel-find { position: relative; margin: 0 0 10px; }
+.panel-find input { width: 100%; max-width: 360px; }
+.panel-find-list { position: absolute; z-index: 20; top: 100%; left: 0; width: min(420px, 100%); margin: 4px 0 0; padding: 4px; list-style: none; background: var(--surface-2); border: 1px solid var(--line); border-radius: var(--r2); }
+.panel-find-list button { display: flex; flex-direction: column; align-items: flex-start; width: 100%; padding: 6px 10px; background: none; border: 0; border-radius: var(--r2); color: var(--text); font: inherit; font-size: var(--fs-base); text-align: left; cursor: pointer; }
+.panel-find-list button:hover, .panel-find-list button:focus-visible { background: var(--surface); }
+.panel-find-list span, .panel-find-none { color: var(--muted); font-size: var(--fs-sm); }

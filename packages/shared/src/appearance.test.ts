@@ -70,3 +70,12 @@ describe('cuadrícula', () => {
     expect(overlap(a, b)).toBe(false);
   });
 });
+
+describe('tema del panel', () => {
+  it('se guarda aparte, admite «original» y lo que no vale se descarta', () => {
+    expect(sanitizeAppearance({ theme: 'gt', panelTheme: 'original' })).toMatchObject({ theme: 'gt', panelTheme: 'original' });
+    expect(sanitizeAppearance({ panelTheme: 'no-existe' }).panelTheme).toBeUndefined();
+    expect(sanitizeAppearance({ panelTheme: null }).panelTheme).toBeUndefined();
+    expect(sanitizeAppearance({ theme: 'original' }).theme).toBeUndefined();
+  });
+});

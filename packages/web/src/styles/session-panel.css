@@ -1,12 +1,12 @@
 /* Panel de sesión completo (Servidor → Sesión y clima) */
 .sp { display: grid; gap: 16px; margin-bottom: 8px; }
 .sp-head { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 8px 16px; }
-.sp-head h3 { margin: 0; font-size: var(--fs-lg); }
+.sp-head h3 { margin: 0; font-size: var(--fs-lg); font-weight: 700; }
 .sp-search { min-width: min(320px, 100%); }
-.sp-summary { display: flex; flex-wrap: wrap; gap: 6px 18px; margin: 0; padding: 10px 0; border-block: 1px solid var(--line); font-size: var(--fs-lg); font-weight: 600; }
+.sp-summary { display: flex; flex-wrap: wrap; gap: 6px 18px; margin: 0; padding: 10px 0; border-block: 1px solid var(--line); font-size: var(--fs-base); font-weight: 600; }
 .sp-summary span + span::before { content: '·'; color: var(--muted); margin-right: 18px; font-weight: 400; }
 .sp-block { display: grid; gap: 2px; align-content: start; }
-.sp-block h4 { margin: 0; font-size: var(--fs-lg); }
+.sp-block h4 { margin: 0; font-size: var(--fs-lg); font-weight: 700; }
 .sp-block > .sp-help { margin: 0 0 6px; }
 .sp-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(440px, 1fr)); gap: 24px 32px; }
 .sp-help { font-size: var(--fs-sm); color: var(--muted); }
@@ -71,8 +71,10 @@
 .sx-nav a:hover, .sx-nav a:focus-visible { border-color: var(--muted); background: var(--surface-2); }
 .sx-block { display: grid; gap: 16px; align-content: start; scroll-margin-top: calc(var(--panel-top-h, 60px) + 64px); }
 .sx-head { display: grid; gap: 2px; padding-bottom: 6px; border-bottom: 2px solid var(--text); }
-.sx-head h2 { display: flex; align-items: center; gap: 10px; margin: 0; font-size: var(--fs-2xl); }
+.sx-head h2 { display: flex; align-items: center; gap: 10px; margin: 0; font-size: var(--fs-xl); font-weight: 700; }
 .sx-hint { margin: 0; font-size: var(--fs-sm); color: var(--muted); }
+/* Tras el título de un bloque ya hay una línea gruesa: la primera tarjeta no repite otra */
+.sx-head + .card, [data-panels='open'] .sx-head + .card { border-top: 0; margin-top: 0; padding-top: 0; }
 
 /* Programación: estado de cada evento */
 .sched .sched-running { color: var(--live); font-weight: 600; }
@@ -83,3 +85,27 @@
 /* Acceso remoto: quién ha iniciado sesión y pantalla de entrada */
 .panel-user { display: flex; justify-content: flex-end; align-items: center; gap: 10px; margin: 0 0 8px; font-size: var(--fs-sm); color: var(--muted); }
 .login-form { max-width: 420px; margin: 40px auto; }
+
+/* Compuestos permitidos: casillas con los neumáticos reales de los coches de la lista */
+.sp-tyres { display: grid; gap: 8px; width: 100%; }
+.sp-tyre-chips { display: flex; flex-wrap: wrap; gap: 8px; }
+.sp-tyre { display: grid; grid-template-columns: auto 1fr; column-gap: 8px; align-items: baseline; text-align: left; padding: 8px 12px; border: 1px solid var(--line); border-radius: var(--r3); background: none; color: var(--text); cursor: pointer; font: inherit; transition: border-color calc(100ms * var(--motion)) var(--ease), background calc(100ms * var(--motion)) var(--ease); }
+.sp-tyre strong { font-family: var(--font-num); font-size: var(--fs-lg); }
+.sp-tyre span { font-size: var(--fs-sm); }
+.sp-tyre small { grid-column: 1 / -1; color: var(--muted); font-size: var(--fs-label); }
+.sp-tyre:hover { border-color: var(--muted); }
+.sp-tyre.on { border-color: var(--text); background: var(--surface-2); box-shadow: inset 0 0 0 1px var(--text); }
+.sp-tyre:disabled { opacity: .6; cursor: default; }
+.sp-tyre-note { margin: 0; font-size: var(--fs-sm); color: var(--muted); }
+.sp-tyre-warn { margin: 0; font-size: var(--fs-sm); color: var(--down); }
+.sp-link { all: unset; cursor: pointer; color: var(--accent-text); text-decoration: underline; font-size: var(--fs-sm); }
+.sp-link:focus-visible { outline: 2px solid var(--text); outline-offset: 2px; }
+
+/* Inscripción pública a campeonatos: solicitudes por revisar */
+.signup-list { list-style: none; margin: 0; padding: 0; display: grid; gap: 12px; }
+.signup-req { display: grid; gap: 8px; padding: 12px 0; border-top: 1px solid var(--line); }
+.signup-who { display: flex; flex-wrap: wrap; align-items: baseline; gap: 4px 14px; }
+.signup-answers { margin: 0; display: grid; gap: 4px; font-size: var(--fs-sm); }
+.signup-answers div { display: grid; grid-template-columns: minmax(120px, 1fr) 2fr; gap: 8px; }
+.signup-answers dt { color: var(--muted); }
+.signup-answers dd { margin: 0; overflow-wrap: anywhere; }

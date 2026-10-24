@@ -34,7 +34,7 @@ export function ChampionshipsSection({ onPendingChange }: { onPendingChange?: ()
         <ul className="pick-list">
           {data.map((c) => (
             <li key={c.id}>
-              <span><strong>{c.name}</strong>{c.sharedFrom && <span className="badge"> {t('de {name}', { name: c.sharedFrom })}</span>} <span className={`badge ${c.status === 'active' ? 'ok' : ''}`}>{STATUS[c.status]}</span>
+              <span><strong>{c.name}</strong>{c.sharedFrom && <span className="badge"> {t('de {name}', { name: c.sharedFrom })}</span>} <span className={`badge ${c.status === 'active' ? 'ok' : ''}`}>{STATUS[c.status]}</span>{!!c.pendingSignups && <span className="badge pending"> {t('{n} inscripciones por revisar', { n: c.pendingSignups })}</span>}
                 <span className="muted"> · {t('{n} participantes', { n: c.participants })} · {t('{played}/{total} carreras', { played: c.played, total: c.rounds })}{c.leader ? ` · ${t('líder: {name}', { name: c.leader.name })}` : ''}</span></span>
               <button type="button" className="btn small" onClick={() => setView({ kind: 'manage', id: c.id })}>{t('Gestionar')}</button>
             </li>

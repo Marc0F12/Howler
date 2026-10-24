@@ -76,9 +76,9 @@ export function WeatherControl({ enabled, serverState, run }: { enabled: boolean
           </div>
           <span className="row"><button type="button" className="btn" disabled={!enabled || wx.list.length === 0} onClick={() => run(() => adminApi.control.weatherId(id), t('Clima cambiado'))}>{t('Aplicar')}</button></span>
         </span>
-        <span className="field-hint">{t('Los climas de la lista del servidor. Para añadir otros o cambiar de sistema (Por defecto, Sol…), ve a «Sesión y clima».')}</span>
+        <span className="field-hint">{t('Los climas de la lista del servidor. Para añadir otros o cambiar de sistema (Por defecto, Sol…), ve a Preparar → Clima.')}</span>
       </div>
-      {wx.list.length === 1 && <p className="hint">{t('Ahora mismo la lista solo tiene un clima, así que no hay nada que cambiar. Añade más en «Sesión y clima» → Climas disponibles.')}</p>}
+      {wx.list.length === 1 && <p className="hint">{t('Ahora mismo la lista solo tiene un clima, así que no hay nada que cambiar. Añade más en Preparar → Clima → Climas disponibles.')}</p>}
     </>
   );
 }

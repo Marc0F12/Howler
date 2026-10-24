@@ -6,6 +6,7 @@ import { CupCover } from './CupList';
 import { CupResults } from './CupResults';
 import { CupRoster } from './CupRoster';
 import { ModsMenu } from './ModsMenu';
+import { SignupButton } from './SignupDialog';
 import { initialRound } from './cup-math';
 import { RoundCarousel } from './RoundCarousel';
 import { RoundCars, Timeline } from './RoundInfo';
@@ -44,7 +45,7 @@ export function CupDetail({ c }: { c: ChampionshipDto }) {
             </p>
             {c.description && <p className="cup-desc">{c.description}</p>}
           </div>
-          <ModsMenu c={c} />
+          <div className="cup-head-actions"><SignupButton c={c} /><ModsMenu c={c} /></div>
         </div>
       </header>
 

@@ -68,6 +68,15 @@ export function registerPresetRoutes(app: FastifyInstance, d: AdminDeps, { fail,
     const restarting = restartIfRunning(b.applyAndRestart);
     return reply.send({ ...describeEntryList(saved), restarting });
   }));
+  // Compuestos de neumático de los coches de la lista del servidor (para el selector de «Compuestos permitidos»)
+  app.get('/admin/api/tyres', async (_req, reply) => {
+    const c = d.getConfig();
+    try {
+      const reader = d.content?.();
+      const models = [...new Set(readEntryList(c.serverDir, c.server.preset).slots.filter((s) => !s.spectator).map((s) => s.model))];
+      return { cars: models.map((id) => ({ id, name: reader?.carInfo(id)?.name ?? id, tyres: reader?.carTyres(id) ?? [] })) };
+    } catch (e) { return fail(reply, e, 404); }
+  });
   app.get('/admin/api/content/cars/:id/skins', async (req) => {
     const { id } = z.object({ id: z.string().min(1).max(100) }).parse(req.params);
     return d.content?.().carSkins(id) ?? [];

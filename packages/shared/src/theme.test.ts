@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { sanitizeAppearance } from './appearance';
-import { ACCENT_SWATCHES, BUILTIN_THEMES, accentTextColor, onAccentFor, resolveTheme, themeVars, validateTheme, withAccent, withTicker } from './theme';
+import { ACCENT_SWATCHES, BUILTIN_THEMES, accentTextColor, onAccentFor, resolveTheme, themeVars, validateTheme, withAccent, withAccentTitles, withTicker } from './theme';
 
 describe('temas', () => {
   it('los temas de serie son válidos y tienen id único', () => {
@@ -152,5 +152,18 @@ describe('colores de la banda de récord', () => {
     const back = withTicker(withTicker(base, '#ff0066', '#ffffff'), undefined, undefined);
     expect(back.tickerBg).toBeUndefined();
     expect(back.tickerFg).toBeUndefined();
+  });
+});
+
+describe('títulos con el color de acento', () => {
+  it('se valida, viaja en el atributo y un tema de serie pasa a ser propio al activarlo', () => {
+    const on = withAccentTitles(resolveTheme('original'), true);
+    expect(on).toMatchObject({ accentTitles: true, id: 'original-custom' });
+    expect(themeVars(on).attrs['data-accent-titles']).toBe('on');
+    expect(themeVars(resolveTheme('original')).attrs['data-accent-titles']).toBe('off');
+    expect(validateTheme(JSON.parse(JSON.stringify(on)))).toMatchObject({ ok: true, value: { accentTitles: true } });
+    expect(validateTheme({ ...on, accentTitles: 'si' }).ok).toBe(false);
+    expect(withAccentTitles(on, false).accentTitles).toBeUndefined();
+    expect(withAccentTitles(withAccent(on, '#ff4500'), true).accentTitles).toBe(true);
   });
 });

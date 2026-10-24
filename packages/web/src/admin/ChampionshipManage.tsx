@@ -7,6 +7,7 @@ import { useLive } from '../api';
 import { useContentNames } from '../content';
 import { clock } from '../format';
 import { Card, ConfirmButton, Notice, useNotice } from './ui';
+import { SignupsCard } from './SignupsCard';
 
 const STATUS_LABEL: Record<ChampionshipStatus, string> = { draft: t('Borrador'), active: t('Activo'), finished: t('Terminado') };
 const fmtDate = (iso: string | null) => (iso ? `${formatDay(new Date(iso), { month: 'short', year: true })} ${timeOf(new Date(iso))}` : '—');
@@ -40,6 +41,8 @@ export function ChampionshipManage({ id, onEdit, onDeleted }: { id: number; onEd
         <p className="hint">{c.status === 'draft' ? t('Es un borrador: no se asigna ninguna sesión ni se ve en la web hasta que lo actives.') : t('Con el campeonato activo, Howler asigna solo la sesión que encaje con la siguiente carrera (mismo circuito, al menos 2 inscritos). Lo demás sale abajo para confirmar.')}</p>
         <Notice notice={notice} />
       </Card>
+
+      {!c.sharedFrom && <SignupsCard c={c} onChanged={reload} />}
 
       <Card title={t('Carreras y sesiones asignadas')}>
         <div className="table-scroll">

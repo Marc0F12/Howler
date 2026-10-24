@@ -147,10 +147,15 @@ export const schema = z.object({
   racePenalties: racePenaltiesSchema.default({}),
   /** Ajustes inteligentes del servidor (On/Off/Auto); sin definir = Howler no toca ese archivo. */
   smartSettings: z.object({ weatherFx: z.enum(['on', 'off', 'auto']).optional(), trackParams: z.enum(['on', 'off', 'auto']).optional(), carChecksums: z.enum(['on', 'off', 'auto']).optional() }).default({}),
+  /** Mapa del mundo: mapas en línea (satélite/calles) permitidos y ubicaciones manuales de circuitos (`circuito|layout`). */
+  worldMap: z.object({
+    online: z.boolean().default(false),
+    manual: z.record(z.string().max(220), z.object({ lat: z.number().min(-90).max(90), lon: z.number().min(-180).max(180) })).default({}),
+  }).default({}),
   discord: discordSchema.default({}),
   recordAnnounce: recordAnnounceSchema.default({}),
   /** Disposición de módulos de la web. Se valida y limpia con `sanitizeAppearance` (@howler/shared) al guardar y al servir. */
-  appearance: z.object({ layouts: z.record(z.unknown()).default({}), theme: z.unknown().optional(), display: z.unknown().optional() }).default({}),
+  appearance: z.object({ layouts: z.record(z.unknown()).default({}), theme: z.unknown().optional(), panelTheme: z.unknown().optional(), display: z.unknown().optional() }).default({}),
   dataDir: z.string().default('./data'),
   /** Fronteras de sector por circuito cuando el circuito no trae sections.ini: un número (sectores iguales) o la lista de fronteras 0..1. */
   trackSectors: z.record(z.union([z.number().int().min(2).max(12), z.array(z.number().gt(0).lt(1)).min(1)])).default({}),

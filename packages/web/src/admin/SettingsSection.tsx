@@ -1,7 +1,5 @@
 import { LANGS, type UpdateStateDto } from '@howler/shared';
 import { UpdatesCard } from './UpdatesCard';
-import { WebDisplayCard } from './WebDisplayCard';
-import { SoundsCard } from './SoundsCard';
 import { t } from '../i18n';
 import { useEffect, useState } from 'react';
 import type { AdminStateDto, ServerDirCheckDto } from '@howler/shared';
@@ -98,10 +96,6 @@ export function SettingsSection({ state, refresh, update, onUpdate }: { state: A
           <input type="number" min={0} max={300} value={warn} onChange={(e) => setWarn(Number(e.target.value))} />
         </Field>
       </Card>
-
-      <WebDisplayCard />
-
-      <SoundsCard />
 
       <Card title={t('Idioma de los mensajes del servidor')}>
         <Field label={t('Idioma de los mensajes del servidor')} hint={t('Es el idioma del chat del servidor, de los avisos de Discord y de los motivos que Howler escribe por su cuenta. La web y este panel usan el idioma que elija cada persona con el selector «Idioma de la interfaz» de arriba.')}>

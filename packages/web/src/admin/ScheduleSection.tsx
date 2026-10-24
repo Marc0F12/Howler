@@ -134,7 +134,7 @@ function EventForm({ v, editing, presets, onChange, onSave, onCancel }: {
   return (
     <Card title={editing ? t('Editar evento') : t('Nuevo evento')}>
       <Field label={t('Nombre')}><input type="text" value={v.name} maxLength={MAX_SCHEDULE_NAME} placeholder={t('Liga del jueves')} onChange={(e) => set({ name: e.target.value })} /></Field>
-      <Field label={t('Preset de sesión')} hint={presets.length === 0 ? t('Aún no tienes presets: guarda uno en «Sesión y clima» → Presets para poder elegirlo aquí.') : t('Se aplica justo antes de arrancar. «Sin cambiar ajustes» arranca con lo que haya guardado.')}>
+      <Field label={t('Preset de sesión')} hint={presets.length === 0 ? t('Aún no tienes presets: guarda uno en Preparar → Sesión → Presets para poder elegirlo aquí.') : t('Se aplica justo antes de arrancar. «Sin cambiar ajustes» arranca con lo que haya guardado.')}>
         <select value={v.presetId ?? ''} onChange={(e) => set({ presetId: e.target.value || null })}>
           <option value="">{t('Sin cambiar ajustes')}</option>
           {presets.map((p) => <option key={p.id} value={p.id}>{p.name}</option>)}

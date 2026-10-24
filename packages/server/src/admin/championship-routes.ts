@@ -26,7 +26,7 @@ export function registerChampionshipRoutes(app: FastifyInstance, d: AdminDeps, {
   const params = (req: unknown) => champId.parse((req as { params: unknown }).params).id;
   const notifyStatus = (id: number, status: string) => { if (status === 'active') d.onChampionship?.('started', id); else if (status === 'finished') d.onChampionship?.('finished', id); };
   app.get('/admin/api/content/installed', async (): Promise<InstalledContentDto> => d.installedContent?.() ?? { cars: [], tracks: [] });
-  app.get('/admin/api/championships', async () => d.repo.championships.list(true));
+  app.get('/admin/api/championships', async () => d.repo.championships.list(true).map((c) => ({ ...c, pendingSignups: d.repo.signups.pendingCount(c.id) })));
   app.get('/admin/api/championships/:id', async (req, reply) => d.repo.championships.get(params(req)) ?? fail(reply, new Error('Ese campeonato no existe.'), 404));
   app.post('/admin/api/championships', guard(async (req, reply) => {
     const input = body(championshipInputSchema, req);

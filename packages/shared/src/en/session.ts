@@ -67,3 +67,20 @@ export const enSession: Record<string, string> = {
   "No hay setups guardados para este coche en Documentos > Assetto Corsa > setups. Guárdalos desde el juego (pantalla de setup → guardar).": "There are no saved setups for this car in Documents > Assetto Corsa > setups. Save them from the game (setup screen → save).",
   "Copiar al servidor y usar": "Copy to the server and use",
 };
+
+Object.assign(enSession, {
+  "Leyendo los neumáticos de los coches…": "Reading the cars' tyres…",
+  "Compuestos permitidos": "Allowed compounds",
+  "Todos los coches": "All cars",
+  "{n} de {m} coches": "{n} of {m} cars",
+  "Ninguno marcado: cada coche puede usar todos sus compuestos.": "None ticked: every car can use all of its compounds.",
+  "Solo se podrán usar los marcados.": "Only the ticked ones can be used.",
+  "Permitir todos": "Allow all",
+  "Sin ningún compuesto permitido para: {cars}. No podrían usar neumáticos.": "No allowed compound for: {cars}. They would have no tyres to use.",
+  "No existen en estos coches: {list}.": "Not found on these cars: {list}.",
+  "Quitar": "Remove",
+});
+
+Object.assign(enSession, {
+  "Marca los compuestos que se pueden usar (o escribe sus nombres cortos separados por «;», por ejemplo SV;S). Sin marcar = todos. Cada coche tiene los suyos.": "Tick the compounds that can be used (or type their short names separated by \";\", for example SV;S). None ticked = all. Each car has its own.",
+});
